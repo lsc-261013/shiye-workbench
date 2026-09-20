@@ -1,0 +1,13 @@
+
+> inspiration-workbench@1.0.0 build
+> vue-tsc --noEmit && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 38 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.67 kB │ gzip:  0.47 kB
+dist/assets/index-D1oRutun.css   20.90 kB │ gzip:  5.45 kB
+dist/assets/index-CXmmfNd-.js   104.27 kB │ gzip: 41.54 kB
+✓ built in 511ms

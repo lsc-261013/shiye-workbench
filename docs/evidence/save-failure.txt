@@ -1,0 +1,113 @@
+- banner:
+  - button "模拟保存失败"
+  - button "恢复本机保存"
+  - button "模拟 PNG 失败"
+  - button "恢复 PNG 导出"
+  - button "减少动态效果测试"
+  - button "检查资源请求"
+  - generic: 保存失败模拟已启用
+- iframe [active]:
+  - banner:
+    - button "返回首页": ← 拾页
+    - textbox "方案名称"
+    - button "保存失败 · 重试"
+    - button "撤销": ↶
+    - button "重做" [disabled]: ↷
+    - button "预览"
+    - button "导出 PNG ↓":
+      - text: 导出 PNG
+      - generic: ↓
+    - generic "更多操作": •••
+  - complementary:
+    - heading "素材 09" [level=2]
+    - button "收起素材栏": ‹
+    - button "＋ 上传图片"
+    - button "↗ 添加链接"
+    - paragraph: 点 ＋ 加入画板，或拖到想放的位置。
+    - button "查看素材：STILL / NOTES · 首屏研究":
+      - img "STILL / NOTES · 首屏研究"
+    - button "STILL / NOTES · 首屏研究"
+    - button "加入画板：STILL / NOTES · 首屏研究": ＋
+    - button "查看素材：字与留白":
+      - img "字与留白"
+    - button "字与留白"
+    - button "加入画板：字与留白": ＋
+    - button "查看素材：建筑的秩序":
+      - img "建筑的秩序"
+    - button "建筑的秩序"
+    - button "加入画板：建筑的秩序": ＋
+    - button "查看素材：克制的色彩":
+      - img "克制的色彩"
+    - button "克制的色彩"
+    - button "加入画板：克制的色彩": ＋
+    - button "查看素材：给内容呼吸空间":
+      - img "给内容呼吸空间"
+    - button "给内容呼吸空间"
+    - button "加入画板：给内容呼吸空间": ＋
+    - button "查看素材：Vue · 官方文档信息层级":
+      - text: ↗
+      - generic: 参考链接
+    - button "Vue · 官方文档信息层级"
+    - button "加入画板：Vue · 官方文档信息层级": ＋
+    - button "查看素材：portrait.png":
+      - img "portrait.png"
+    - button "portrait.png"
+    - button "加入画板：portrait.png" [active]: ＋
+    - button "查看素材：landscape.png":
+      - img "landscape.png"
+    - button "landscape.png"
+    - button "加入画板：landscape.png": ＋
+    - button "查看素材：手机添加 · Vue 参考":
+      - img "手机添加 · Vue 参考"
+    - button "手机添加 · Vue 参考"
+    - button "加入画板：手机添加 · Vue 参考": ＋
+    - paragraph:
+      - text: PNG / JPEG / WebP · 单张 ≤ 12 MB
+      - text: 最多 100 份素材 · 图片仅保存在本机
+  - generic: portrait.png
+  - button "替换图片"
+  - button "查看 / 编辑说明"
+  - button "后移"
+  - button "前移" [disabled]
+  - button "从画板移除"
+  - heading "留白之间 · 独立产品网站" [level=2]
+  - paragraph: VISUAL NOTES / 视觉参考方案
+  - article "画板素材：STILL / NOTES · 首屏研究":
+    - img "STILL / NOTES · 首屏研究"
+    - generic: STILL / NOTES · 首屏研究
+    - paragraph: 验收：主标题突出、单一入口。 完整说明第二行。
+  - article "画板素材：字与留白":
+    - img "字与留白"
+    - generic: 字与留白
+    - paragraph: 自制版式样张。用一个大字建立视觉焦点，朱红圆形只作少量强调。
+  - article "画板素材：建筑的秩序":
+    - img "建筑的秩序"
+    - generic: 建筑的秩序
+    - paragraph: 观察重复线条和对称关系，将这种秩序用于网站内容分区，避免所有模块同等突出。
+  - article "画板素材：克制的色彩":
+    - img "克制的色彩"
+    - generic: 克制的色彩
+    - paragraph: 自制色彩样张。暖白作为底色，深海蓝、苔绿用于图片呼应，朱红用于主动作。
+  - article "画板素材：给内容呼吸空间":
+    - img "给内容呼吸空间"
+    - generic: 给内容呼吸空间
+    - paragraph: 观察花枝与背景之间的留白，应用于产品介绍区；细节丰富，背景保持安静。
+  - article "画板素材：手机添加 · Vue 参考":
+    - img "手机添加 · Vue 参考"
+    - generic: 手机添加 · Vue 参考
+    - paragraph: 手机替换后检查旧来源。 这是保留在清单中的完整第二行。
+  - article "画板素材：portrait.png":
+    - img "portrait.png"
+    - generic: portrait.png
+    - paragraph: 添加你的借鉴点
+  - button "等比缩放，拖动右下角"
+  - generic: 拖动编排 · 角点等比缩放 · 方向键微调
+  - generic: 1600 × 1000 · 71%
+  - generic: 一页参考，一种方向。 · 双击素材查看完整说明
+  - generic: 7 个画板元素
+  - status:
+    - text: 本机保存失败，当前编辑仍在。可重试或导出完整备份。
+    - button "关闭提示": ×
+- status: "{\"name\":\"留白之间 · 独立产品网站.png\",\"size\":448235,\"type\":\"image/png\"} dimensions=1600×1000"
+- textbox "捕获的导出文件": [embedded data]
+- img "导出 PNG 预览"

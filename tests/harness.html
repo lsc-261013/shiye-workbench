@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><title>拾页开发验收工具（不进入生产构建）</title
+  ><style>
+    body {
+      font: 12px Arial;
+      margin: 0;
+      background: #ddd;
+    }
+    header {
+      padding: 8px;
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 7px;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 150px);
+      border: 0;
+    }
+    textarea {
+      width: 100%;
+      height: 50px;
+      font: 10px monospace;
+    }
+    #result {
+      padding: 5px;
+    }
+    #image {
+      max-width: 250px;
+      max-height: 150px;
+    }
+  </style>
+  <header>
+    <button id="saveFail">模拟保存失败</button
+    ><button id="saveRestore">恢复本机保存</button
+    ><button id="exportFail">模拟 PNG 失败</button
+    ><button id="exportRestore">恢复 PNG 导出</button
+    ><button id="motion">减少动态效果测试</button
+    ><button id="network">检查资源请求</button
+    ><span id="mode">正常模式，导出会被此工具捕获</span>
+  </header>
+  <iframe src="/" title="验收中的拾页应用"></iframe>
+  <div id="result" role="status">等待操作</div>
+  <textarea id="artifact" aria-label="捕获的导出文件" readonly></textarea
+  ><img id="image" alt="导出 PNG 预览" hidden />
+  <script type="module">
+    if (!import.meta.env.DEV) throw Error("Development only");
+    const frame = document.querySelector("iframe"),
+      status = document.querySelector("#mode"),
+      result = document.querySelector("#result");
+    let restoreOpen, restoreBlob;
+    frame.addEventListener("load", () => {
+      const win = frame.contentWindow;
+      restoreOpen = win.indexedDB.open.bind(win.indexedDB);
+      restoreBlob = win.HTMLCanvasElement.prototype.toBlob;
+      win.document.addEventListener(
+        "click",
+        async (e) => {
+          const a = e.target.closest("a[download]");
+          if (!a) return;
+          e.preventDefault();
+          const blob = await (await fetch(a.href)).blob();
+          const reader = new FileReader();
+          reader.onload = () => {
+            document.querySelector("#artifact").value = reader.result;
+            result.textContent = JSON.stringify({
+              name: a.download,
+              size: blob.size,
+              type: blob.type,
+            });
+            if (blob.type === "image/png") {
+              const im = document.querySelector("#image");
+              im.src = reader.result;
+              im.hidden = false;
+              im.onload = () =>
+                (result.textContent +=
+                  " dimensions=" + im.naturalWidth + "×" + im.naturalHeight);
+            }
+          };
+          reader.readAsDataURL(blob);
+        },
+        true,
+      );
+    });
+    document.querySelector("#saveFail").onclick = () => {
+      frame.contentWindow.indexedDB.open = () => {
+        throw new DOMException("QA quota failure", "QuotaExceededError");
+      };
+      status.textContent = "保存失败模拟已启用";
+    };
+    document.querySelector("#saveRestore").onclick = () => {
+      frame.contentWindow.indexedDB.open = restoreOpen;
+      status.textContent = "本机保存已恢复";
+    };
+    document.querySelector("#exportFail").onclick = () => {
+      frame.contentWindow.HTMLCanvasElement.prototype.toBlob = function (cb) {
+        cb(null);
+      };
+      status.textContent = "PNG 失败模拟已启用";
+    };
+    document.querySelector("#exportRestore").onclick = () => {
+      frame.contentWindow.HTMLCanvasElement.prototype.toBlob = restoreBlob;
+      status.textContent = "PNG 导出已恢复";
+    };
+    document.querySelector("#motion").onclick = () => {
+      const style = frame.contentDocument.createElement("style");
+      style.textContent =
+        "*,*::before,*::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}";
+      frame.contentDocument.head.append(style);
+      status.textContent =
+        "已应用与减少动态效果规则相同的覆盖样式（非操作系统模拟）";
+    };
+    document.querySelector("#network").onclick = () => {
+      result.textContent = JSON.stringify(
+        frame.contentWindow.performance
+          .getEntriesByType("resource")
+          .map((x) => x.name)
+          .filter((x) => /^https?:/.test(x)),
+      );
+    };
+  </script>
+</html>

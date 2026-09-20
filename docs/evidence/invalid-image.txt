@@ -1,0 +1,8 @@
+操作未完成
+×
+
+broken.png：图片无法读取，请重试 PNG、JPEG 或 WebP
+type.svg：仅支持 PNG、JPEG、WebP 图片
+
+导出当前备份
+知道了

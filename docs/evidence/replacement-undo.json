@@ -1,0 +1,12 @@
+{
+  "changedImage": {
+    "frame": "left: 40px; top: 135px; width: 475px; height: 570px;",
+    "height": 1000,
+    "width": 600
+  },
+  "undoneImage": {
+    "frame": "left: 40px; top: 135px; width: 475px; height: 570px;",
+    "height": 825,
+    "width": 1100
+  }
+}
