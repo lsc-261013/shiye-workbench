@@ -1,0 +1,204 @@
+{
+  "dimensions": [
+    1600,
+    1000
+  ],
+  "bytes": 174497,
+  "sha256": "c487fb3241df1a1dab4c270de5457bd86fff580993b699818166a4a1af6d1684",
+  "pixelChecks": [
+    {
+      "title": "光的四个区域 · 测试标记图",
+      "sourceSize": [
+        800,
+        400
+      ],
+      "pngPoint": [
+        109,
+        189
+      ],
+      "expected": [
+        39,
+        103,
+        216
+      ],
+      "actual": [
+        39,
+        103,
+        216
+      ],
+      "maxChannelError": 0
+    },
+    {
+      "title": "光的四个区域 · 测试标记图",
+      "sourceSize": [
+        800,
+        400
+      ],
+      "pngPoint": [
+        211,
+        290
+      ],
+      "expected": [
+        237,
+        182,
+        32
+      ],
+      "actual": [
+        237,
+        182,
+        32
+      ],
+      "maxChannelError": 0
+    },
+    {
+      "title": "光的四个区域 · 测试标记图",
+      "sourceSize": [
+        800,
+        400
+      ],
+      "pngPoint": [
+        877,
+        189
+      ],
+      "expected": [
+        223,
+        56,
+        47
+      ],
+      "actual": [
+        223,
+        56,
+        47
+      ],
+      "maxChannelError": 0
+    },
+    {
+      "title": "光的四个区域 · 测试标记图",
+      "sourceSize": [
+        800,
+        400
+      ],
+      "pngPoint": [
+        979,
+        290
+      ],
+      "expected": [
+        25,
+        148,
+        91
+      ],
+      "actual": [
+        25,
+        148,
+        91
+      ],
+      "maxChannelError": 0
+    },
+    {
+      "title": "r3-tall.png",
+      "sourceSize": [
+        40,
+        1200
+      ],
+      "pngPoint": [
+        884,
+        548
+      ],
+      "expected": [
+        223,
+        56,
+        47
+      ],
+      "actual": [
+        223,
+        56,
+        47
+      ],
+      "maxChannelError": 0
+    },
+    {
+      "title": "r3-tall.png",
+      "sourceSize": [
+        40,
+        1200
+      ],
+      "pngPoint": [
+        996,
+        610
+      ],
+      "expected": [
+        223,
+        56,
+        47
+      ],
+      "actual": [
+        223,
+        56,
+        47
+      ],
+      "maxChannelError": 0
+    },
+    {
+      "name": "transparent crop border",
+      "point": [
+        834,
+        579
+      ],
+      "actual": [
+        255,
+        253,
+        250
+      ],
+      "expected": [
+        255,
+        253,
+        250
+      ]
+    },
+    {
+      "title": "r3-exif.jpg",
+      "sourceSize": [
+        400,
+        800
+      ],
+      "pngPoint": [
+        1148,
+        523
+      ],
+      "expected": [
+        25,
+        148,
+        91
+      ],
+      "actual": [
+        25,
+        148,
+        91
+      ],
+      "maxChannelError": 0
+    },
+    {
+      "title": "r3-exif.jpg",
+      "sourceSize": [
+        400,
+        800
+      ],
+      "pngPoint": [
+        1260,
+        635
+      ],
+      "expected": [
+        223,
+        56,
+        47
+      ],
+      "actual": [
+        223,
+        56,
+        47
+      ],
+      "maxChannelError": 0
+    }
+  ],
+  "scope": "Actual application PNG generated through UI; compares flat marker colors and oriented EXIF source. Text visually reviewed separately."
+}

@@ -1,0 +1,76 @@
+{
+  "screenshots": [
+    {
+      "width": 1440,
+      "height": 900,
+      "beforeActual": [
+        1440,
+        900
+      ],
+      "afterActual": [
+        1440,
+        900
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "beforeActual": [
+        1280,
+        720
+      ],
+      "afterActual": [
+        1280,
+        720
+      ]
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "beforeActual": [
+        375,
+        812
+      ],
+      "afterActual": [
+        375,
+        812
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "beforeActual": [
+        390,
+        844
+      ],
+      "afterActual": [
+        390,
+        844
+      ]
+    }
+  ],
+  "markerPNGBytes": 174497,
+  "markerPNGSHA256": "c487fb3241df1a1dab4c270de5457bd86fff580993b699818166a4a1af6d1684",
+  "desktopMobileIndependentPNGEqual": true,
+  "textLayerPixelChecks": [
+    {
+      "xy": [
+        100,
+        170
+      ],
+      "front": [
+        236,
+        232,
+        220
+      ],
+      "back": [
+        255,
+        253,
+        250
+      ]
+    }
+  ],
+  "creativePNGBytes": 1044061,
+  "creativeJSONBytes": 487135,
+  "scope": "File dimensions and actual export bytes/pixels; mobile is CSS iframe viewport simulation in Windows Chromium, no physical phone."
+}

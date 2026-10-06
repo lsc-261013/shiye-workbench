@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-07",
+  "localLinksChecked": 63,
+  "missingLocalLinks": [],
+  "workflowCounts": {
+    "rawAttempts": 109,
+    "superseded": 10,
+    "effective": 99,
+    "effectivePassed": 99,
+    "effectiveFailed": 0
+  },
+  "productionHTTP": 200,
+  "productionBundleMatchesDisk": true,
+  "temporaryPagesRemoved": true,
+  "helperPortsClosed": {
+    "5186": true,
+    "5188": true,
+    "5190": true
+  },
+  "artifacts": [
+    {
+      "path": "dist/index.html",
+      "bytes": 671,
+      "gzipLevel6Bytes": 475,
+      "sha256": "a9459cecdf2c61f9e454ac1675a075cb98ff72dff152c0f6d8f0856ca7778a34"
+    },
+    {
+      "path": "dist/assets/index-C6B1Y5xe.css",
+      "bytes": 47375,
+      "gzipLevel6Bytes": 10749,
+      "sha256": "27498825134ac0e99bbb5851f265eda6ad4f0d563588a3ebeb8c598bcf29f485"
+    },
+    {
+      "path": "dist/assets/index-CIv07aLn.js",
+      "bytes": 156875,
+      "gzipLevel6Bytes": 58192,
+      "sha256": "a41018e1133b6ed691cdc8e91a158c216cf59e4452b3b6601b5a2e79ec08beb1"
+    }
+  ],
+  "scope": "Final local delivery checks. No push or deployment."
+}

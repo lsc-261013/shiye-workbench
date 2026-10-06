@@ -1,0 +1,13 @@
+2026-10-07 / third round / final source implementation 2f781af8c570ea94ea7e440ae589bc8acbb5fa1b
+Completed engineering verification:
+npm run check -> PASS
+npm test -- --configLoader native -> PASS; 5 files; 35/35 tests
+npm run build -- --configLoader native -> PASS; 73 modules
+No dependencies added; package.json and package-lock.json unchanged from 6e33c18.
+Artifacts below are read directly from the final dist. Gzip uses Python's standard gzip at level 6, so exact byte count can differ slightly from Vite's reporter.
+dist/index.html: 671 bytes, gzip 475 bytes, SHA256 a9459cecdf2c61f9e454ac1675a075cb98ff72dff152c0f6d8f0856ca7778a34
+dist/assets/index-C6B1Y5xe.css: 47375 bytes, gzip 10749 bytes, SHA256 27498825134ac0e99bbb5851f265eda6ad4f0d563588a3ebeb8c598bcf29f485
+dist/assets/index-CIv07aLn.js: 156875 bytes, gzip 58192 bytes, SHA256 a41018e1133b6ed691cdc8e91a158c216cf59e4452b3b6601b5a2e79ec08beb1
+Actual UI and artifact checks: 109 raw attempts; 10 superseded with explanations; 99 effective passed, 0 effective failed. See workflow-results.json.
+Screenshot/pixel/file audits: evidence-audit.json and pixel-audit.json.
+Tests and fixture images are not included in the production build. dist is ignored by Git.

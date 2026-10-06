@@ -1,0 +1,86 @@
+[
+  {
+    "requested": {
+      "width": 1440,
+      "height": 900
+    },
+    "before": {
+      "contentWidth": 1440,
+      "height": 900,
+      "mobile": false,
+      "width": 1440
+    },
+    "after": {
+      "contentWidth": 1440,
+      "height": 900,
+      "mobile": false,
+      "width": 1440
+    },
+    "scope": "application CSS iframe viewport; controls hidden; screenshot cropped to exact viewport",
+    "baseline": "6e33c18",
+    "productionBundle": "/assets/index-CIv07aLn.js"
+  },
+  {
+    "requested": {
+      "width": 1280,
+      "height": 720
+    },
+    "before": {
+      "contentWidth": 1280,
+      "height": 720,
+      "mobile": false,
+      "width": 1280
+    },
+    "after": {
+      "contentWidth": 1280,
+      "height": 720,
+      "mobile": false,
+      "width": 1280
+    },
+    "scope": "application CSS iframe viewport; controls hidden; screenshot cropped to exact viewport",
+    "baseline": "6e33c18",
+    "productionBundle": "/assets/index-CIv07aLn.js"
+  },
+  {
+    "requested": {
+      "width": 375,
+      "height": 812
+    },
+    "before": {
+      "contentWidth": 360,
+      "height": 812,
+      "mobile": true,
+      "width": 375
+    },
+    "after": {
+      "contentWidth": 360,
+      "height": 812,
+      "mobile": true,
+      "width": 375
+    },
+    "scope": "application CSS iframe viewport; controls hidden; screenshot cropped to exact viewport",
+    "baseline": "6e33c18",
+    "productionBundle": "/assets/index-CIv07aLn.js"
+  },
+  {
+    "requested": {
+      "width": 390,
+      "height": 844
+    },
+    "before": {
+      "contentWidth": 375,
+      "height": 844,
+      "mobile": true,
+      "width": 390
+    },
+    "after": {
+      "contentWidth": 375,
+      "height": 844,
+      "mobile": true,
+      "width": 390
+    },
+    "scope": "application CSS iframe viewport; controls hidden; screenshot cropped to exact viewport",
+    "baseline": "6e33c18",
+    "productionBundle": "/assets/index-CIv07aLn.js"
+  }
+]

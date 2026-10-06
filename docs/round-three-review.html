@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  />
+  <title>拾页第三轮 · 实际运行截图与创作导出</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f7f4ed;
+      color: #30352e;
+      font:
+        15px/1.8 "Microsoft YaHei",
+        sans-serif;
+    }
+    main {
+      max-width: 1500px;
+      margin: 36px auto;
+      padding: 0 24px;
+    }
+    h1 {
+      font-size: 30px;
+      font-weight: 500;
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 500;
+      margin-top: 42px;
+    }
+    p {
+      max-width: 1050px;
+      color: #555b50;
+    }
+    a {
+      color: #a7422d;
+    }
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .phones {
+      max-width: 820px;
+    }
+    .single {
+      max-width: 1100px;
+    }
+    figure {
+      margin: 0;
+    }
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #d2d0c3;
+    }
+    figcaption {
+      margin: 8px 0 14px;
+      color: #555b50;
+    }
+    .notes {
+      max-width: 390px;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    @media (max-width: 760px) {
+      .pair {
+        grid-template-columns: 1fr;
+      }
+      main {
+        padding: 0 16px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+  <main>
+    <h1>拾页第三轮 · 实际运行截图与创作导出</h1>
+    <p>
+      2026-10-07。新增独立文字、实例裁切、多选对齐，保留第二轮轻编辑方向。这里是实际运行页面和应用生成的PNG，未用设计稿替代验收。
+    </p>
+    <nav>
+      <a href="HANDOFF-ROUND-THREE-2026-10-07.md">完整交接</a
+      ><a href="VERIFICATION.md">验证与限制</a
+      ><a href="http://127.0.0.1:4186/">本地预览</a
+      ><a href="evidence/round-three/workflow-results.json">实操原始记录</a>
+    </nav>
+    <p>
+      前图：第二轮6e33c18独立代码快照，同一原稿。后图：4186最终生产构建index-CIv07aLn.js。验收页iframe实际CSS视口设为图注尺寸，隐藏控件后按边界截图，文件尺寸审计一致。375/390手机是浏览器视口模拟，Windows滚动条占15px内容宽；未验证真机或软键盘。
+    </p>
+    <h2>桌面 · 1440 × 900</h2>
+    <div class="pair">
+      <figure>
+        <figcaption>第二轮基线：原稿保持</figcaption>
+        <img
+          src="evidence/round-three/before-editor-1440.png"
+          alt="第二轮1440桌面编辑器"
+        />
+      </figure>
+      <figure>
+        <figcaption>第三轮：添加文字与图片裁切入口</figcaption>
+        <img
+          src="evidence/round-three/after-editor-1440.png"
+          alt="第三轮1440桌面编辑器"
+        />
+      </figure>
+    </div>
+    <h2>桌面 · 1280 × 720</h2>
+    <div class="pair">
+      <figure>
+        <figcaption>第二轮</figcaption>
+        <img
+          src="evidence/round-three/before-editor-1280.png"
+          alt="第二轮1280桌面"
+        />
+      </figure>
+      <figure>
+        <figcaption>第三轮</figcaption>
+        <img
+          src="evidence/round-three/after-editor-1280.png"
+          alt="第三轮1280桌面"
+        />
+      </figure>
+    </div>
+    <h2>手机CSS视口 · 375 × 812</h2>
+    <div class="pair phones">
+      <figure>
+        <figcaption>第二轮</figcaption>
+        <img
+          src="evidence/round-three/before-editor-375.png"
+          alt="第二轮375模拟手机"
+        />
+      </figure>
+      <figure>
+        <figcaption>第三轮：可添加文字，精细裁切留在电脑</figcaption>
+        <img
+          src="evidence/round-three/after-editor-375.png"
+          alt="第三轮375模拟手机"
+        />
+      </figure>
+    </div>
+    <h2>手机CSS视口 · 390 × 844</h2>
+    <div class="pair phones">
+      <figure>
+        <figcaption>第二轮</figcaption>
+        <img
+          src="evidence/round-three/before-editor-390.png"
+          alt="第二轮390模拟手机"
+        />
+      </figure>
+      <figure>
+        <figcaption>第三轮</figcaption>
+        <img
+          src="evidence/round-three/after-editor-390.png"
+          alt="第三轮390模拟手机"
+        />
+      </figure>
+    </div>
+    <h2>创作练习 · 应用实际导出PNG</h2>
+    <p>
+      2份有来源摄影、6对象：独立标题/想法，完整建筑图与另一份实例的局部取景，室内参考。明确练习身份。右上更多可使用示例，先备份当前稿。
+    </p>
+    <figure class="single">
+      <img
+        src="evidence/round-three/creative-example.png"
+        alt="创作练习实际作品PNG"
+      />
+      <figcaption>
+        <a href="evidence/round-three/creative-example.shiye.json"
+          >可编辑JSON</a
+        >
+        · <a href="evidence/round-three/creative-example.txt">完整文字与来源</a>
+      </figcaption>
+    </figure>
+    <h2>裁切预览与极端素材</h2>
+    <div class="pair">
+      <figure>
+        <img
+          src="evidence/round-three/crop-right-half-dialog.png"
+          alt="标记图右半取景实际裁切界面"
+        />
+        <figcaption>完整原图/取景框与结果，取消不改稿</figcaption>
+      </figure>
+      <figure>
+        <img
+          src="evidence/round-three/extreme-crop-dialog.png"
+          alt="极长透明图16比9裁切界面"
+        />
+        <figcaption>40×1200透明长图，归一化区域有效</figcaption>
+      </figure>
+    </div>
+    <h2>标记工作流 · 实际导出与跨来源恢复</h2>
+    <figure class="single">
+      <img
+        src="evidence/round-three/marker-workflow.png"
+        alt="含中文标题长文标记裁切与EXIF图的完整PNG"
+      />
+      <figcaption>
+        <a href="evidence/round-three/marker-workflow.shiye.json">JSON</a> ·
+        <a href="evidence/round-three/marker-workflow.txt">TXT</a> ·
+        <a href="evidence/round-three/independent-restored.png"
+          >独立来源恢复PNG</a
+        >
+      </figcaption>
+    </figure>
+    <p>
+      桌面、375CSS视口和5188独立来源的PNG均174497字节、SHA256相同，实际查看与像素审计确认同一区域。不是仅看成功提示。新结构需新版恢复。
+    </p>
+    <h2>文字层序 · 两张真实PNG</h2>
+    <div class="pair">
+      <figure>
+        <img
+          src="evidence/round-three/text-layer-front.png"
+          alt="文字在前层的PNG"
+        />
+        <figcaption>前层</figcaption>
+      </figure>
+      <figure>
+        <img
+          src="evidence/round-three/text-layer-back.png"
+          alt="文字后移一层的PNG"
+        />
+        <figcaption>后层；撤销恢复全部层序</figcaption>
+      </figure>
+    </div>
+    <h2>手机长文 · 实际CSS视口截图</h2>
+    <figure class="notes">
+      <img
+        src="evidence/round-three/phone-long-text.png"
+        alt="手机长文就地编辑并正常滚动"
+      />
+      <figcaption>可滚动文字编辑，未验证真实软键盘</figcaption>
+    </figure>
+    <p>
+      35/35单元测试与构建通过；109次UI/产物尝试中10次已附纠正说明，99项有效通过。文件选择是工具设置真实File，导出验证Blob和下载发起，不证明OS选择窗口或磁盘落盘。前两轮GIF保留历史身份，本轮没有伪造新录像。
+    </p>
+  </main>
+</html>

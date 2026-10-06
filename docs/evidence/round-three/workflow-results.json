@@ -1,0 +1,683 @@
+{
+  "round": 3,
+  "date": "2026-10-07",
+  "scope": "Windows Chromium CUA actual UI operations and harness-captured real export Blobs; CSS iframe viewport and synthetic touch/composition events, not a physical phone or native IME.",
+  "counts": {
+    "rawAttempts": 109,
+    "superseded": 10,
+    "effective": 99,
+    "effectivePassed": 99,
+    "effectiveFailed": 0
+  },
+  "attempts": [
+    {
+      "name": "裁切取消保持完整稿",
+      "pass": true,
+      "attempt": 1,
+      "status": "effective"
+    },
+    {
+      "name": "右半图原字节与外框保持",
+      "pass": true,
+      "attempt": 2,
+      "status": "effective"
+    },
+    {
+      "name": "中文组合期间禁止文字提交",
+      "pass": true,
+      "attempt": 3,
+      "status": "effective"
+    },
+    {
+      "name": "独立文字没有伪造素材",
+      "pass": true,
+      "attempt": 4,
+      "status": "effective"
+    },
+    {
+      "name": "输入字段快捷键不改画板",
+      "pass": true,
+      "attempt": 5,
+      "status": "effective"
+    },
+    {
+      "name": "副本只增实例并独立几何",
+      "pass": true,
+      "attempt": 6,
+      "status": "effective"
+    },
+    {
+      "name": "共享图片两份裁切互不影响",
+      "pass": true,
+      "attempt": 7,
+      "status": "effective"
+    },
+    {
+      "name": "恢复仅影响当前实例",
+      "pass": true,
+      "attempt": 8,
+      "status": "effective"
+    },
+    {
+      "name": "裁切恢复完整撤销",
+      "pass": true,
+      "attempt": 9,
+      "status": "effective"
+    },
+    {
+      "name": "裁切恢复完整重做",
+      "pass": true,
+      "attempt": 10,
+      "status": "effective"
+    },
+    {
+      "name": "超长文字不静默截断",
+      "pass": true,
+      "attempt": 11,
+      "status": "effective"
+    },
+    {
+      "name": "中文多段与安全文本完整保存",
+      "pass": true,
+      "attempt": 12,
+      "status": "effective"
+    },
+    {
+      "name": "新图加入不重排原内容",
+      "pass": true,
+      "attempt": 13,
+      "status": "effective"
+    },
+    {
+      "name": "混排整理保留文字样式与裁切",
+      "pass": true,
+      "attempt": 14,
+      "status": "superseded",
+      "correction": "首次整理被拒绝，字段保持只能证明拒绝保护；后续“修正后八元素混排实际发生”和整项撤销/重做通过。"
+    },
+    {
+      "name": "混排整理整项撤销",
+      "pass": false,
+      "attempt": 15,
+      "status": "superseded",
+      "correction": "首次8元素整理被拒绝，撤销实际对应上传；改进混排策略后重新执行并通过。"
+    },
+    {
+      "name": "合法新备份导入精确一致",
+      "pass": true,
+      "attempt": 16,
+      "status": "effective"
+    },
+    {
+      "name": "修正后八元素混排实际发生",
+      "pass": true,
+      "attempt": 17,
+      "status": "effective"
+    },
+    {
+      "name": "修正后保留文字与独立裁切",
+      "pass": true,
+      "attempt": 18,
+      "status": "effective"
+    },
+    {
+      "name": "修正后混排整理整项撤销",
+      "pass": true,
+      "attempt": 19,
+      "status": "effective"
+    },
+    {
+      "name": "修正后混排整理完整重做",
+      "pass": true,
+      "attempt": 20,
+      "status": "effective"
+    },
+    {
+      "name": "多选不显示单份共享笔记",
+      "pass": true,
+      "attempt": 21,
+      "status": "effective"
+    },
+    {
+      "name": "两项均分明确禁用",
+      "pass": true,
+      "attempt": 22,
+      "status": "effective"
+    },
+    {
+      "name": "UI 左对齐只改变选区位置",
+      "pass": true,
+      "attempt": 23,
+      "status": "effective"
+    },
+    {
+      "name": "UI 左对齐完整撤销",
+      "pass": true,
+      "attempt": 24,
+      "status": "effective"
+    },
+    {
+      "name": "UI 水平居中只改变选区位置",
+      "pass": true,
+      "attempt": 25,
+      "status": "effective"
+    },
+    {
+      "name": "UI 水平居中完整撤销",
+      "pass": true,
+      "attempt": 26,
+      "status": "effective"
+    },
+    {
+      "name": "UI 右对齐只改变选区位置",
+      "pass": true,
+      "attempt": 27,
+      "status": "effective"
+    },
+    {
+      "name": "UI 右对齐完整撤销",
+      "pass": true,
+      "attempt": 28,
+      "status": "effective"
+    },
+    {
+      "name": "UI 顶部对齐只改变选区位置",
+      "pass": true,
+      "attempt": 29,
+      "status": "effective"
+    },
+    {
+      "name": "UI 垂直居中只改变选区位置",
+      "pass": true,
+      "attempt": 30,
+      "status": "effective"
+    },
+    {
+      "name": "UI 垂直居中完整撤销",
+      "pass": true,
+      "attempt": 31,
+      "status": "effective"
+    },
+    {
+      "name": "UI 底部对齐只改变选区位置",
+      "pass": true,
+      "attempt": 32,
+      "status": "effective"
+    },
+    {
+      "name": "UI 底部对齐完整撤销",
+      "pass": true,
+      "attempt": 33,
+      "status": "effective"
+    },
+    {
+      "name": "三项水平均分间距正确",
+      "pass": true,
+      "attempt": 34,
+      "status": "effective"
+    },
+    {
+      "name": "负均分间距拒绝并保留稿",
+      "pass": false,
+      "attempt": 35,
+      "status": "superseded",
+      "correction": "初次选区实际有正间距；先顶部对齐形成负间距后，实际拒绝与原稿保护通过。"
+    },
+    {
+      "name": "三项垂直均分间距正确",
+      "pass": true,
+      "attempt": 36,
+      "status": "effective"
+    },
+    {
+      "name": "实际负间距被拒绝并保持原稿",
+      "pass": true,
+      "attempt": 37,
+      "status": "effective"
+    },
+    {
+      "name": "均分两步完整撤销恢复",
+      "pass": true,
+      "attempt": 38,
+      "status": "effective"
+    },
+    {
+      "name": "取消多选不产生内容变更",
+      "pass": true,
+      "attempt": 39,
+      "status": "effective"
+    },
+    {
+      "name": "真实指针移动文字不改内容",
+      "pass": true,
+      "attempt": 40,
+      "status": "effective"
+    },
+    {
+      "name": "文字指针移动一次撤销",
+      "pass": true,
+      "attempt": 41,
+      "status": "effective"
+    },
+    {
+      "name": "文字缩框保持字号并完整重算高度",
+      "pass": true,
+      "attempt": 42,
+      "status": "effective"
+    },
+    {
+      "name": "文字副本内容和几何独立",
+      "pass": true,
+      "attempt": 43,
+      "status": "effective"
+    },
+    {
+      "name": "编辑文字副本不改原对象",
+      "pass": true,
+      "attempt": 44,
+      "status": "effective"
+    },
+    {
+      "name": "文字删除不丢参考图",
+      "pass": true,
+      "attempt": 45,
+      "status": "effective"
+    },
+    {
+      "name": "文字删除完整撤销",
+      "pass": true,
+      "attempt": 46,
+      "status": "effective"
+    },
+    {
+      "name": "EXIF方向裁切归一化安全",
+      "pass": true,
+      "attempt": 47,
+      "status": "effective"
+    },
+    {
+      "name": "极长透明图常用比例能提交",
+      "pass": true,
+      "attempt": 48,
+      "status": "effective"
+    },
+    {
+      "name": "共享替换重置两份裁切但保持布局",
+      "pass": true,
+      "attempt": 49,
+      "status": "effective"
+    },
+    {
+      "name": "共享替换撤销恢复图片和所有裁切",
+      "pass": true,
+      "attempt": 50,
+      "status": "effective"
+    },
+    {
+      "name": "真实JSON含所有文字裁切并精确一致",
+      "pass": true,
+      "attempt": 51,
+      "status": "effective"
+    },
+    {
+      "name": "真实TXT包含完整多段和原始中文来源",
+      "pass": true,
+      "attempt": 52,
+      "status": "effective"
+    },
+    {
+      "name": "作品预览隐藏选择与工具",
+      "pass": true,
+      "attempt": 53,
+      "status": "effective"
+    },
+    {
+      "name": "新稿刷新恢复全部样式裁切几何",
+      "pass": true,
+      "attempt": 54,
+      "status": "effective"
+    },
+    {
+      "name": "PNG分段捕获字节与真实Blob一致",
+      "pass": true,
+      "attempt": 55,
+      "status": "effective"
+    },
+    {
+      "name": "跨来源恢复版本2全部字段一致",
+      "pass": true,
+      "attempt": 56,
+      "status": "superseded",
+      "correction": "旧helper闭包指向主源，不能证明独立源；明确tab参数后独立源JSON与PNG复验通过。"
+    },
+    {
+      "name": "一段文字加11参考可整理",
+      "pass": false,
+      "attempt": 57,
+      "status": "superseded",
+      "correction": "验收工具遮住导入确认，未真正加载目标稿；关闭工具后12元素真实复验通过。"
+    },
+    {
+      "name": "修正验收遮挡后文字加11参考可整理",
+      "pass": true,
+      "attempt": 58,
+      "status": "effective"
+    },
+    {
+      "name": "含文字13元素拒绝且原稿精确保持",
+      "pass": true,
+      "attempt": 59,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 marker-workflow.png 字节完整",
+      "pass": true,
+      "attempt": 60,
+      "status": "effective"
+    },
+    {
+      "name": "实际跨源导入确认后所有字段一致",
+      "pass": true,
+      "attempt": 61,
+      "status": "superseded",
+      "correction": "旧helper闭包指向主源，范围错误；“绑定正确标签后的独立源恢复一致”覆盖。"
+    },
+    {
+      "name": "跨源刷新后界面与数据恢复一致",
+      "pass": true,
+      "attempt": 62,
+      "status": "superseded",
+      "correction": "旧helper闭包指向主源，范围错误；明确tab参数后的独立源刷新、JSON与PNG核对覆盖。"
+    },
+    {
+      "name": "绑定正确标签后的独立源恢复一致",
+      "pass": true,
+      "attempt": 63,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 independent-restored.png 格式与字节完整",
+      "pass": true,
+      "attempt": 64,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 marker-workflow.png 格式与字节完整",
+      "pass": true,
+      "attempt": 65,
+      "status": "effective"
+    },
+    {
+      "name": "正确独立来源的PNG字节相同",
+      "pass": true,
+      "attempt": 66,
+      "status": "effective"
+    },
+    {
+      "name": "版本1备份实际导入原样保持",
+      "pass": true,
+      "attempt": 67,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 save-failure-memory.shiye.json 格式与字节完整",
+      "pass": true,
+      "attempt": 68,
+      "status": "effective"
+    },
+    {
+      "name": "新结构保存失败仍可备份完整内存稿",
+      "pass": true,
+      "attempt": 69,
+      "status": "effective"
+    },
+    {
+      "name": "升级保存失败旧存储原样保护",
+      "pass": true,
+      "attempt": 70,
+      "status": "effective"
+    },
+    {
+      "name": "恢复保存后新文字完整持久化",
+      "pass": true,
+      "attempt": 71,
+      "status": "effective"
+    },
+    {
+      "name": "坏文件导入保留现有新结构原稿",
+      "pass": true,
+      "attempt": 72,
+      "status": "effective"
+    },
+    {
+      "name": "无文字空位时原布局与内容保持",
+      "pass": true,
+      "attempt": 73,
+      "status": "effective"
+    },
+    {
+      "name": "未知版本不丢对象或覆盖原稿",
+      "pass": true,
+      "attempt": 74,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 text-layer-front.png 格式与字节完整",
+      "pass": true,
+      "attempt": 75,
+      "status": "effective"
+    },
+    {
+      "name": "文字后移只改变层序",
+      "pass": true,
+      "attempt": 76,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 text-layer-back.png 格式与字节完整",
+      "pass": true,
+      "attempt": 77,
+      "status": "effective"
+    },
+    {
+      "name": "实际PNG反映文字叠放顺序",
+      "pass": true,
+      "attempt": 78,
+      "status": "effective"
+    },
+    {
+      "name": "文字层级一次撤销完整恢复",
+      "pass": true,
+      "attempt": 79,
+      "status": "effective"
+    },
+    {
+      "name": "375手机可添加与提交独立文字",
+      "pass": true,
+      "attempt": 80,
+      "status": "superseded",
+      "correction": "这次仍处于桌面布局；后续“真实375CSS视口文字新增可保存”及手机轻编辑复验覆盖。"
+    },
+    {
+      "name": "手机验收实际应用视口为375",
+      "pass": false,
+      "attempt": 81,
+      "status": "superseded",
+      "correction": "把375 CSS viewport与扣除15px桌面滚动条后的360px内容宽混淆；后续window.innerWidth=375且手机模式生效。"
+    },
+    {
+      "name": "手机CSS视口实际375且手机布局生效",
+      "pass": true,
+      "attempt": 82,
+      "status": "effective"
+    },
+    {
+      "name": "真实375CSS视口文字新增可保存",
+      "pass": true,
+      "attempt": 83,
+      "status": "effective"
+    },
+    {
+      "name": "手机隐藏自由拖缩和精细裁切",
+      "pass": true,
+      "attempt": 84,
+      "status": "effective"
+    },
+    {
+      "name": "手机切换保护保留当前文字",
+      "pass": true,
+      "attempt": 85,
+      "status": "effective"
+    },
+    {
+      "name": "手机文字删除撤销完整恢复",
+      "pass": true,
+      "attempt": 86,
+      "status": "effective"
+    },
+    {
+      "name": "手机裁切结果正确并提示电脑取景",
+      "pass": true,
+      "attempt": 87,
+      "status": "effective"
+    },
+    {
+      "name": "模拟touch不会改变几何",
+      "pass": true,
+      "attempt": 88,
+      "status": "effective"
+    },
+    {
+      "name": "手机共享替换更新原图并重置实例裁切",
+      "pass": true,
+      "attempt": 89,
+      "status": "effective"
+    },
+    {
+      "name": "手机替换撤销还原全部裁切",
+      "pass": true,
+      "attempt": 90,
+      "status": "effective"
+    },
+    {
+      "name": "手机参考移除撤销不退化",
+      "pass": true,
+      "attempt": 91,
+      "status": "effective"
+    },
+    {
+      "name": "手机上传成功且原布局不动",
+      "pass": true,
+      "attempt": 92,
+      "status": "effective"
+    },
+    {
+      "name": "手机新增链接完整保存",
+      "pass": true,
+      "attempt": 93,
+      "status": "effective"
+    },
+    {
+      "name": "手机明确整理保留文字和裁切",
+      "pass": true,
+      "attempt": 94,
+      "status": "effective"
+    },
+    {
+      "name": "手机整理撤销完整还原",
+      "pass": true,
+      "attempt": 95,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 phone-light-edit.shiye.json 格式与字节完整",
+      "pass": true,
+      "attempt": 96,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 marker-workflow-mobile.png 格式与字节完整",
+      "pass": true,
+      "attempt": 97,
+      "status": "effective"
+    },
+    {
+      "name": "手机同一稿PNG与桌面字节相同",
+      "pass": true,
+      "attempt": 98,
+      "status": "effective"
+    },
+    {
+      "name": "保存并复制使用已提交文字",
+      "pass": true,
+      "attempt": 99,
+      "status": "effective"
+    },
+    {
+      "name": "复制撤销不会撤掉前一笔文字保存",
+      "pass": true,
+      "attempt": 100,
+      "status": "effective"
+    },
+    {
+      "name": "保存并整理保留最新共享笔记",
+      "pass": true,
+      "attempt": 101,
+      "status": "effective"
+    },
+    {
+      "name": "内置创作练习是独立示例且结构完整",
+      "pass": true,
+      "attempt": 102,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 creative-example.png 格式与字节完整",
+      "pass": true,
+      "attempt": 103,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 creative-example.shiye.json 格式与字节完整",
+      "pass": true,
+      "attempt": 104,
+      "status": "effective"
+    },
+    {
+      "name": "捕获 creative-example.txt 格式与字节完整",
+      "pass": true,
+      "attempt": 105,
+      "status": "effective"
+    },
+    {
+      "name": "创作练习真实JSON精确回读",
+      "pass": true,
+      "attempt": 106,
+      "status": "effective"
+    },
+    {
+      "name": "生产4186加载最终构建",
+      "pass": true,
+      "attempt": 107,
+      "status": "effective"
+    },
+    {
+      "name": "生产视口 1440实际尺寸",
+      "pass": false,
+      "attempt": 108,
+      "status": "superseded",
+      "correction": "浏览器viewport capability对既有目标未可靠生效；用实际iframe CSS viewport重新取得四组对照，并审计精确尺寸。"
+    },
+    {
+      "name": "生产原始版本1草稿完整不变",
+      "pass": true,
+      "attempt": 109,
+      "status": "effective"
+    }
+  ],
+  "notes": [
+    "UI/artifact assertions are not Vitest unit tests.",
+    "All superseded attempts are retained with their original pass/fail outcome.",
+    "Final screenshot dimensions, independent PNG equality and pixel checks are separately recorded in evidence-audit.json and pixel-audit.json."
+  ]
+}

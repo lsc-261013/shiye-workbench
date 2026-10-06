@@ -1,0 +1,95 @@
+{
+  "url": "http://127.0.0.1:4186/",
+  "bundle": "/assets/index-CIv07aLn.js",
+  "originalUnchanged": true,
+  "originalVersion": 1,
+  "originalItems": 5,
+  "originalBackupBytes": 424337,
+  "backupPath": "C:/Users/27835/Documents/Codex/2026-09-17/inspiration-workbench/work/shiye-before-round-three.shiye.json",
+  "dimensions": [
+    {
+      "requested": {
+        "width": 1440,
+        "height": 900
+      },
+      "before": {
+        "contentWidth": 1440,
+        "height": 900,
+        "mobile": false,
+        "width": 1440
+      },
+      "after": {
+        "contentWidth": 1440,
+        "height": 900,
+        "mobile": false,
+        "width": 1440
+      },
+      "scope": "actual CSS viewport inside iframe; browser screenshot cropped to that viewport",
+      "baseline": "6e33c18",
+      "productionBundle": "/assets/index-CIv07aLn.js"
+    },
+    {
+      "requested": {
+        "width": 1280,
+        "height": 720
+      },
+      "before": {
+        "contentWidth": 1280,
+        "height": 720,
+        "mobile": false,
+        "width": 1280
+      },
+      "after": {
+        "contentWidth": 1280,
+        "height": 720,
+        "mobile": false,
+        "width": 1280
+      },
+      "scope": "actual CSS viewport inside iframe; browser screenshot cropped to that viewport",
+      "baseline": "6e33c18",
+      "productionBundle": "/assets/index-CIv07aLn.js"
+    },
+    {
+      "requested": {
+        "width": 375,
+        "height": 812
+      },
+      "before": {
+        "contentWidth": 360,
+        "height": 812,
+        "mobile": true,
+        "width": 375
+      },
+      "after": {
+        "contentWidth": 360,
+        "height": 812,
+        "mobile": true,
+        "width": 375
+      },
+      "scope": "actual CSS viewport inside iframe; browser screenshot cropped to that viewport",
+      "baseline": "6e33c18",
+      "productionBundle": "/assets/index-CIv07aLn.js"
+    },
+    {
+      "requested": {
+        "width": 390,
+        "height": 844
+      },
+      "before": {
+        "contentWidth": 375,
+        "height": 844,
+        "mobile": true,
+        "width": 390
+      },
+      "after": {
+        "contentWidth": 375,
+        "height": 844,
+        "mobile": true,
+        "width": 390
+      },
+      "scope": "actual CSS viewport inside iframe; browser screenshot cropped to that viewport",
+      "baseline": "6e33c18",
+      "productionBundle": "/assets/index-CIv07aLn.js"
+    }
+  ]
+}

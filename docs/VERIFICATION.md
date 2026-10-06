@@ -1,6 +1,46 @@
 # 验证与限制记录
 
-## 2026-10-06 第二轮：当前验收
+## 2026-10-07 第三轮：当前验收
+
+范围为独立文字、实例裁切、多选对齐和完整数据导出；起点`6e33c18`，实现`2f781af`，分支`experience/round-three-2026-10-07`。下方第二轮及更早记录均为历史。完整交接见[HANDOFF-ROUND-THREE-2026-10-07.md](HANDOFF-ROUND-THREE-2026-10-07.md)。
+
+### 工程检查
+
+`npm run check`通过；`npm test -- --configLoader native`5文件35/35通过；`npm run build -- --configLoader native`73模块通过。HTML/CSS/JS为0.67/47.38/156.88kB，标准gzip level6复核为0.48/10.75/58.19kB；最终JS`index-CIv07aLn.js`。无新增依赖，测试工具/标记图不进入生产构建。记录与精确字节见[evidence/round-three/engineering-results.txt](evidence/round-three/engineering-results.txt)。
+
+相比第二轮新增12项测试：v1原样与v2往返、未知/非法结构拒绝、中文换行与安全文本/超长保护、原始快照同事务与失败回滚、独立裁切区域/极端比例、共享替换及整项历史、选区对齐/均分/数量/负间距、复制空位与混排容量、PNG实际源区域与文字层序。保留原测试，未为CSS做实现镜像测试。
+
+### 实际操作与产物
+
+内置Chromium，破坏性流程在5186/5188隔离来源；原4186稿仅只读比对与非内容操作。[workflow-results.json](evidence/round-three/workflow-results.json)保留109次UI/产物断言尝试，其中10次标记superseded并解释修正，99项有效通过。这个数不是自动测试数量，也不代表99项独立用户功能。
+
+| 范围          | 真实结论                                                                                                                          | 证据                                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| 文字/输入保护 | 两标题与中文多段；超长/越界保留；组合事件禁提交；Delete/方向键/Ctrl+Z不误改画板；切换保护与保存后复制/整理读最新稿                | workflow-results.json、marker-workflow.txt                            |
+| 文字几何/历史 | 实际指针移动/缩框；字号保持、全文重算；副本编辑独立，删除/撤销、层级/撤销准确                                                     | text-layer-front.png、text-layer-back.png                             |
+| 裁切          | 取消保持；同图左右半取景独立；恢复/撤销/重做；EXIF6 JPEG方向；40×1200透明图16:9；共享替换重置全部相关裁切，撤销还原               | crop-right-half-dialog.png、extreme-crop-dialog.png、pixel-audit.json |
+| 多选          | 六种对齐仅改选区位置；两种均分符合间距；2项均分禁用、真实负间距拒绝；取消不改内容，整项撤销                                       | workflow-results.json                                                 |
+| 整理/容量     | 8对象混排实际重排、撤销/重做完整；文字不缩字号，裁切不丢；含文字12通过、13原样拒绝                                                | capacity12-arranged.shiye.json、capacity13-preserved.shiye.json       |
+| 版本/失败     | v1实际导入原样、v2刷新与独立源恢复逐字段一致；未知版本/坏文件拒绝；升级保存失败保护旧存储，内存稿可导出，恢复后重试               | independent-restored.shiye.json、save-failure-memory.shiye.json       |
+| 手机轻编辑    | 真正375 CSS iframe视口下新增/改文字、保护、删除撤销；替换/移除撤销、上传/链接、整理/导出；合成touch不改几何；无精细裁切/多选/拖缩 | phone-light-edit.shiye.json、phone-long-text.png                      |
+| 完整导出      | 真实PNG/TXT/JSON Blob；桌面/手机/独立来源PNG字节相同，TXT保留全文与原始中文来源，JSON逐字段相同                                   | marker-workflow*、independent-restored*、evidence-audit.json          |
+| 最终生产      | 4186实际加载最终bundle，原version1/5对象草稿完整字符串未变，四组前后运行截图同尺寸                                                | production-smoke.json、viewport-metrics.json                          |
+
+标记PNG均1600×1000、174497字节，SHA-256为`c487fb3241df1a1dab4c270de5457bd86fff580993b699818166a4a1af6d1684`。9个裁切像素审计通过，覆盖左右原图区域、EXIF方向、透明边缘；层级图(100,170)前层RGB(236,232,220)、后层(255,253,250)，实际PNG反映层序。摄影创作示例PNG1044061字节、JSON487135字节，已实际打开/导出并亲看。
+
+### 截图方法、修复与验证边界
+
+四组为1440×900、1280×720、375×812、390×844；前图使用`6e33c18`独立代码快照与同一原稿，后图运行4186最终生产构建。通过验收页的真实iframe CSS viewport设置尺寸、隐藏验收控件并裁到精确边界，文件宽高审计一致。手机内容宽扣除Windows Chromium15px滚动条为360/375，但window.innerWidth为375/390，确实触发手机布局。不是拿桌面截图缩小代替响应式。
+
+产品修复：混排最初无法容纳8对象，改为保持文字阅读尺寸、尝试适当图片外框；中文标点单独换行与短英文拆词修正；保存并继续立即复制/整理曾读旧props，等待nextTick后执行；异步图像尺寸用请求序号避免旧结果覆盖当前裁切。修复均针对真实现象复验。
+
+采集纠正：早期闭包helper仍指主标签，未证明跨源；已改为明确tab参数，重新导入/刷新/读完整JSON并核对独立来源PNG。工具遮住确认、内容宽与视口宽混淆、browser viewport override未生效等原始尝试保留并退役，不写成产品bug或最终通过。详见workflow-results.json。
+
+实体手机、真实中文IME/软键盘、Safari、跨平台字体未验证。文件选择由工具设真实File并派发change，未证明OS选择窗口；PNG/TXT/JSON证据验证实际Blob与下载发起，未证明用户下载目录落盘。故障为注入，未真实耗尽配额。没有新增位置动画，不伪造第三轮录像；前两轮动效证据维持历史范围。未重新进行依赖漏洞审计或性能测试。
+
+真实旧稿备份在工程外work目录，未加入Git；新版可读v1，含新内容的v2需新版。回退先保留当前v2和升级前v1，另目录/4187看第二轮快照，不能让旧代码在原来源覆盖新稿。
+
+## 2026-10-06 第二轮（历史）
 
 只按第二轮附件执行，起点 `5ee33ef`；分支 `experience/round-two-2026-10-06`。当前状态见 `STATUS.md`，完整交接见 `HANDOFF-ROUND-TWO-2026-10-06.md`。下方第一轮和首版均为历史快照。
 
