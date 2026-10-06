@@ -1,13 +1,26 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from "vue";
 import BoardCanvas from "./BoardCanvas.vue";
 import AssetLibrary from "./AssetLibrary.vue";
 import SelectionInspector from "./SelectionInspector.vue";
+import EditorToolbar from "./EditorToolbar.vue";
 import ExportPanel from "./ExportPanel.vue";
+import ImageViewer from "./ImageViewer.vue";
 import Modal from "./Modal.vue";
 import Icon from "./Icon.vue";
+import { useNotesDraft } from "../composables/useNotesDraft";
+import { useLayoutActions } from "../composables/useLayoutActions";
+import { MAX_AUTO_ITEMS } from "../lib/layout";
 import { isTextInteraction } from "../lib/keyboard";
-import { type Board, type Asset, clone, uid, WIDTH, HEIGHT } from "../types";
+import { clone, type Board, type Asset } from "../types";
+
 const props = defineProps<{
   board: Board;
   saveState: string;
@@ -24,7 +37,6 @@ const emit = defineEmits<{
   home: [];
   upload: [files: File[]];
   replace: [assetId: string, file: File];
-  details: [a: Asset];
   link: [];
   png: [];
   text: [];
@@ -38,14 +50,15 @@ const emit = defineEmits<{
 const selected = ref(""),
   focusedAsset = ref(""),
   preview = ref(false),
-  sidebar = ref(true),
+  library = ref(false),
   mobile = ref(false),
   exporting = ref(false);
+const viewer = ref<Asset>(),
+  pendingAction = ref<(() => void) | null>(null);
 const uploadInput = ref<HTMLInputElement>(),
-  replaceInput = ref<HTMLInputElement>(),
-  more = ref<HTMLDetailsElement>();
-let media: MediaQueryList;
-let replacementTarget = "";
+  replaceInput = ref<HTMLInputElement>();
+let media: MediaQueryList,
+  replacementTarget = "";
 const selectedItem = computed(() =>
   props.board.items.find((p) => p.id === selected.value),
 );
@@ -57,38 +70,213 @@ const selectedAsset = computed(() =>
 const selectedIndex = computed(() =>
   props.board.items.findIndex((p) => p.id === selected.value),
 );
-const referenceCount = computed(
+const references = computed(
   () =>
     props.board.items.filter((p) => p.assetId === selectedAsset.value?.id)
       .length,
 );
-function select(id: string) {
+const notes = useNotesDraft(
+  () => selectedAsset.value,
+  () => props.board,
+  (b) => emit("change", b),
+);
+const { draft, dirty, error: noteError, composing } = notes;
+function chooseRaw(id: string, assetId: string) {
   selected.value = id;
-  focusedAsset.value =
-    props.board.items.find((p) => p.id === id)?.assetId || "";
+  focusedAsset.value = assetId;
+}
+const layout = useLayoutActions(
+  () => props.board,
+  (b) => emit("change", b),
+  chooseRaw,
+  (message) => emit("notify", message),
+  () => (library.value = false),
+);
+const { working, noSpace } = layout;
+const busy = computed(() => props.busy || working.value);
+const busyLabel = computed(() =>
+  working.value ? "正在计算排版…" : props.busyLabel,
+);
+function run(action: () => void) {
+  if (busy.value || pendingAction.value) return;
+  if (dirty.value) pendingAction.value = action;
+  else action();
+}
+function continueAction(save: boolean) {
+  const action = pendingAction.value;
+  if (save && !notes.save()) {
+    pendingAction.value = null;
+    return;
+  }
+  if (!save) notes.reset();
+  pendingAction.value = null;
+  action?.();
+}
+function saveNotes() {
+  if (notes.save()) emit("notify", "笔记已更新，可撤销。");
+}
+function select(id: string) {
+  if (id === selected.value && (id || !focusedAsset.value)) return;
+  run(() =>
+    chooseRaw(id, props.board.items.find((p) => p.id === id)?.assetId || ""),
+  );
 }
 function choose(a: Asset) {
-  focusedAsset.value = a.id;
-  selected.value = props.board.items.find((p) => p.assetId === a.id)?.id || "";
-  if (mobile.value) sidebar.value = false;
+  run(() => {
+    chooseRaw(
+      props.board.items.find((p) => p.assetId === a.id)?.id || "",
+      a.id,
+    );
+    library.value = false;
+    nextTick(() => {
+      if (mobile.value)
+        document
+          .querySelector(selectedItem.value ? ".board-viewport" : ".note-panel")
+          ?.scrollIntoView({ block: "nearest" });
+    });
+  });
+}
+function showImage(assetId: string) {
+  const a = props.board.assets.find((a) => a.id === assetId);
+  if (!a?.data) return;
+  const open = () => {
+    chooseRaw(
+      props.board.items.find((p) => p.assetId === a.id)?.id || "",
+      a.id,
+    );
+    viewer.value = a;
+  };
+  if (selectedAsset.value?.id === assetId) viewer.value = a;
+  else run(open);
+}
+function add(id: string, x?: number, y?: number) {
+  run(() => {
+    void layout.add(id, x, y);
+  });
+}
+function arrange() {
+  run(() => {
+    void layout.arrange();
+  });
+}
+function remove() {
+  run(() => {
+    const b = clone(props.board);
+    b.items = b.items.filter((p) => p.id !== selected.value);
+    emit("change", b);
+    selected.value = "";
+    emit("notify", "已从画板移除，参考仍保留在素材区，可撤销。");
+  });
+}
+function layer(direction: number) {
+  run(() => {
+    const b = clone(props.board),
+      i = selectedIndex.value,
+      j = i + direction;
+    if (i < 0 || j < 0 || j >= b.items.length) return;
+    const [p] = b.items.splice(i, 1);
+    b.items.splice(j, 0, p!);
+    emit("change", b);
+  });
+}
+function rename(e: Event) {
+  const b = clone(props.board);
+  b.title = (e.target as HTMLInputElement).value.trim() || "未命名视觉方案";
+  emit("change", b);
+}
+function upload() {
+  run(() => {
+    library.value = false;
+    uploadInput.value?.click();
+  });
+}
+function link() {
+  run(() => {
+    library.value = false;
+    emit("link");
+  });
+}
+function selectedFiles(e: Event) {
+  const input = e.target as HTMLInputElement;
+  const files = Array.from(input.files || []);
+  input.value = "";
+  if (files.length) run(() => emit("upload", files));
+}
+function replace() {
+  run(() => {
+    replacementTarget = selectedAsset.value?.id || "";
+    replaceInput.value?.click();
+  });
+}
+function replaced(e: Event) {
+  const input = e.target as HTMLInputElement,
+    file = input.files?.[0],
+    target = replacementTarget;
+  input.value = "";
+  replacementTarget = "";
+  if (file && target) run(() => emit("replace", target, file));
+}
+function openExport() {
+  run(() => {
+    emit("prepareExport");
+    exporting.value = true;
+  });
+}
+function keyboard(e: KeyboardEvent) {
+  if (
+    document.querySelector("dialog[open]") ||
+    isTextInteraction(e.target, e.isComposing) ||
+    preview.value ||
+    busy.value
+  )
+    return;
+  if (e.key === "Escape") {
+    select("");
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+    e.preventDefault();
+    run(() => (e.shiftKey ? emit("redo") : emit("undo")));
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
+    e.preventDefault();
+    run(() => emit("redo"));
+  }
+  if (e.key === "Delete" && selectedItem.value) {
+    e.preventDefault();
+    remove();
+  }
+}
+function beforeUnload(e: BeforeUnloadEvent) {
+  if (dirty.value || working.value) e.preventDefault();
 }
 function mediaChange() {
   mobile.value = media.matches;
-  sidebar.value = !mobile.value;
   if (mobile.value && !selectedAsset.value && props.board.items[0])
-    select(props.board.items[0].id);
+    chooseRaw(props.board.items[0].id, props.board.items[0].assetId);
 }
 watch(
   () => props.board,
-  () => {
-    if (selected.value && !selectedItem.value) selected.value = "";
+  (b, old) => {
+    const added = b.assets.find(
+      (a) => !old.assets.some((previous) => previous.id === a.id),
+    );
+    if (added && !dirty.value) {
+      chooseRaw(
+        b.items.find((p) => p.assetId === added.id)?.id || "",
+        added.id,
+      );
+      library.value = false;
+    }
+    if (selected.value && !b.items.some((p) => p.id === selected.value))
+      selected.value = "";
     if (
       focusedAsset.value &&
-      !props.board.assets.some((a) => a.id === focusedAsset.value)
+      !b.assets.some((a) => a.id === focusedAsset.value)
     )
       focusedAsset.value = "";
-    if (mobile.value && !selectedAsset.value && props.board.items[0])
-      select(props.board.items[0].id);
+    if (mobile.value && !selectedAsset.value && b.items[0])
+      chooseRaw(b.items[0].id, b.items[0].assetId);
   },
 );
 onMounted(() => {
@@ -98,249 +286,61 @@ onMounted(() => {
   mediaChange();
   media.addEventListener("change", mediaChange);
   window.addEventListener("keydown", keyboard);
-  window.addEventListener("click", outsideMenu);
+  window.addEventListener("beforeunload", beforeUnload);
 });
 onBeforeUnmount(() => {
   media.removeEventListener("change", mediaChange);
   window.removeEventListener("keydown", keyboard);
-  window.removeEventListener("click", outsideMenu);
+  window.removeEventListener("beforeunload", beforeUnload);
 });
-function outsideMenu(e: MouseEvent) {
-  if (more.value && !more.value.contains(e.target as Node))
-    more.value.open = false;
-}
-function keyboard(e: KeyboardEvent) {
-  if (
-    document.querySelector("dialog[open]") ||
-    isTextInteraction(e.target, e.isComposing) ||
-    preview.value
-  )
-    return;
-  if (e.key === "Escape") {
-    select("");
-    if (more.value) more.value.open = false;
-    return;
-  }
-  if (props.busy) return;
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
-    e.preventDefault();
-    e.shiftKey ? emit("redo") : emit("undo");
-  }
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
-    e.preventDefault();
-    emit("redo");
-  }
-  if (e.key === "Delete" && selectedItem.value) {
-    e.preventDefault();
-    remove();
-  }
-}
-function add(
-  id: string,
-  x = 80 + (props.board.items.length % 4) * 70,
-  y = 150 + (props.board.items.length % 4) * 60,
-) {
-  if (props.busy) return;
-  if (props.board.items.length >= 150) {
-    emit("notify", "画板最多放置 150 个元素，先移除一个再添加。");
-    return;
-  }
-  const b = clone(props.board);
-  const p = {
-    id: uid(),
-    assetId: id,
-    x: Math.max(0, Math.min(WIDTH - 400, x)),
-    y: Math.max(100, Math.min(HEIGHT - 325, y)),
-    w: 400,
-    h: 300,
-  };
-  b.items.push(p);
-  emit("change", b);
-  selected.value = p.id;
-  focusedAsset.value = id;
-  if (mobile.value) sidebar.value = false;
-  emit("notify", "已加入画板，可继续编排或补充借鉴点。");
-}
-function remove() {
-  const b = clone(props.board);
-  b.items = b.items.filter((p) => p.id !== selected.value);
-  emit("change", b);
-  selected.value = "";
-  emit("notify", "已从画板移除，素材仍在；可以撤销。");
-}
-function layer(direction: number) {
-  const b = clone(props.board),
-    i = selectedIndex.value,
-    j = i + direction;
-  if (i >= 0 && j >= 0 && j < b.items.length) {
-    const [p] = b.items.splice(i, 1);
-    b.items.splice(j, 0, p!);
-    emit("change", b);
-    emit("notify", direction > 0 ? "已前移一层。" : "已后移一层。");
-  }
-}
-function rename(e: Event) {
-  const b = clone(props.board);
-  b.title = (e.target as HTMLInputElement).value.trim() || "未命名视觉方案";
-  emit("change", b);
-}
-function selectedFiles(e: Event) {
-  const t = e.target as HTMLInputElement;
-  emit("upload", Array.from(t.files || []));
-  t.value = "";
-}
-function requestReplacement() {
-  replacementTarget = selectedAsset.value?.id || "";
-  replaceInput.value?.click();
-}
-function replaced(e: Event) {
-  const t = e.target as HTMLInputElement,
-    f = t.files?.[0];
-  if (f && replacementTarget) emit("replace", replacementTarget, f);
-  t.value = "";
-  replacementTarget = "";
-}
-function showDetails(id: string) {
-  const a = props.board.assets.find((a) => a.id === id);
-  if (a) emit("details", a);
-}
-function openExport() {
-  emit("prepareExport");
-  exporting.value = true;
-}
-function menuAction(action: () => void) {
-  if (more.value) more.value.open = false;
-  action();
-}
 </script>
 <template>
-  <div class="editor" :class="{ 'is-preview': preview, 'is-mobile': mobile }">
-    <header class="editor-top">
-      <button class="editor-home" @click="emit('home')" aria-label="返回首页">
-        <Icon name="back" /><span class="mini-brand">拾页</span>
-      </button>
-      <div class="project-meta">
-        <input
-          aria-label="方案名称"
-          :value="board.title"
-          maxlength="100"
-          @change="rename"
-          @blur="rename"
-          :readonly="preview || busy"
-        /><button
-          v-if="saveState.includes('失败')"
-          class="save-error"
-          @click="emit('retry')"
-        >
-          保存失败 · 点击重试</button
-        ><span
-          v-else
-          class="save-state"
-          :data-state="saveState.includes('中') ? 'saving' : 'saved'"
-          role="status"
-          ><span v-if="saveState.includes('中')" class="spinner"></span
-          ><Icon v-else name="check" :size="11" />{{ saveState }}</span
-        >
-      </div>
-      <div class="editor-actions">
-        <div class="history-actions" v-if="!preview">
-          <button
-            :disabled="!canUndo || busy"
-            @click="emit('undo')"
-            title="撤销 Ctrl+Z"
-            aria-label="撤销"
-          >
-            <Icon name="undo" /></button
-          ><button
-            :disabled="!canRedo || busy"
-            @click="emit('redo')"
-            title="重做 Ctrl+Shift+Z"
-            aria-label="重做"
-          >
-            <Icon name="redo" />
-          </button>
-        </div>
-        <button
-          class="preview-toggle"
-          @click="preview = !preview"
-          :aria-pressed="preview"
-        >
-          <Icon :name="preview ? 'edit' : 'eye'" />{{
-            preview ? "返回编辑" : "预览作品"
-          }}
-        </button>
-        <button class="primary export-trigger" @click="openExport">
-          <Icon name="download" :size="16" />导出<span class="desktop-only"
-            >作品</span
-          >
-        </button>
-        <details ref="more" class="more-menu">
-          <summary aria-label="更多操作">
-            <Icon name="more" :size="22" />
-          </summary>
-          <div class="menu-panel">
-            <span class="menu-label">当前方案</span
-            ><button @click="menuAction(() => emit('import'))" :disabled="busy">
-              <Icon name="upload" :size="15" />导入完整备份</button
-            ><button @click="menuAction(() => emit('backup'))" :disabled="busy">
-              <Icon name="file" :size="15" />保存完整备份 JSON
-            </button>
-            <hr />
-            <span class="menu-label">开始另一页 · 将确认替换草稿</span
-            ><button
-              @click="menuAction(() => emit('start', 'blank'))"
-              :disabled="busy"
-            >
-              新建空白方案</button
-            ><button
-              @click="menuAction(() => emit('start', 'product'))"
-              :disabled="busy"
-            >
-              使用「留白之间」示例</button
-            ><button
-              @click="menuAction(() => emit('start', 'life'))"
-              :disabled="busy"
-            >
-              使用「光与日常」示例
-            </button>
-          </div>
-        </details>
-      </div>
-    </header>
+  <div
+    class="editor studio"
+    :class="{ 'is-preview': preview, 'is-mobile': mobile }"
+  >
+    <EditorToolbar
+      :title="board.title"
+      :save-state="saveState"
+      :can-undo="canUndo"
+      :can-redo="canRedo"
+      :busy="busy"
+      :preview="preview"
+      @home="run(() => emit('home'))"
+      @rename="rename"
+      @undo="run(() => emit('undo'))"
+      @redo="run(() => emit('redo'))"
+      @preview="run(() => (preview = !preview))"
+      @export="openExport"
+      @import="run(() => emit('import'))"
+      @backup="run(() => emit('backup'))"
+      @retry="emit('retry')"
+      @start="(kind) => run(() => emit('start', kind))"
+    />
     <div class="workspace">
-      <AssetLibrary
-        v-if="!mobile && sidebar && !preview"
-        :board="board"
-        :mobile="false"
-        :selected-asset-id="selectedAsset?.id || ''"
-        :busy="busy"
-        :busy-label="busyLabel"
-        @choose="choose"
-        @add="add"
-        @upload="uploadInput?.click()"
-        @link="emit('link')"
-        @close="sidebar = false"
-      />
       <main class="canvas-area">
-        <div class="canvas-topline" v-if="!preview">
+        <div v-if="!preview" class="studio-tools">
+          <button class="reference-upload" :disabled="busy" @click="upload">
+            <Icon name="upload" :size="16" />上传图片</button
+          ><button :disabled="busy" @click="link">
+            <Icon name="link" :size="16" />添加链接
+          </button>
+          <button :disabled="busy" @click="run(() => (library = true))">
+            <Icon name="grid" :size="16" />素材区
+            <span>{{ board.assets.length }}</span>
+          </button>
           <button
-            v-if="mobile || !sidebar"
-            class="library-toggle"
-            @click="sidebar = true"
+            class="arrange-button"
+            :disabled="busy || !board.items.length"
+            @click="arrange"
           >
-            <Icon name="grid" :size="16" />素材
-            <span>{{ board.assets.length }}</span></button
-          ><span class="workspace-label">{{
-            mobile ? "视觉板全貌" : "你的视觉板"
-          }}</span
-          ><span class="board-count"
-            >{{ board.items.length }} 个元素
-            <span class="desktop-only">/ 1600 × 1000</span></span
-          >
+            <Icon name="grid" :size="16" />{{
+              working ? "整理中…" : "整理排版"
+            }}
+          </button>
         </div>
         <div v-else class="preview-label-bar">
           <span class="red-rule"></span>作品预览
-          <small>只有画面、来源与想法</small>
         </div>
         <BoardCanvas
           :board="board"
@@ -348,120 +348,152 @@ function menuAction(action: () => void) {
           :preview="preview"
           :mobile="mobile"
           :locked="busy"
+          :editing="dirty"
           @select="select"
           @change="emit('change', $event)"
-          @details="showDetails"
+          @details="showImage"
           @add="add"
-          @files="emit('upload', $event)"
+          @files="(files) => run(() => emit('upload', files))"
         />
-        <div v-if="!preview && !board.items.length" class="empty-next-step">
-          <button
-            @click="mobile ? (sidebar = true) : uploadInput?.click()"
-            :disabled="busy"
-          >
-            <Icon name="plus" :size="16" />{{
-              board.assets.length ? "从素材栏点 ＋ 加入画板" : "上传第一张图片"
-            }}</button
-          ><span>也可以添加来源链接，慢慢找到自己的方向。</span>
-        </div>
-        <div class="editor-bottom" v-if="!mobile">
-          <span>{{
-            preview
-              ? "准备好了，就把这一页带走。"
-              : "拖动编排 · 角点缩放 · 双击查看说明"
-          }}</span
-          ><span>本地创作 / SHIYE STUDIO</span>
-        </div>
-        <section
+        <p v-if="!preview && !board.items.length" class="studio-empty">
+          上传或添加链接，参考会放入空位。准备好后，点「整理排版」。
+        </p>
+        <div
           v-if="mobile && !preview && board.items.length"
-          class="mobile-references"
-          aria-label="画板素材浏览"
+          class="studio-strip"
+          aria-label="画板参考浏览"
         >
-          <div>
-            <h2>画板里的参考</h2>
-            <span>点选后，往下看大图与笔记</span>
-          </div>
-          <div class="reference-strip">
-            <button
-              v-for="p in board.items"
-              :key="p.id"
-              :class="{ active: selected === p.id }"
-              :aria-label="
-                '查看画板详情：' +
-                board.assets.find((a) => a.id === p.assetId)?.title
-              "
-              :aria-pressed="selected === p.id"
-              @click="select(p.id)"
-            >
-              <img
-                v-if="board.assets.find((a) => a.id === p.assetId)?.data"
-                :src="board.assets.find((a) => a.id === p.assetId)?.data"
-                alt=""
-              /><Icon v-else name="link" :size="25" /><span>{{
-                board.assets.find((a) => a.id === p.assetId)?.title
-              }}</span>
-            </button>
-          </div>
-        </section>
+          <button
+            v-for="p in board.items"
+            :key="p.id"
+            :aria-label="
+              '选择参考：' + board.assets.find((a) => a.id === p.assetId)?.title
+            "
+            :aria-pressed="selected === p.id"
+            :class="{ active: selected === p.id }"
+            @click="select(p.id)"
+          >
+            <img
+              v-if="board.assets.find((a) => a.id === p.assetId)?.data"
+              :src="board.assets.find((a) => a.id === p.assetId)?.data"
+              alt=""
+            /><Icon v-else name="link" /><span>{{
+              board.assets.find((a) => a.id === p.assetId)?.title
+            }}</span>
+          </button>
+        </div>
         <SelectionInspector
           v-if="mobile && !preview"
           :asset="selectedAsset"
+          :draft="draft"
+          :dirty="dirty"
+          :error="noteError"
           :on-board="!!selectedItem"
-          :references="referenceCount"
-          :can-back="false"
-          :can-forward="false"
-          :mobile="true"
+          :references="references"
+          :can-back="selectedIndex > 0"
+          :can-forward="
+            selectedIndex >= 0 && selectedIndex < board.items.length - 1
+          "
           :busy="busy"
-          @details="emit('details', $event)"
-          @replace="requestReplacement"
+          :composing="composing"
+          @view="showImage(selectedAsset!.id)"
+          @save="saveNotes"
+          @cancel="notes.reset"
+          @replace="replace"
           @remove="remove"
+          @layer="layer"
           @add="add"
           @close="select('')"
+          @composition="composing = $event"
         />
-        <p v-if="mobile" class="mobile-edit-note">
-          {{
-            preview
-              ? "导出作品图用于展示，完整备份用于继续。"
-              : "手机适合查看与轻编辑 · 精细编排请在电脑完成"
-          }}
-        </p>
       </main>
       <SelectionInspector
         v-if="!mobile && !preview"
         :asset="selectedAsset"
+        :draft="draft"
+        :dirty="dirty"
+        :error="noteError"
         :on-board="!!selectedItem"
-        :references="referenceCount"
+        :references="references"
         :can-back="selectedIndex > 0"
         :can-forward="
           selectedIndex >= 0 && selectedIndex < board.items.length - 1
         "
-        :mobile="false"
         :busy="busy"
-        @details="emit('details', $event)"
-        @replace="requestReplacement"
+        :composing="composing"
+        @view="showImage(selectedAsset!.id)"
+        @save="saveNotes"
+        @cancel="notes.reset"
+        @replace="replace"
         @remove="remove"
         @layer="layer"
         @add="add"
         @close="select('')"
+        @composition="composing = $event"
       />
     </div>
     <Modal
-      v-if="mobile && sidebar && !preview"
-      title="收集你的参考"
-      kind="library"
-      @close="sidebar = false"
+      v-if="library"
+      title="素材区"
+      kind="references"
+      @close="library = false"
       ><AssetLibrary
         :board="board"
-        :mobile="true"
         :selected-asset-id="selectedAsset?.id || ''"
         :busy="busy"
         :busy-label="busyLabel"
         @choose="choose"
         @add="add"
-        @upload="uploadInput?.click()"
-        @link="emit('link')"
-        @close="sidebar = false"
+        @upload="upload"
+        @link="link"
     /></Modal>
+    <Modal
+      v-if="pendingAction"
+      title="这条笔记还没保存"
+      kind="unsaved"
+      @close="pendingAction = null"
+      ><p>
+        先处理「{{
+          selectedAsset?.title
+        }}」的修改，再继续。文字不会写到下一份参考。
+      </p>
+      <div class="modal-actions">
+        <button @click="pendingAction = null">继续编辑</button
+        ><button @click="continueAction(false)">放弃修改并继续</button
+        ><button
+          class="primary"
+          :disabled="composing"
+          @click="continueAction(true)"
+        >
+          保存并继续
+        </button>
+      </div></Modal
+    >
+    <Modal
+      v-if="noSpace"
+      title="暂时没有合适空位"
+      kind="no-space"
+      @close="noSpace = ''"
+      ><p>参考已经留在素材区，原来的排版没有改动。</p>
+      <p>
+        {{
+          board.items.length >= MAX_AUTO_ITEMS
+            ? "整理适合一页最多12个元素。先移除部分元素，再加入这份参考。"
+            : "也可以明确整理整张画板，并把这份参考一起放入；一次撤销就能恢复。"
+        }}
+      </p>
+      <div class="modal-actions">
+        <button @click="noSpace = ''">留在素材区</button
+        ><button
+          class="primary"
+          :disabled="busy || board.items.length >= MAX_AUTO_ITEMS"
+          @click="layout.arrange(noSpace)"
+        >
+          整理后加入
+        </button>
+      </div></Modal
+    >
+    <ImageViewer v-if="viewer" :asset="viewer" @close="viewer = undefined" />
     <ExportPanel
       v-if="exporting"
       :busy="busy"
@@ -480,8 +512,7 @@ function menuAction(action: () => void) {
       multiple
       hidden
       @change="selectedFiles"
-    />
-    <input
+    /><input
       ref="replaceInput"
       type="file"
       accept="image/png,image/jpeg,image/webp"

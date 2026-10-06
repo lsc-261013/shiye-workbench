@@ -21,6 +21,8 @@ import { example } from "./lib/examples";
 import { History } from "./lib/history";
 import { renderPng } from "./lib/export";
 import { DraftSaver } from "./lib/persistence";
+import { findFreeSpace } from "./lib/layout";
+import { readAspectRatios } from "./lib/imageMetrics";
 const board = ref<Board>(blank()),
   hasDraft = ref(false),
   page = ref<"home" | "editor">("home"),
@@ -29,7 +31,6 @@ const board = ref<Board>(blank()),
   notice = ref(""),
   error = ref(""),
   details = ref<Asset | null>(null),
-  fresh = ref(false),
   pending = ref<Board | null>(null),
   importInput = ref<HTMLInputElement>();
 const busyLabel = ref("正在读取本机草稿…");
@@ -139,13 +140,35 @@ async function upload(files: File[]) {
       failures.push(`${f.name}：${(e as Error).message}`);
     }
   }
-  if (added.length) {
-    const b = clone(board.value);
-    b.assets.push(...added);
-    if (change(b)) notify("图片已加入素材栏，点 ＋ 加入画板。");
+  try {
+    if (added.length) await collect(added);
+    if (failures.length) error.value = failures.join("\n");
+  } catch (e) {
+    error.value = (e as Error).message;
+  } finally {
+    busy.value = false;
   }
-  if (failures.length) error.value = failures.join("\n");
-  busy.value = false;
+}
+async function collect(assets: Asset[]) {
+  const ratios = await readAspectRatios(assets);
+  const b = clone(board.value);
+  b.assets.push(...assets);
+  let placed = 0;
+  for (const asset of assets) {
+    const rect = findFreeSpace(b.items, asset, ratios[asset.id]);
+    if (rect) {
+      b.items.push({ id: uid(), assetId: asset.id, ...rect });
+      placed++;
+    }
+  }
+  if (!change(b)) return false;
+  const stored = assets.length - placed;
+  notify(
+    stored
+      ? `已放入画板${placed}份；${stored}份暂留素材区，那里可选择加入或整理后加入。原排版保持不变。`
+      : `已放入画板${placed}份，原来的排版保持不变。点选参考即可写笔记。`,
+  );
+  return true;
 }
 async function replace(id: string, file: File) {
   if (busy.value) return;
@@ -172,7 +195,6 @@ function link() {
     error.value = "最多保存 100 份素材";
     return;
   }
-  fresh.value = true;
   details.value = {
     id: uid(),
     kind: "link",
@@ -182,18 +204,18 @@ function link() {
     data: "",
   };
 }
-function edit(asset: Asset) {
-  fresh.value = false;
-  details.value = asset;
-}
-function saveAsset(asset: Asset) {
-  const b = clone(board.value);
-  const i = b.assets.findIndex((a) => a.id === asset.id);
-  if (i < 0) b.assets.push(asset);
-  else b.assets[i] = asset;
-  if (!change(b)) return;
-  details.value = null;
-  notify("说明已更新。");
+async function saveAsset(asset: Asset) {
+  if (busy.value) return;
+  busy.value = true;
+  busyLabel.value = "正在添加链接…";
+  try {
+    if (board.value.assets.length >= 100) throw Error("最多保存100份参考。");
+    if (await collect([asset])) details.value = null;
+  } catch (e) {
+    error.value = (e as Error).message;
+  } finally {
+    busy.value = false;
+  }
 }
 function backup() {
   try {
@@ -307,7 +329,6 @@ onBeforeUnmount(() => {
     @redo="redo"
     @upload="upload"
     @replace="replace"
-    @details="edit"
     @link="link"
     @png="png"
     @text="exportText"
@@ -324,7 +345,7 @@ onBeforeUnmount(() => {
   <AssetModal
     v-if="details"
     :asset="details"
-    :fresh="fresh"
+    :saving="busy"
     @save="saveAsset"
     @close="details = null"
   /><Modal v-if="pending" title="替换当前草稿？" @close="pending = null"

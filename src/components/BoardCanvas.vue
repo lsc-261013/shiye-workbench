@@ -9,6 +9,7 @@ const props = defineProps<{
   preview: boolean;
   mobile: boolean;
   locked?: boolean;
+  editing?: boolean;
 }>();
 const emit = defineEmits<{
   select: [id: string];
@@ -61,6 +62,7 @@ function start(e: PointerEvent, p: Placement, mode: "move" | "resize") {
   emit("select", p.id);
   if (props.mobile || e.button !== 0) return;
   e.preventDefault();
+  if (props.editing) return;
   (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   drag = {
     id: p.id,
@@ -120,6 +122,7 @@ function key(e: KeyboardEvent, p: Placement) {
     props.preview ||
     props.mobile ||
     props.locked ||
+    props.editing ||
     isTextInteraction(e.target, e.isComposing)
   )
     return;
@@ -171,7 +174,7 @@ function key(e: KeyboardEvent, p: Placement) {
         <div v-if="!shown.items.length" class="board-empty">
           <span>＋</span>
           <h3>一页新的可能</h3>
-          <p>先添加图片或链接，再从素材栏加入画板。</p>
+          <p>上传图片或添加链接，参考会尝试放入空位。</p>
         </div>
         <article
           v-for="p in shown.items"
@@ -219,7 +222,7 @@ function key(e: KeyboardEvent, p: Placement) {
           >
         </article>
         <button
-          v-if="activePlacement && !preview && !mobile"
+          v-if="activePlacement && !preview && !mobile && !editing"
           class="resize-handle floating-handle"
           :style="{
             left: activePlacement.x + activePlacement.w - 10 + 'px',

@@ -1,0 +1,681 @@
+.studio .workspace {
+  overflow: hidden;
+}
+.studio .editor-top {
+  min-height: 82px;
+  padding: 14px 24px;
+}
+.studio .project-meta input {
+  font-size: 18px;
+}
+.studio .save-state {
+  font-size: 12px;
+  color: #646b5b;
+}
+.studio .editor-actions > button {
+  font-size: 14px;
+  min-height: 42px;
+}
+.studio .canvas-area {
+  overflow: hidden;
+}
+.studio .board-item {
+  user-select: none;
+}
+.studio-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  flex: none;
+}
+.studio-tools button {
+  min-height: 42px;
+  font-size: 14px;
+  padding: 9px 13px;
+  background: #faf8f2;
+}
+.studio-tools .reference-upload {
+  background: #e5e9dc;
+  border-color: #c9d0bd;
+}
+.studio-tools .arrange-button {
+  margin-left: auto;
+  color: var(--accent);
+  border-color: #c9ab9a;
+}
+.studio-tools button span {
+  color: #626956;
+  margin-left: 2px;
+}
+.studio .canvas-caption {
+  font-size: 12px;
+  color: #626956;
+  min-height: 42px;
+  padding: 12px 20px;
+}
+.studio .canvas-host {
+  padding-top: 4px;
+}
+.studio-empty {
+  margin: 0 20px 15px;
+  font-size: 13px;
+  color: #616855;
+  text-align: center;
+}
+.note-panel {
+  width: 310px;
+  flex: none;
+  border-left: 1px solid var(--line);
+  background: #faf8f2;
+  overflow: auto;
+  padding: 18px;
+}
+.note-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 24px;
+}
+.note-panel h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 auto 0 0;
+}
+.note-panel-heading button {
+  font-size: 13px;
+  padding: 7px;
+  min-height: 36px;
+}
+.note-panel-heading .icon-button {
+  width: 32px;
+  padding: 6px;
+}
+.notes-form label {
+  display: block;
+  color: #5a6053;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.notes-form input,
+.notes-form textarea {
+  width: 100%;
+  background: #fffdf8;
+  border: 1px solid #d3d2c5;
+  border-radius: 4px;
+  color: #32362f;
+  padding: 10px 11px;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.notes-form label input,
+.notes-form label textarea {
+  margin-top: 6px;
+}
+.notes-form input:focus,
+.notes-form textarea:focus {
+  outline: 2px solid #b3483066;
+  outline-offset: 1px;
+}
+.note-source-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 18px 0 6px;
+}
+.note-source-label a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--accent);
+}
+.note-writing {
+  margin-top: 18px;
+}
+.notes-form textarea {
+  resize: vertical;
+  min-height: 200px;
+  max-height: 45dvh;
+}
+.note-shared {
+  font-size: 12px;
+  color: #666d59;
+  line-height: 1.8;
+  margin: 12px 0 0;
+}
+.note-submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+.note-submit span {
+  flex: 0 0 100%;
+  font-size: 12px;
+  color: #676d5e;
+}
+.note-submit button {
+  font-size: 13px;
+  min-height: 40px;
+  padding: 9px 12px;
+}
+.note-object-actions {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-top: 22px;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.note-object-actions > button {
+  min-height: 40px;
+  font-size: 13px;
+  padding: 8px 11px;
+}
+.note-object-actions > p {
+  width: 100%;
+  font-size: 13px;
+  margin: 0 0 6px;
+  color: #656c59;
+}
+.object-menu {
+  flex: 1;
+  min-width: 85px;
+}
+.object-menu summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  border: 1px solid #d1d1c2;
+  border-radius: 4px;
+  min-height: 40px;
+  font-size: 13px;
+}
+.object-menu summary::-webkit-details-marker,
+.reference-card-actions summary::-webkit-details-marker {
+  display: none;
+}
+.object-menu > div {
+  display: grid;
+  gap: 5px;
+  margin-top: 7px;
+}
+.object-menu button {
+  font-size: 12px;
+  text-align: left;
+  padding: 10px 7px;
+  justify-content: flex-start;
+}
+.danger-text {
+  color: #93432d;
+}
+.note-panel-idle {
+  padding: 12px 2px;
+}
+.note-panel-idle h2 {
+  margin-bottom: 18px;
+}
+.note-panel-idle p {
+  font-size: 14px;
+  line-height: 2;
+  color: #676e5c;
+}
+.dialog-references {
+  width: min(920px, calc(100% - 48px));
+}
+.reference-add {
+  display: flex;
+  gap: 10px;
+}
+.reference-add button {
+  min-height: 42px;
+  font-size: 14px;
+}
+.reference-result,
+.reference-limit {
+  font-size: 13px;
+  color: #646b59;
+  line-height: 1.8;
+}
+.reference-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 10px 0 20px;
+}
+.reference-card {
+  min-width: 0;
+  background: #f1eee5;
+  border: 1px solid transparent;
+  border-radius: 5px;
+}
+.reference-card.active {
+  border-color: var(--accent);
+}
+.reference-thumbnail {
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  border: 0;
+  border-radius: 5px 5px 0 0;
+  background: #e9e7de;
+}
+.reference-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.reference-info {
+  padding: 11px;
+}
+.reference-title {
+  display: block;
+  text-align: left;
+  justify-content: flex-start;
+  border: 0;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.reference-info > span {
+  display: block;
+  font-size: 12px;
+  color: #646c59;
+  margin: 8px 0;
+}
+.reference-card-actions {
+  display: flex;
+  gap: 5px;
+  position: relative;
+}
+.reference-card-actions > button {
+  min-height: 38px;
+  font-size: 13px;
+  padding: 8px;
+  background: #faf8f2;
+  flex: 1;
+}
+.reference-card-actions summary {
+  display: grid;
+  place-items: center;
+  height: 38px;
+  width: 32px;
+  cursor: pointer;
+  list-style: none;
+  border: 1px solid #cfcebf;
+  border-radius: 4px;
+}
+.reference-card-actions details > button {
+  position: absolute;
+  right: 0;
+  top: 43px;
+  z-index: 2;
+  box-shadow: 0 4px 12px #25272318;
+  background: #fffdf8;
+  font-size: 13px;
+  padding: 12px;
+}
+.reference-empty {
+  padding: 40px 0;
+  font-size: 15px;
+  color: #606756;
+  text-align: center;
+}
+.dialog-image-viewer {
+  width: min(1200px, calc(100% - 48px));
+}
+.dialog-image-viewer .modal-head {
+  margin-bottom: 14px;
+}
+.image-viewer {
+  margin: 0;
+}
+.image-viewer-image {
+  width: 100%;
+  height: min(65dvh, 720px);
+  display: block;
+  object-fit: contain;
+  background: #ebe8df;
+}
+.image-viewer-note {
+  color: #626956;
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+.dialog-unsaved p,
+.dialog-no-space p {
+  font-size: 15px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.dialog-unsaved .modal-actions {
+  flex-wrap: wrap;
+}
+.link-screenshot {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  background: #ece9e1;
+}
+.link-discard {
+  background: #f0e6da;
+  padding: 14px;
+  margin: 16px 0;
+  border-radius: 4px;
+}
+.link-discard p {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.link-discard div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.studio .preview-label-bar {
+  font-size: 14px;
+}
+.studio.is-preview .canvas-area {
+  min-height: 0;
+}
+@media (max-width: 1100px) and (min-width: 761px) {
+  .note-panel {
+    width: 285px;
+    padding: 16px;
+  }
+  .studio-tools {
+    padding: 12px;
+    gap: 6px;
+  }
+  .studio-tools button {
+    font-size: 13px;
+    padding: 9px;
+  }
+}
+@media (max-width: 760px),
+  (max-width: 1000px) and (max-height: 500px) and (orientation: landscape) {
+  .studio {
+    height: 100dvh;
+    overflow: auto;
+  }
+  .studio .editor-top {
+    min-height: 112px;
+    padding: 12px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: none;
+    position: relative;
+  }
+  .studio .project-meta {
+    width: calc(100% - 52px);
+    flex: 1;
+  }
+  .studio .project-meta input {
+    font-size: 16px;
+  }
+  .studio .save-state {
+    font-size: 11px;
+  }
+  .studio .editor-actions {
+    width: 100%;
+    gap: 7px;
+    justify-content: flex-end;
+  }
+  .studio .history-actions {
+    display: flex;
+    margin-right: auto;
+    gap: 4px;
+  }
+  .studio .editor-actions > button {
+    font-size: 13px;
+    min-height: 40px;
+    padding: 9px 10px;
+  }
+  .studio .history-actions button {
+    width: 36px;
+    min-height: 40px;
+  }
+  .studio .more-menu summary {
+    min-width: 34px;
+    min-height: 40px;
+  }
+  .studio .workspace {
+    display: block;
+    overflow: visible;
+    flex: none;
+  }
+  .studio .canvas-area {
+    overflow: visible;
+    display: block;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+  .studio-tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    padding: 12px 14px;
+  }
+  .studio-tools button {
+    min-height: 44px;
+    width: 100%;
+    font-size: 14px;
+    padding: 9px;
+  }
+  .studio-tools .arrange-button {
+    margin: 0;
+  }
+  .studio .canvas-host {
+    display: block;
+    padding: 8px 0 0;
+  }
+  .studio .board-viewport {
+    margin: 0 auto;
+  }
+  .studio .board-item {
+    touch-action: pan-y;
+  }
+  .studio .canvas-caption {
+    font-size: 11px;
+    padding: 11px 14px;
+    min-height: 38px;
+    margin: 0;
+  }
+  .studio-empty {
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 0 14px 16px;
+  }
+  .studio-strip {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 10px 14px 14px;
+  }
+  .studio-strip button {
+    padding: 5px 9px 5px 5px;
+    min-height: 48px;
+    background: #faf8f2;
+    flex: 0 0 auto;
+    max-width: 160px;
+    font-size: 13px;
+  }
+  .studio-strip button.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .studio-strip img {
+    width: 32px;
+    height: 36px;
+    object-fit: contain;
+  }
+  .studio-strip span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .note-panel {
+    width: 100%;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    overflow: visible;
+    padding: 20px 18px 28px;
+  }
+  .note-panel-heading {
+    margin-bottom: 18px;
+  }
+  .note-panel-heading button {
+    min-height: 44px;
+    padding: 9px;
+  }
+  .note-panel-heading .icon-button {
+    min-width: 36px;
+  }
+  .notes-form input,
+  .notes-form textarea {
+    font-size: 16px;
+  }
+  .notes-form textarea {
+    min-height: 200px;
+    max-height: none;
+  }
+  .note-submit {
+    background: #faf8f2f5;
+    padding: 12px 0;
+    margin-bottom: 0;
+    z-index: 1;
+  }
+  .note-submit button,
+  .note-object-actions > button,
+  .object-menu summary {
+    min-height: 44px;
+    font-size: 14px;
+  }
+  .note-panel-idle {
+    padding: 0;
+  }
+  .note-panel-idle p br {
+    display: none;
+  }
+  .dialog-references {
+    width: calc(100% - 20px);
+  }
+  .reference-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .reference-thumbnail {
+    height: 120px;
+  }
+  .reference-info {
+    padding: 9px;
+  }
+  .reference-title {
+    font-size: 14px;
+  }
+  .reference-card-actions > button {
+    font-size: 12px;
+    min-height: 44px;
+    padding: 7px;
+  }
+  .reference-card-actions summary {
+    height: 44px;
+    width: 27px;
+  }
+  .reference-card-actions details > button {
+    top: 48px;
+  }
+  .reference-add button {
+    font-size: 14px;
+    min-height: 44px;
+  }
+  .dialog-image-viewer {
+    width: calc(100% - 20px);
+  }
+  .image-viewer-image {
+    height: 60dvh;
+  }
+  .studio.is-preview .canvas-host {
+    padding-top: 12px;
+  }
+  .studio.is-preview .canvas-area {
+    padding-bottom: 20px;
+  }
+  .studio .menu-panel {
+    min-width: 230px;
+  }
+  .studio ~ .toast {
+    top: 124px;
+    font-size: 12px;
+  }
+}
+@media (min-width: 761px) and (max-height: 760px) {
+  .studio .editor-top {
+    min-height: 72px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .studio-tools {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .note-panel {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .note-panel-heading {
+    margin-bottom: 16px;
+  }
+  .note-source-label,
+  .note-writing {
+    margin-top: 14px;
+  }
+  .notes-form textarea {
+    min-height: 176px;
+  }
+  .note-object-actions {
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+}
+@media (max-width: 1000px) and (max-height: 500px) and (orientation: landscape) {
+  .studio .editor-top {
+    flex-wrap: nowrap;
+    min-height: 68px;
+    padding: 8px 14px;
+  }
+  .studio .editor-actions {
+    width: auto;
+  }
+  .studio .project-meta {
+    width: auto;
+  }
+  .studio-tools {
+    display: flex;
+    padding: 8px 14px;
+  }
+  .studio-tools button {
+    width: auto;
+  }
+  .studio-tools .arrange-button {
+    margin-left: auto;
+  }
+  .studio ~ .toast {
+    top: 74px;
+  }
+  .image-viewer-image {
+    height: 48dvh;
+  }
+}

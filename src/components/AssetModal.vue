@@ -1,27 +1,42 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Modal from "./Modal.vue";
-import Icon from "./Icon.vue";
 import { type Asset, clone, safeUrl } from "../types";
 import { readImage } from "../lib/data";
-const props = defineProps<{ asset: Asset; fresh?: boolean }>();
+const props = defineProps<{ asset: Asset; saving: boolean }>();
 const emit = defineEmits<{ close: []; save: [asset: Asset] }>();
 const draft = ref(clone(props.asset));
 const error = ref("");
-const busy = ref(false);
-const expanded = ref(false);
-const composing = ref(false);
+const reading = ref(false),
+  composing = ref(false),
+  discarding = ref(false);
+const busy = computed(() => reading.value || props.saving);
+const dirty = computed(
+  () => JSON.stringify(draft.value) !== JSON.stringify(props.asset),
+);
+function close() {
+  if (busy.value) return;
+  if (dirty.value) discarding.value = true;
+  else emit("close");
+}
+function beforeUnload(e: BeforeUnloadEvent) {
+  if (dirty.value || busy.value) e.preventDefault();
+}
+onMounted(() => window.addEventListener("beforeunload", beforeUnload));
+onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
 async function screenshot(e: Event) {
-  const f = (e.target as HTMLInputElement).files?.[0];
-  if (!f) return;
-  busy.value = true;
+  const input = e.target as HTMLInputElement,
+    file = input.files?.[0];
+  input.value = "";
+  if (!file || busy.value) return;
+  reading.value = true;
   try {
-    draft.value.data = await readImage(f);
+    draft.value.data = await readImage(file);
     error.value = "";
   } catch (e) {
     error.value = (e as Error).message;
   } finally {
-    busy.value = false;
+    reading.value = false;
   }
 }
 function submit() {
@@ -30,87 +45,83 @@ function submit() {
     error.value = "请填写素材名称";
     return;
   }
-  if (draft.value.source && !safeUrl(draft.value.source)) {
-    error.value = "请输入完整的 http:// 或 https:// 网址";
-    return;
-  }
-  if (draft.value.kind === "link" && !draft.value.source) {
-    error.value = "请填写参考网址";
+  if (!safeUrl(draft.value.source)) {
+    error.value = "请填写完整的 http:// 或 https:// 参考网址";
     return;
   }
   draft.value.title = draft.value.title.trim();
-  emit("save", draft.value);
+  emit("save", clone(draft.value));
 }
 </script>
 <template>
-  <Modal
-    :title="fresh ? '添加参考链接' : '素材与借鉴点'"
-    kind="asset"
-    @close="emit('close')"
-    ><form
+  <Modal title="添加参考链接" kind="asset" @close="close">
+    <form
       @submit.prevent="submit"
       @compositionstart="composing = true"
       @compositionend="composing = false"
     >
-      <button
-        type="button"
-        class="asset-detail-image"
-        :class="{ expanded }"
-        v-if="draft.data"
-        @click="expanded = !expanded"
-        :aria-label="expanded ? '收起大图' : '展开大图'"
-      >
-        <img :src="draft.data" :alt="draft.title" />
-        <span class="detail-image-label"
-          ><Icon name="expand" :size="15" />
-          {{ expanded ? "收起大图" : "展开大图" }}</span
-        >
-      </button>
-      <p v-if="!fresh" class="subtle">
-        修改说明会同步到画板中的这份素材，可撤销。
-      </p>
       <label
         >素材名称<input
           v-model="draft.title"
           maxlength="120"
           required
           autofocus
-          placeholder="给这份参考起个名字" /></label
-      ><label
-        >来源网址 <span>仅 HTTP / HTTPS</span
-        ><input
+          :disabled="busy"
+          placeholder="给这份参考起个名字"
+      /></label>
+      <label
+        >来源网址<input
           v-model="draft.source"
           maxlength="2048"
           type="url"
-          placeholder="https://" /></label
-      ><a
+          required
+          :disabled="busy"
+          placeholder="https://"
+      /></label>
+      <a
         v-if="safeUrl(draft.source)"
         class="source-link"
         :href="safeUrl(draft.source)"
         target="_blank"
         rel="noopener noreferrer"
-        >主动打开来源 ↗</a
-      ><label
-        >借鉴点 <span>画板显示摘要，导出清单保留全文</span
-        ><textarea
+        >打开来源 ↗</a
+      >
+      <label
+        >想法与笔记<textarea
           v-model="draft.note"
           maxlength="5000"
           rows="4"
-          placeholder="具体想借鉴什么？例如：标题层级、图片留白或色彩关系。"
-        ></textarea></label
-      ><label v-if="draft.kind === 'link'"
+          :disabled="busy"
+          placeholder="写下想借鉴什么，稍后也可以修改。"
+        ></textarea>
+      </label>
+      <label
         >附上截图（可选）<input
           type="file"
           accept="image/png,image/jpeg,image/webp"
+          :disabled="busy"
           @change="screenshot"
       /></label>
+      <img
+        v-if="draft.data"
+        class="link-screenshot"
+        :src="draft.data"
+        alt="已附上的截图"
+      />
       <p class="error" v-if="error" role="alert">{{ error }}</p>
+      <div v-if="discarding" class="link-discard" role="alert">
+        <p>放弃这次填写？参考尚未加入，当前草稿不会改变。</p>
+        <div>
+          <button type="button" @click="discarding = false">继续填写</button
+          ><button type="button" @click="emit('close')">放弃填写</button>
+        </div>
+      </div>
       <div class="modal-actions">
-        <button type="button" @click="emit('close')">取消</button
-        ><button class="primary" :disabled="busy">
-          {{ busy ? "读取图片中…" : "保存说明" }}
+        <button type="button" :disabled="busy" @click="close">取消</button
+        ><button class="primary" :disabled="busy || composing">
+          {{ reading ? "读取图片中…" : saving ? "添加中…" : "添加链接" }}
         </button>
       </div>
-    </form></Modal
-  >
+    </form>
+  </Modal>
 </template>

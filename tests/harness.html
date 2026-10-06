@@ -45,6 +45,18 @@
     ><button id="clearCapture">清空导出捕获</button
     ><button id="touch">模拟触屏点选与滑动</button
     ><button id="fonts">检查导出字体</button
+    ><select id="fixture" aria-label="测试文件组合">
+      <option value="pictures">横竖图片</option>
+      <option value="replacement">替换图片</option>
+      <option value="single">单元素备份</option>
+      <option value="twelve">12元素备份</option>
+      <option value="thirteen">13元素备份</option>
+      <option value="full">无空位备份</option>
+      <option value="invalid">坏JSON</option>
+      <option value="roundtrip">真实导出备份</option></select
+    ><button id="inject">选入测试文件</button
+    ><button id="imeStart">模拟中文组合开始</button
+    ><button id="imeEnd">模拟中文组合结束</button
     ><span id="mode">正常模式，导出会被此工具捕获</span>
   </header>
   <iframe src="/" title="验收中的拾页应用"></iframe>
@@ -57,6 +69,55 @@
       status = document.querySelector("#mode"),
       result = document.querySelector("#result");
     let restoreOpen, restoreBlob;
+    document.querySelector("#inject").onclick = async () => {
+      const mode = document.querySelector("#fixture").value;
+      const names = {
+        pictures: ["qa-north.png", "qa-sunlight.png"],
+        replacement: ["qa-replacement.png"],
+        single: ["capacity-1.json"],
+        twelve: ["capacity-12.json"],
+        thirteen: ["capacity-13.json"],
+        full: ["no-space.json"],
+        invalid: ["invalid.json"],
+        roundtrip: ["roundtrip.json"],
+      }[mode];
+      const doc = frame.contentDocument,
+        win = frame.contentWindow;
+      const input =
+        mode === "replacement"
+          ? doc.querySelectorAll('.studio input[type="file"]')[1]
+          : mode === "pictures"
+            ? doc.querySelector('.studio input[type="file"]')
+            : doc.querySelector('input[accept*="json"]');
+      if (!input) {
+        result.textContent = "先进入工作台";
+        return;
+      }
+      const transfer = new win.DataTransfer();
+      for (const name of names) {
+        const blob = await (await fetch("./fixtures/" + name)).blob();
+        transfer.items.add(
+          new win.File([blob], name, {
+            type: name.endsWith(".json") ? "application/json" : "image/png",
+          }),
+        );
+      }
+      input.files = transfer.files;
+      input.dispatchEvent(new win.Event("change", { bubbles: true }));
+      result.textContent = "已模拟文件选择：" + names.join("、");
+    };
+    for (const [id, type] of [
+      ["imeStart", "compositionstart"],
+      ["imeEnd", "compositionend"],
+    ])
+      document.querySelector("#" + id).onclick = () => {
+        const win = frame.contentWindow,
+          field = frame.contentDocument.querySelector(".notes-form textarea");
+        field?.dispatchEvent(
+          new win.CompositionEvent(type, { bubbles: true, data: "中文" }),
+        );
+        result.textContent = type;
+      };
     document.querySelector("#clearCapture").onclick = () => {
       document.querySelector("#artifact").value = "";
       result.textContent = "等待操作";

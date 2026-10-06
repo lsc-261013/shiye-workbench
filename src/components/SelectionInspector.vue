@@ -1,162 +1,143 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { type Asset, safeUrl } from "../types";
+import type { NotesDraft } from "../lib/notes";
 import Icon from "./Icon.vue";
-import { safeUrl, type Asset } from "../types";
-const props = defineProps<{
+defineProps<{
   asset?: Asset;
+  draft?: NotesDraft;
+  dirty: boolean;
+  error: string;
   onBoard: boolean;
   references: number;
   canBack: boolean;
   canForward: boolean;
-  mobile: boolean;
   busy: boolean;
+  composing: boolean;
 }>();
-const emit = defineEmits<{
-  details: [asset: Asset];
+defineEmits<{
+  view: [];
+  save: [];
+  cancel: [];
   replace: [];
   remove: [];
   layer: [direction: number];
   add: [id: string];
   close: [];
+  composition: [value: boolean];
 }>();
-const noteExpanded = ref(false);
-const needsExpansion = computed(
-  () =>
-    (props.asset?.note.length || 0) > 110 ||
-    (props.asset?.note.split("\n").length || 0) > 3,
-);
-watch(
-  () => props.asset?.id,
-  () => (noteExpanded.value = false),
-);
-function sourceHost(source: string) {
-  try {
-    return new URL(source).hostname;
-  } catch {
-    return source;
-  }
-}
 </script>
 <template>
-  <section class="selection-inspector" aria-label="当前素材详情">
-    <template v-if="asset">
-      <header class="inspector-heading">
-        <span class="eyebrow">{{ onBoard ? "当前画板对象" : "素材详情" }}</span
-        ><span class="inspector-kind">{{
-          asset.kind === "link" ? "参考链接" : "图片"
-        }}</span
+  <section class="note-panel" aria-label="参考笔记" tabindex="-1">
+    <template v-if="asset && draft">
+      <header class="note-panel-heading">
+        <h2>想法与笔记</h2>
+        <button v-if="asset.data" :disabled="busy" @click="$emit('view')">
+          <Icon name="expand" :size="16" />看大图</button
         ><button
-          v-if="!mobile"
           class="icon-button"
           aria-label="取消选择"
-          @click="emit('close')"
+          :disabled="busy"
+          @click="$emit('close')"
         >
-          <Icon name="close" :size="15" />
+          <Icon name="close" :size="17" />
         </button>
       </header>
-      <div class="inspector-content" :key="asset.id">
-        <button
-          v-if="asset.data"
-          class="inspector-image"
-          @click="emit('details', asset)"
-          aria-label="查看大图与完整说明"
-        >
-          <img :src="asset.data" :alt="asset.title" /><span
-            ><Icon name="expand" :size="14" /> 查看大图</span
-          >
-        </button>
-        <div v-else class="inspector-link-art">
-          <Icon name="link" :size="30" /><span>{{
-            sourceHost(asset.source)
-          }}</span>
+      <form
+        class="notes-form"
+        @submit.prevent="$emit('save')"
+        @compositionstart="$emit('composition', true)"
+        @compositionend="$emit('composition', false)"
+      >
+        <label
+          >素材名称<input
+            v-model="draft.title"
+            aria-label="素材名称"
+            maxlength="120"
+            required
+            :disabled="busy"
+        /></label>
+        <div class="note-source-label">
+          <label for="reference-source">来源网址</label
+          ><a
+            v-if="safeUrl(draft.source)"
+            :href="safeUrl(draft.source)"
+            target="_blank"
+            rel="noopener noreferrer"
+            >打开来源<Icon name="arrow" :size="14"
+          /></a>
         </div>
-        <h3>{{ asset.title }}</h3>
-        <a
-          v-if="safeUrl(asset.source)"
-          class="inspector-source"
-          :href="safeUrl(asset.source)"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><Icon name="link" :size="14" /><span>{{
-            sourceHost(asset.source)
-          }}</span
-          ><Icon name="arrow" :size="14"
-        /></a>
-        <p v-else class="source-missing">尚未填写来源，可在说明中补充</p>
-        <div class="inspector-note">
-          <div class="note-heading">
-            <span>借鉴点</span
-            ><button @click="emit('details', asset)">
-              <Icon name="edit" :size="13" /> 编辑
+        <input
+          id="reference-source"
+          v-model="draft.source"
+          aria-label="来源网址"
+          type="url"
+          maxlength="2048"
+          placeholder="https://（可选）"
+          :disabled="busy"
+        />
+        <label class="note-writing"
+          >想法与笔记<textarea
+            v-model="draft.note"
+            aria-label="想法与笔记"
+            maxlength="5000"
+            rows="6"
+            placeholder="写下想借鉴什么，或留下一点自己的想法。"
+            :disabled="busy"
+          ></textarea>
+        </label>
+        <p class="note-shared" v-if="references > 1">
+          {{ references }}份共用这张图片与笔记。
+        </p>
+        <p class="error" v-if="error" role="alert">{{ error }}</p>
+        <div class="note-submit">
+          <span role="status">{{ dirty ? "修改尚未提交" : "修改后保存" }}</span
+          ><button
+            v-if="dirty"
+            type="button"
+            :disabled="busy"
+            @click="$emit('cancel')"
+          >
+            取消修改</button
+          ><button class="primary" :disabled="busy || !dirty || composing">
+            保存修改
+          </button>
+        </div>
+      </form>
+      <footer class="note-object-actions">
+        <template v-if="!onBoard"
+          ><p>这份参考暂在素材区。</p>
+          <button :disabled="busy" @click="$emit('add', asset.id)">
+            <Icon name="plus" />加入画板
+          </button></template
+        >
+        <button :disabled="busy" @click="$emit('replace')">
+          <Icon name="replace" :size="16" />{{
+            asset.data ? "替换图片" : "附上图片"
+          }}
+        </button>
+        <details v-if="onBoard" class="object-menu">
+          <summary aria-label="图片与图层操作">
+            <Icon name="more" :size="18" />更多
+          </summary>
+          <div>
+            <button :disabled="busy || !canBack" @click="$emit('layer', -1)">
+              后移一层</button
+            ><button :disabled="busy || !canForward" @click="$emit('layer', 1)">
+              前移一层</button
+            ><button
+              class="danger-text"
+              :disabled="busy"
+              @click="$emit('remove')"
+            >
+              从画板移除 · 保留素材
             </button>
           </div>
-          <p :class="{ clamped: needsExpansion && !noteExpanded }">
-            {{ asset.note || "写下具体想借鉴什么，让喜欢有据可循。" }}
-          </p>
-          <button
-            v-if="needsExpansion"
-            class="note-expand"
-            @click="noteExpanded = !noteExpanded"
-            :aria-expanded="noteExpanded"
-          >
-            {{ noteExpanded ? "收起完整笔记" : "展开完整笔记" }}
-          </button>
-        </div>
-        <button class="inspector-edit" @click="emit('details', asset)">
-          <Icon name="edit" :size="16" /> 编辑名称、来源与笔记
-        </button>
-        <div class="inspector-operations">
-          <button @click="emit('replace')" :disabled="busy">
-            <Icon name="replace" :size="16" />
-            {{ asset.data ? "替换图片" : "附上图片" }}
-          </button>
-          <button
-            v-if="!onBoard"
-            @click="emit('add', asset.id)"
-            :disabled="busy"
-          >
-            <Icon name="plus" :size="16" /> 加入画板
-          </button>
-          <template v-if="onBoard">
-            <div v-if="!mobile" class="layer-actions">
-              <button @click="emit('layer', -1)" :disabled="!canBack || busy">
-                <Icon name="layers" :size="14" /> 后移一层</button
-              ><button
-                @click="emit('layer', 1)"
-                :disabled="!canForward || busy"
-              >
-                <Icon name="layers" :size="14" /> 前移一层
-              </button>
-            </div>
-            <button
-              class="danger-text"
-              @click="emit('remove')"
-              :disabled="busy"
-            >
-              <Icon name="remove" :size="15" /> 从画板移除
-            </button>
-          </template>
-        </div>
-        <p class="reference-note">
-          {{
-            onBoard
-              ? "移除只影响当前画板对象，素材仍在。"
-              : "素材已收集，加入画板后可编排。"
-          }}<span v-if="references > 1"
-            >这份素材有
-            {{ references }} 个画板引用，修改说明或替换图片会同步到它们。</span
-          >
-        </p>
-      </div>
+        </details>
+      </footer>
     </template>
-    <div v-else class="inspector-empty">
-      <div class="empty-focus"><Icon name="image" :size="28" /></div>
-      <span class="eyebrow">MAKE IT YOURS</span>
-      <h3>给喜欢，一个理由。</h3>
-      <p>
-        点选画板或左侧素材，<br />在这里看来源、读笔记，<br />再留下你的借鉴点。
-      </p>
-      <span class="empty-key">选择 → 看清 → 编排</span>
+    <div v-else class="note-panel-idle">
+      <h2>想法与笔记</h2>
+      <p>点选画板中的参考，<br />在这里阅读与修改。</p>
     </div>
   </section>
 </template>
