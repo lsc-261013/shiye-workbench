@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-06",
+  "sourceCommit": "c136a24",
+  "url": "http://127.0.0.1:4186/",
+  "checks": [
+    {
+      "check": "production home and editable product example",
+      "passed": true
+    },
+    {
+      "check": "preview hides handles, selection and inspector; return restores selection",
+      "passed": true
+    },
+    {
+      "check": "PNG, TXT and JSON generation and browser download request",
+      "passed": true
+    },
+    {
+      "check": "title change on blur and undo after preview",
+      "passed": true
+    },
+    {
+      "check": "reload after undo recovers product title and 5 items",
+      "passed": true
+    },
+    {
+      "check": "cancel lifestyle replacement retains product draft",
+      "passed": true
+    },
+    {
+      "check": "confirmed lifestyle example loads 6 items and all images",
+      "passed": true
+    },
+    {
+      "check": "confirmed product example restored for delivery",
+      "passed": true
+    }
+  ],
+  "finalState": {
+    "allBoardImagesLoaded": true,
+    "assets": 6,
+    "horizontalOverflow": false,
+    "items": 5,
+    "saved": "已保存到本机",
+    "selected": "画板素材：STILL / NOTES · 首屏研究",
+    "title": "留白之间 · 独立产品网站",
+    "url": "http://127.0.0.1:4186/",
+    "viewport": {
+      "height": 900,
+      "width": 1440
+    }
+  },
+  "applicationErrorLogs": [],
+  "boundaries": [
+    "No native download path confirmation",
+    "No physical phone or Safari",
+    "Export Blob bytes and cross-origin JSON recovery verified separately in development harness"
+  ]
+}

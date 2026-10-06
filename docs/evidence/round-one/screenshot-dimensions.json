@@ -1,0 +1,122 @@
+{
+  "after-editor-1280.jpg": [
+    1280,
+    720
+  ],
+  "after-editor-1440.jpg": [
+    1440,
+    900
+  ],
+  "after-editor-375.jpg": [
+    375,
+    811
+  ],
+  "after-editor-390.jpg": [
+    390,
+    844
+  ],
+  "after-editor-landscape-844.jpg": [
+    844,
+    390
+  ],
+  "after-home-1280.jpg": [
+    1265,
+    712
+  ],
+  "after-home-1440.jpg": [
+    1425,
+    891
+  ],
+  "after-home-375.jpg": [
+    360,
+    779
+  ],
+  "after-home-390.jpg": [
+    375,
+    812
+  ],
+  "after-home-with-draft-1440.jpg": [
+    1425,
+    891
+  ],
+  "after-home-with-draft-390.jpg": [
+    375,
+    812
+  ],
+  "after-life-1440.jpg": [
+    1440,
+    900
+  ],
+  "before-editor-1280.jpg": [
+    1280,
+    720
+  ],
+  "before-editor-1440.jpg": [
+    1440,
+    900
+  ],
+  "before-editor-375.jpg": [
+    375,
+    811
+  ],
+  "before-editor-390.jpg": [
+    390,
+    844
+  ],
+  "before-home-1280.jpg": [
+    1265,
+    712
+  ],
+  "before-home-1440.jpg": [
+    1425,
+    891
+  ],
+  "before-home-375.jpg": [
+    360,
+    779
+  ],
+  "before-home-390.jpg": [
+    375,
+    812
+  ],
+  "before-selected-390.jpg": [
+    390,
+    844
+  ],
+  "comparison-editor-1440.jpg": [
+    2880,
+    944
+  ],
+  "comparison-editor-375.jpg": [
+    750,
+    855
+  ],
+  "comparison-home-1440.jpg": [
+    2850,
+    935
+  ],
+  "empty-desktop.jpg": [
+    1440,
+    900
+  ],
+  "landscape-issue.jpg": [
+    844,
+    390
+  ],
+  "png-failure.jpg": [
+    1253,
+    705
+  ],
+  "production-export-panel.jpg": [
+    1280,
+    720
+  ],
+  "save-failure.jpg": [
+    1253,
+    705
+  ],
+  "short-viewport-form.jpg": [
+    390,
+    500
+  ]
+}

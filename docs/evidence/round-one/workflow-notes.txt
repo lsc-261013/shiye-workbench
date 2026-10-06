@@ -1,0 +1,19 @@
+拾页 · 连续创作验收
+视觉参考清单
+
+1. 北窗 · 中文笔记验收
+来源：https://example.com/north?reference=long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-long-source-
+借鉴点：观察北窗的冷色与纸张的暖色，让主图成为焦点。
+第二段：来源、图像与说明各司其职，中文笔记保留全文。
+这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。这是较长的可辨识测试笔记，检查换行、滚动与返回后内容保留。
+已加入画板
+
+2. qa-sunlight.png
+来源：未填写
+借鉴点：未填写
+已加入画板
+
+3. 版式研究 · 链接
+来源：https://example.com/layout
+借鉴点：参考阅读层级。手动链接，不抓取网页内容。
+已加入画板

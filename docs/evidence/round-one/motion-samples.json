@@ -1,0 +1,154 @@
+[
+  {
+    "ms": 41,
+    "state": {
+      "arranged": false,
+      "buttonDisabled": false,
+      "piece": "matrix(0.931148, -0.0695479, 0.0695479, 0.931148, 6.4746, 3.45696)"
+    }
+  },
+  {
+    "ms": 193,
+    "state": {
+      "arranged": false,
+      "buttonDisabled": false,
+      "piece": "matrix(0.965832, -0.0881237, 0.0881237, 0.965832, 2.94682, 1.57339)"
+    }
+  },
+  {
+    "ms": 351,
+    "state": {
+      "arranged": false,
+      "buttonDisabled": false,
+      "piece": "matrix(0.983139, -0.097905, 0.097905, 0.983139, 1.17246, 0.626005)"
+    }
+  },
+  {
+    "ms": 506,
+    "state": {
+      "arranged": false,
+      "buttonDisabled": false,
+      "piece": "matrix(0.990178, -0.101983, 0.101983, 0.990178, 0.44794, 0.239167)"
+    }
+  },
+  {
+    "ms": 655,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.919064, -0.0633901, 0.0633901, 0.919064, 7.69552, 4.10884)"
+    }
+  },
+  {
+    "ms": 817,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.84176, -0.0276869, 0.0276869, 0.84176, 15.4183, 8.23225)"
+    }
+  },
+  {
+    "ms": 973,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.801655, -0.0115854, 0.0115854, 0.801655, 19.3735, 10.3441)"
+    }
+  },
+  {
+    "ms": 1126,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.783457, -0.00480548, 0.00480548, 0.783457, 21.1586, 11.2971)"
+    }
+  },
+  {
+    "ms": 1280,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.775168, -0.00182469, 0.00182469, 0.775168, 21.9698, 11.7303)"
+    }
+  },
+  {
+    "ms": 1431,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77155, -0.000544466, 0.000544466, 0.77155, 22.3235, 11.9191)"
+    }
+  },
+  {
+    "ms": 1581,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.770346, -0.000121242, 0.000121242, 0.770346, 22.4412, 11.982)"
+    }
+  },
+  {
+    "ms": 1735,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77002, -7.02221e-06, 7.02221e-06, 0.77002, 22.473, 11.999)"
+    }
+  },
+  {
+    "ms": 1884,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77, 0, 0, 0.77, 22.475, 12)"
+    }
+  },
+  {
+    "ms": 2032,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77, 0, 0, 0.77, 22.475, 12)"
+    }
+  },
+  {
+    "ms": 2186,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77, 0, 0, 0.77, 22.475, 12)"
+    }
+  },
+  {
+    "ms": 2349,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77, 0, 0, 0.77, 22.475, 12)"
+    }
+  },
+  {
+    "ms": 2497,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77, 0, 0, 0.77, 22.475, 12)"
+    }
+  },
+  {
+    "ms": 2642,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77, 0, 0, 0.77, 22.475, 12)"
+    }
+  },
+  {
+    "ms": 2794,
+    "state": {
+      "arranged": true,
+      "buttonDisabled": false,
+      "piece": "matrix(0.77, 0, 0, 0.77, 22.475, 12)"
+    }
+  }
+]

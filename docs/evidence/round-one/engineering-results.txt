@@ -1,0 +1,28 @@
+2026-10-06 · 本轮最终源码检查
+Windows · Node 24.15.0 · Vite 7.3.6 · Vitest 4.1.11
+
+npm run check
+vue-tsc --noEmit
+Exit code 0
+
+npm test
+Test Files 2 passed (2)
+Tests 16 passed (16)
+Duration 980ms
+Exit code 0
+
+npm run build
+vue-tsc --noEmit && vite build
+48 modules transformed
+dist/index.html                 0.67 kB | gzip 0.48 kB
+dist/assets/index-DWuDm3k0.css 36.08 kB | gzip 8.65 kB
+dist/assets/index-B-1yib1L.js 121.79 kB | gzip 47.06 kB
+Built in 697ms; exit code 0
+
+测试及构建因当前沙箱中 esbuild 读取项目父路径失败，使用限定命令的沙箱外执行；自动审批通过。没有放宽项目安全设置、安装新依赖、联网发布或部署。
+生产预览以 native 配置加载运行，避免同一沙箱读取问题：
+npm run preview -- --port 4186 --strictPort --configLoader native
+http://127.0.0.1:4186/
+
+dist/assets 实际目录：5张既有摄影、3个既有SVG、1份CSS和1份JS。
+tests/harness.html 不在生产产物中。

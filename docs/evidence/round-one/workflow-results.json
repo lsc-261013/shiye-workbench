@@ -1,0 +1,199 @@
+[
+  {
+    "check": "uploaded and Chinese notes",
+    "passed": true,
+    "noteLength": 311
+  },
+  {
+    "check": "one drag is one undo and redo",
+    "before": {
+      "h": "300px",
+      "rect": {
+        "bottom": 474.10003662109375,
+        "height": 168.00003051757812,
+        "left": 334,
+        "right": 558,
+        "top": 306.1000061035156,
+        "width": 224,
+        "x": 334,
+        "y": 306.1000061035156
+      },
+      "w": "400px",
+      "x": "150px",
+      "y": "210px"
+    },
+    "after": {
+      "h": "300px",
+      "w": "400px",
+      "x": "783.929px",
+      "y": "504.643px"
+    },
+    "undo": {
+      "x": "150px",
+      "y": "210px"
+    },
+    "passed": true
+  },
+  {
+    "check": "corner aspect resize",
+    "geometry": {
+      "h": "381.696px",
+      "w": "508.929px",
+      "x": "783.929px",
+      "y": "504.643px"
+    },
+    "passed": true
+  },
+  {
+    "check": "actual backup includes image data, Chinese notes and references",
+    "passed": true,
+    "artifact": {
+      "filename": "workflow-before-replacement.shiye.json",
+      "bytes": 29947,
+      "result": "{\"name\":\"拾页 · 连续创作验收.shiye.json\",\"size\":29947,\"type\":\"application/json\"}"
+    }
+  },
+  {
+    "check": "text export full Chinese notes and long URL",
+    "passed": true,
+    "artifact": {
+      "filename": "workflow-notes.txt",
+      "bytes": 1794,
+      "result": "{\"name\":\"拾页 · 连续创作验收-参考清单.txt\",\"size\":1794,\"type\":\"text/plain;charset=utf-8\"}"
+    }
+  },
+  {
+    "check": "actual desktop PNG generated",
+    "passed": true,
+    "artifact": {
+      "filename": "workflow-desktop.png",
+      "bytes": 80584,
+      "result": "{\"name\":\"拾页 · 连续创作验收.png\",\"size\":80584,\"type\":\"image/png\"} dimensions=1600×1000"
+    }
+  },
+  {
+    "check": "replace preserves geometry, layer, source, notes and shared references",
+    "passed": true,
+    "references": 2
+  },
+  {
+    "check": "replacement undo restores exact original image",
+    "passed": true
+  },
+  {
+    "check": "removing only current instance preserves resources and other references",
+    "passed": true,
+    "removedCount": 3,
+    "assetCount": 3
+  },
+  {
+    "check": "failed save leaves previously persisted draft readable",
+    "passed": true
+  },
+  {
+    "check": "failed save current memory can still export complete backup",
+    "passed": true
+  },
+  {
+    "check": "retry completes real IndexedDB transaction",
+    "passed": true
+  },
+  {
+    "check": "PNG failure shows actionable error and retains current board",
+    "passed": true
+  },
+  {
+    "check": "Escape focus after fix",
+    "passed": true,
+    "actual": {
+      "tag": "BUTTON",
+      "text": " 编辑名称、来源与笔记"
+    }
+  },
+  {
+    "check": "cancel editing retains original asset",
+    "passed": true
+  },
+  {
+    "check": "corrupt image leaves existing assets unchanged",
+    "passed": true,
+    "message": "SHIYE / 拾页操作未完成bad-image.png：图片无法读取，请重试 PNG、JPEG 或 WebP导出当前备份知道了"
+  },
+  {
+    "check": "bad JSON import preserves draft",
+    "passed": true,
+    "message": "SHIYE / 拾页操作未完成导入失败，原草稿保持不变。备份已损坏：无法读取 JSON导出当前备份知道了"
+  },
+  {
+    "check": "cancel validated import leaves draft untouched",
+    "passed": true
+  },
+  {
+    "check": "exact draft equality after cancelled import",
+    "passed": true
+  },
+  {
+    "check": "preview removes tools and restores selection on return",
+    "passed": true
+  },
+  {
+    "check": "selected desktop and phone PNG exact equality",
+    "passed": true,
+    "dimensions": "{\"name\":\"拾页 · 连续创作验收.png\",\"size\":85843,\"type\":\"image/png\"} dimensions=1600×1000",
+    "sha256": "692e5b5d9edd73c9b0dc6a53572853494ba4f95c618e81c8924985c74f6df8ec",
+    "viewport": 375
+  },
+  {
+    "check": "independent origin exact complete backup equality",
+    "passed": true,
+    "assets": 3,
+    "items": 4
+  },
+  {
+    "check": "phone simulated touch selects without moving layout",
+    "passed": true,
+    "actual": {
+      "simulatedPointerType": "touch",
+      "selectionVisible": true,
+      "geometryUnchanged": true,
+      "touchAction": "pan-y"
+    }
+  },
+  {
+    "check": "font ready in current Windows Chromium",
+    "passed": true,
+    "actual": "{\"ready\":\"loaded\",\"canvasFontAvailable\":true,\"scope\":\"current Windows Chromium only\"}"
+  },
+  {
+    "check": "phone upload, screenshot link, Chinese notes and input key protection",
+    "passed": true
+  },
+  {
+    "check": "phone replacement, remove, undo and redo",
+    "passed": true
+  },
+  {
+    "check": "phone batch upload and scroll to last of 23 resources",
+    "passed": true
+  },
+  {
+    "check": "phone reload after batch edit and undo exactly preserves all data",
+    "passed": true,
+    "assets": 23,
+    "items": 5
+  },
+  {
+    "check": "reduced motion CSS mode completes preview, return and PNG export",
+    "passed": true,
+    "artifact": {
+      "bytes": 88546,
+      "result": "{\"name\":\"拾页 · 连续创作验收.png\",\"size\":88546,\"type\":\"image/png\"} dimensions=1600×1000"
+    },
+    "scope": "equivalent CSS override, not OS preference"
+  },
+  {
+    "check": "manual URLs do not trigger external fetching",
+    "passed": true,
+    "requests": 38
+  }
+]

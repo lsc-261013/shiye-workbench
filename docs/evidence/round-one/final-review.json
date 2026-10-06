@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-06",
+  "environment": "Windows Chromium in-app browser; CSS viewport and pointer simulation",
+  "checks": [
+    {
+      "check": "844x390 landscape light editor",
+      "passed": true,
+      "mobileClass": true,
+      "resizeHandles": 0,
+      "horizontalOverflow": false,
+      "boardBounds": { "x": 226.3333, "y": 111, "width": 376, "height": 235 },
+      "evidence": "after-editor-landscape-844.jpg"
+    },
+    {
+      "check": "new asset library actual mouse drag to board",
+      "passed": true,
+      "beforeItems": 5,
+      "afterItems": 6,
+      "added": { "title": "Vue · 官方文档信息层级", "x": 1160.71, "y": 675 },
+      "undoItems": 5
+    },
+    {
+      "check": "rapid selection final linkage",
+      "passed": true,
+      "selectedAsset": "STILL / NOTES · 首屏研究",
+      "selectedBoardItem": "STILL / NOTES · 首屏研究",
+      "inspector": "STILL / NOTES · 首屏研究"
+    },
+    {
+      "check": "three rapid home replays and mouse entering/leaving",
+      "passed": true,
+      "finalClass": "collage-demo is-arranged",
+      "pieceOpacities": [1, 1, 1, 1, 1],
+      "piecesVisible": true
+    },
+    {
+      "check": "desktop board visible at 1280x720",
+      "passed": true,
+      "horizontalOverflow": false,
+      "boardBounds": { "x": 228, "y": 132.9167, "width": 788, "height": 492.5 }
+    },
+    {
+      "check": "phone portrait viewport layout",
+      "passed": true,
+      "widths": [375, 390],
+      "horizontalOverflow": false,
+      "resizeHandles": 0
+    }
+  ],
+  "limits": [
+    "No physical phone, Safari or OS keyboard",
+    "Reduced motion uses equivalent CSS override",
+    "Download paths were unavailable; export Blob evidence is separate"
+  ]
+}

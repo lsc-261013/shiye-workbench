@@ -1,0 +1,47 @@
+{
+  "capture_pairs": {
+    "home-1440": [
+      1425,
+      891
+    ],
+    "home-1280": [
+      1265,
+      712
+    ],
+    "home-375": [
+      360,
+      779
+    ],
+    "home-390": [
+      375,
+      812
+    ],
+    "editor-1440": [
+      1440,
+      900
+    ],
+    "editor-1280": [
+      1280,
+      720
+    ],
+    "editor-375": [
+      375,
+      811
+    ],
+    "editor-390": [
+      390,
+      844
+    ]
+  },
+  "selected_png": {
+    "bytes": 85843,
+    "sha256": "692e5b5d9edd73c9b0dc6a53572853494ba4f95c618e81c8924985c74f6df8ec",
+    "equal": true
+  },
+  "phone_reload": {
+    "equal": true,
+    "assets": 23,
+    "items": 5
+  },
+  "recorded_workflow_checks": 30
+}

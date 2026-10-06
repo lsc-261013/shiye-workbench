@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>拾页 · 第一轮体验升级对照</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        color: #272923;
+        background: #f5f2eb;
+        font:
+          15px/1.7 "Microsoft YaHei",
+          sans-serif;
+      }
+      main {
+        max-width: 1500px;
+        margin: auto;
+        padding: 32px;
+      }
+      h1 {
+        font:
+          40px/1.2 "SimSun",
+          serif;
+        margin: 0 0 16px;
+      }
+      h2 {
+        margin-top: 42px;
+        font-size: 22px;
+      }
+      p {
+        max-width: 900px;
+      }
+      a {
+        color: #a4412d;
+      }
+      .pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      figure {
+        margin: 0;
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid #dedbd2;
+      }
+      figcaption {
+        padding: 10px 0;
+      }
+      .phones {
+        max-width: 800px;
+      }
+      .motion {
+        max-width: 1100px;
+      }
+      .more {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      @media (max-width: 650px) {
+        main {
+          padding: 20px;
+        }
+        h1 {
+          font-size: 30px;
+        }
+        .pair {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>把零散的喜欢，整理成一页。</h1>
+      <p>
+        拾页第一轮体验升级 · 2026-10-06。原版为起点
+        <code>4bc4b3c</code
+        >；新版为本轮生产构建。图片均来自实际页面，比较使用相同CSS视口和同一产品示例，不是概念稿。
+      </p>
+      <p>
+        最初在实施前运行原版并拍基线；最终发现部分图片捕获过早，已从起点源码快照独立补拍。截图工具排除滚动条并可能有取整，文件像素尺寸不完全等于CSS视口；没有拉伸图片。测试模拟手机，真机与Safari未验证。
+      </p>
+      <p class="more">
+        <a href="HANDOFF-2026-10-06.md">完整交接</a
+        ><a href="VERIFICATION.md">验收与边界</a
+        ><a href="VISUAL-REVIEW.md">取舍与修正</a
+        ><a href="http://127.0.0.1:4186/">本地生产预览</a>
+      </p>
+      <h2>首页 · 1440 × 900</h2>
+      <div class="pair">
+        <figure>
+          <img
+            src="evidence/round-one/before-home-1440.jpg"
+            alt="改前1440首页"
+          />
+          <figcaption>改前：非对称静态拼贴</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="evidence/round-one/after-home-1440.jpg"
+            alt="改后1440首页"
+          />
+          <figcaption>改后：明确用途、示例归拢、导入与继续入口</figcaption>
+        </figure>
+      </div>
+      <h2>桌面编辑器 · 1440 × 900</h2>
+      <div class="pair">
+        <figure>
+          <img
+            src="evidence/round-one/before-editor-1440.jpg"
+            alt="改前桌面编辑器"
+          />
+          <figcaption>相同产品示例，选中首屏研究</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="evidence/round-one/after-editor-1440.jpg"
+            alt="改后桌面编辑器"
+          />
+          <figcaption>素材、画板与大图笔记详情对应</figcaption>
+        </figure>
+      </div>
+      <h2>手机轻编辑 · 375 × 812</h2>
+      <div class="pair phones">
+        <figure>
+          <img
+            src="evidence/round-one/before-editor-375.jpg"
+            alt="改前375手机编辑器"
+          />
+          <figcaption>改前：概览下方大量点阵留空</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="evidence/round-one/after-editor-375.jpg"
+            alt="改后375手机编辑器"
+          />
+          <figcaption>改后：全板、横向素材浏览、可读大图和完整笔记</figcaption>
+        </figure>
+      </div>
+      <h2>1280 × 720 与 390 × 844</h2>
+      <p class="more">
+        <a href="evidence/round-one/before-home-1280.jpg">改前首页1280</a
+        ><a href="evidence/round-one/after-home-1280.jpg">改后首页1280</a
+        ><a href="evidence/round-one/before-editor-1280.jpg">改前编辑器1280</a
+        ><a href="evidence/round-one/after-editor-1280.jpg">改后编辑器1280</a
+        ><a href="evidence/round-one/after-home-390.jpg">改后首页390</a
+        ><a href="evidence/round-one/after-editor-390.jpg">改后编辑器390</a>
+      </p>
+      <h2>实际归拢过程 · 19帧采样</h2>
+      <figure class="motion">
+        <img
+          src="evidence/round-one/home-motion.gif"
+          alt="真实页面示例归拢过程的19帧采样记录"
+        />
+        <figcaption>
+          GIF由真实截图编码，约2.8秒的状态采样；不是连续原生录屏。GIF为了方便查看循环播放，产品自动演示仅一次，也可以手动重播。
+        </figcaption>
+      </figure>
+      <p>
+        <a href="evidence/round-one/motion-samples.json">动态状态采样</a> ·
+        <a href="evidence/round-one/workflow-results.json">30项核心实际操作</a>
+        · <a href="evidence/round-one/final-review.json">最终补查</a>
+      </p>
+    </main>
+  </body>
+</html>

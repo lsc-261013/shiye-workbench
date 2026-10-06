@@ -1,16 +1,22 @@
 # 素材、字体与依赖来源
 
+## 2026-10-06 体验升级
+
+本轮继续使用下列已有本地摄影、样张和设备字体，未下载新生产图片、打包新字体或使用图像生成服务。`src/components/Icon.vue` 为项目自制的统一 SVG 控件图标；首页编排演示由既有图片与 CSS 位移实现，明确标注「示例演示」。参考 E24/E08/E06 的选择、详情展开和选中标识关系，没有复制视频网页代码或安装组件库。
+
+`evidence/round-one/` 中 NORTH、SUNLIGHT、REPLACED 等带标识图片，以及18张批量上传图，均为本轮用 Pillow 制作的测试素材；只用于可辨识的替换、导出和恢复验收，不进入生产示例。截图来自运行中的页面；`home-motion.gif` 由19张真实动态截图编码，没有重绘界面，是采样动效记录，并非连续原生录屏。
+
 ## 摄影
 
 以下图片从 Unsplash 图片服务下载，作为应用示例与首页拼贴，随站点本地提供。下载日：2026-09-17。没有购买素材、调用付费 API 或上传用户文件。许可依据：[Unsplash License](https://unsplash.com/license)，允许免费下载、复制、修改及商业/非商业使用；本项目将其用于具体示例，不是建立素材转售服务。未核实摄影师姓名，不作虚构署名。
 
-| 本地文件 | 内容 | 原始来源 |
-| --- | --- | --- |
-| architecture.jpg | 玻璃建筑与天空 | https://images.unsplash.com/photo-1511818966892-d7d671e672a2 |
-| interior.jpg | 暖色室内空间 | https://images.unsplash.com/photo-1600210492486-724fe5c67fb0 |
-| coast.jpg | 山湖与木船（文件名沿用资源标识，并非海景） | https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1 |
-| chair.jpg | 花枝、白瓶与浅色椅子 | https://images.unsplash.com/photo-1490312278390-ab64016e0aa9 |
-| forest.jpg | 森林 | https://images.unsplash.com/photo-1441974231531-c6227db76b6e |
+| 本地文件         | 内容                                       | 原始来源                                                     |
+| ---------------- | ------------------------------------------ | ------------------------------------------------------------ |
+| architecture.jpg | 玻璃建筑与天空                             | https://images.unsplash.com/photo-1511818966892-d7d671e672a2 |
+| interior.jpg     | 暖色室内空间                               | https://images.unsplash.com/photo-1600210492486-724fe5c67fb0 |
+| coast.jpg        | 山湖与木船（文件名沿用资源标识，并非海景） | https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1 |
+| chair.jpg        | 花枝、白瓶与浅色椅子                       | https://images.unsplash.com/photo-1490312278390-ab64016e0aa9 |
+| forest.jpg       | 森林                                       | https://images.unsplash.com/photo-1441974231531-c6227db76b6e |
 
 ## 自制图形与示例
 
