@@ -1,54 +1,93 @@
 <script setup lang="ts">
 import Collage from "./Collage.vue";
-defineProps<{ hasDraft: boolean; busy: boolean }>();
-defineEmits<{ start: [kind: "product" | "life" | "blank"]; resume: [] }>();
+import Icon from "./Icon.vue";
+import type { Board } from "../types";
+defineProps<{ hasDraft: boolean; busy: boolean; board: Board }>();
+defineEmits<{
+  start: [kind: "product" | "life" | "blank"];
+  resume: [];
+  import: [];
+}>();
 </script>
 <template>
   <div class="home">
     <header class="home-nav">
-      <a class="brand" href="#"
+      <a class="brand" href="#" aria-label="拾页首页"
         ><span class="brand-icon">拾</span>拾页<span class="brand-sub"
           >视觉灵感工作台</span
         ></a
       >
       <nav>
-        <a href="#examples">探索示例</a
-        ><button v-if="hasDraft" @click="$emit('resume')">
-          继续上次编辑 ↗</button
-        ><button v-else @click="$emit('start', 'blank')" :disabled="busy">
-          新建方案 ↗
+        <a href="#examples">看看示例</a
+        ><button
+          class="nav-action"
+          :disabled="busy"
+          @click="hasDraft ? $emit('resume') : $emit('start', 'blank')"
+        >
+          {{ hasDraft ? "继续创作" : "打开工作台" }}
+          <Icon name="arrow" :size="16" />
         </button>
       </nav>
     </header>
     <main>
       <section class="hero">
         <div class="hero-copy">
-          <div class="eyebrow">A PLACE FOR YOUR NEXT IDEA</div>
-          <h1>把喜欢的画面，<br />变成你的<span>方向。</span></h1>
+          <div class="eyebrow">
+            <span class="red-rule"></span> 给下一次灵感，一处落脚
+          </div>
+          <h1>把零散的喜欢，<br />整理成<span>一页。</span></h1>
           <p class="hero-description">
-            收集参考，写下借鉴，编排灵感。<br />把零散的喜欢，整理成一页清晰的视觉方案。
+            收集图片、留下来源、写下笔记。<br />把喜欢的画面，编排成你的视觉方向。
           </p>
           <div class="hero-actions">
             <button
               class="primary"
               :disabled="busy"
-              @click="$emit('start', 'product')"
+              @click="hasDraft ? $emit('resume') : $emit('start', 'product')"
             >
-              {{ busy ? "准备素材中…" : "体验示例" }}<span>↗</span></button
-            ><button
+              {{
+                busy ? "准备素材中…" : hasDraft ? "继续上次编辑" : "从示例开始"
+              }}<Icon name="arrow" />
+            </button>
+            <button
               class="text-button"
               :disabled="busy"
               @click="$emit('start', 'blank')"
             >
-              新建空白方案 <span>＋</span>
+              新建空白方案 <Icon name="plus" :size="16" />
             </button>
           </div>
-          <p class="local-note">
-            <span class="status-dot"></span> 无需账号 · 素材保存在当前浏览器
-          </p>
+          <button
+            v-if="hasDraft"
+            class="draft-resume"
+            @click="$emit('resume')"
+            :disabled="busy"
+          >
+            <span class="draft-images"
+              ><img
+                v-for="a in board.assets.filter((a) => a.data).slice(0, 3)"
+                :key="a.id"
+                :src="a.data"
+                alt=""
+            /></span>
+            <span
+              ><small>当前浏览器的草稿</small><b>{{ board.title }}</b
+              ><small
+                >{{ board.items.length }} 个画板元素 · 随时回来继续</small
+              ></span
+            ><Icon name="chevron" />
+          </button>
+          <div class="local-note">
+            <span class="status-dot"></span>无需账号 · 保存在当前浏览器<button
+              @click="$emit('import')"
+              :disabled="busy"
+            >
+              导入备份 <Icon name="upload" :size="13" />
+            </button>
+          </div>
           <div class="hero-foot">
-            <span>COLLECT. CONNECT. CREATE.</span
-            ><span class="handwritten">下一次灵感，从这里开始。</span>
+            <span>COLLECT / ARRANGE / KEEP</span
+            ><span class="handwritten">让灵感有迹可循。</span>
           </div>
         </div>
         <Collage />
@@ -56,22 +95,22 @@ defineEmits<{ start: [kind: "product" | "life" | "blank"]; resume: [] }>();
       <section class="examples" id="examples">
         <div class="section-heading">
           <div>
-            <div class="eyebrow">FROM INSPIRATION TO DIRECTION</div>
-            <h2>先从一页喜欢的开始。</h2>
+            <div class="eyebrow">START WITH A LITTLE INSPIRATION</div>
+            <h2>借一页，开始你的方向。</h2>
           </div>
-          <p>示例可以自由修改。<br />换成你的素材，就是新的方向。</p>
+          <p>两份可编辑的示例。<br />换成自己的素材，留下自己的理解。</p>
         </div>
         <div class="example-grid">
           <button
             class="example-card"
-            @click="$emit('start', 'product')"
             :disabled="busy"
+            @click="$emit('start', 'product')"
           >
             <div class="example-visual product-preview">
               <img
                 class="web-preview"
                 src="/assets/web.svg"
-                alt="独立产品网站示例"
+                alt="自制独立产品网站样张"
               /><img
                 class="type-preview"
                 src="/assets/type.svg"
@@ -80,19 +119,21 @@ defineEmits<{ start: [kind: "product" | "life" | "blank"]; resume: [] }>();
                 class="palette-preview"
                 src="/assets/palette.svg"
                 alt="配色样张"
-              /><span class="preview-label">01 / PRODUCT & WEB</span>
+              /><span class="preview-label">01 / PRODUCT & WEB</span
+              ><span class="example-open"><Icon name="arrow" /></span>
             </div>
             <div class="example-caption">
               <div>
                 <h3>留白之间</h3>
                 <p>独立产品网站 · 结构、排版与借鉴点</p>
               </div>
-              <span>打开示例 ↗</span>
-            </div></button
-          ><button
+              <span>打开示例 <Icon name="arrow" :size="16" /></span>
+            </div>
+          </button>
+          <button
             class="example-card"
-            @click="$emit('start', 'life')"
             :disabled="busy"
+            @click="$emit('start', 'life')"
           >
             <div class="example-visual life-preview">
               <img
@@ -102,41 +143,42 @@ defineEmits<{ start: [kind: "product" | "life" | "blank"]; resume: [] }>();
               /><img
                 class="lake-preview"
                 src="/assets/coast.jpg"
-                alt="湖畔摄影"
+                alt="山湖摄影"
               /><img
                 class="flower-preview"
                 src="/assets/chair.jpg"
                 alt="花枝静物"
-              /><span class="preview-label">02 / PHOTO & LIFESTYLE</span>
+              /><span class="preview-label">02 / PHOTO & LIFESTYLE</span
+              ><span class="example-open"><Icon name="arrow" /></span>
             </div>
             <div class="example-caption">
               <div>
                 <h3>光与日常</h3>
                 <p>摄影与生活方式 · 光影、色彩与拼贴</p>
               </div>
-              <span>打开示例 ↗</span>
+              <span>打开示例 <Icon name="arrow" :size="16" /></span>
             </div>
           </button>
         </div>
         <div class="steps">
           <div>
             <b>01</b>
-            <p>收集喜欢的<span>图片或链接，都可以成为起点。</span></p>
+            <p>收集喜欢的<span>图片、来源与笔记，都有自己的位置。</span></p>
           </div>
           <div>
             <b>02</b>
-            <p>找到你的方向<span>写下借鉴点，让喜欢有据可循。</span></p>
+            <p>编排你的方向<span>拖动、缩放，让关系慢慢浮现。</span></p>
           </div>
           <div>
             <b>03</b>
-            <p>把想法带走<span>导出图片与清单，备份后继续。</span></p>
+            <p>把想法带走<span>作品图用来展示，完整备份留给下次。</span></p>
           </div>
         </div>
       </section>
     </main>
     <footer>
-      <span>拾页 / 让灵感有迹可循</span
-      ><span>本机保存，无跨设备同步 · 重要方案请导出备份</span>
+      <span>拾页 / 一页参考，一种方向</span
+      ><span>本地保存 · 重要方案请导出完整备份</span>
     </footer>
   </div>
 </template>

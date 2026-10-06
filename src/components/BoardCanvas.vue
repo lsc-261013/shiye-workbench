@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { isTextInteraction } from "../lib/keyboard";
 import { type Board, type Placement, clone, WIDTH, HEIGHT } from "../types";
 import { move, resize } from "../lib/geometry";
 const props = defineProps<{
@@ -7,6 +8,7 @@ const props = defineProps<{
   selected: string;
   preview: boolean;
   mobile: boolean;
+  locked?: boolean;
 }>();
 const emit = defineEmits<{
   select: [id: string];
@@ -32,23 +34,30 @@ let drag: {
   mode: "move" | "resize";
   scale: number;
 } | null = null;
+function fit() {
+  if (!host.value) return;
+  const availableHeight = host.value.clientHeight - 50;
+  scale.value = Math.max(
+    0.1,
+    Math.min(
+      1,
+      (host.value.clientWidth - (props.mobile ? 24 : 40)) / WIDTH,
+      props.mobile
+        ? matchMedia("(orientation: landscape)").matches
+          ? Math.max(120, window.innerHeight - 155) / HEIGHT
+          : 1
+        : availableHeight / HEIGHT,
+    ),
+  );
+}
+watch(() => props.mobile, fit);
 onMounted(() => {
-  observer = new ResizeObserver(() => {
-    const availableHeight = host.value!.parentElement!.clientHeight - 160;
-    scale.value = Math.max(
-      0.1,
-      Math.min(
-        1,
-        (host.value!.clientWidth - 32) / WIDTH,
-        props.mobile ? 1 : availableHeight / HEIGHT,
-      ),
-    );
-  });
-  observer.observe(host.value!.parentElement!);
+  observer = new ResizeObserver(fit);
+  observer.observe(host.value!);
 });
 onBeforeUnmount(() => observer?.disconnect());
 function start(e: PointerEvent, p: Placement, mode: "move" | "resize") {
-  if (props.preview) return;
+  if (props.preview || props.locked) return;
   emit("select", p.id);
   if (props.mobile || e.button !== 0) return;
   e.preventDefault();
@@ -89,7 +98,7 @@ function end(cancel = false) {
   guides.value = {};
 }
 function drop(e: DragEvent) {
-  if (props.preview) return;
+  if (props.preview || props.locked) return;
   const files = Array.from(e.dataTransfer?.files || []);
   if (files.length) {
     emit("files", files);
@@ -107,7 +116,13 @@ function drop(e: DragEvent) {
   }
 }
 function key(e: KeyboardEvent, p: Placement) {
-  if (props.preview || props.mobile) return;
+  if (
+    props.preview ||
+    props.mobile ||
+    props.locked ||
+    isTextInteraction(e.target, e.isComposing)
+  )
+    return;
   const directions: Record<string, [number, number]> = {
     ArrowLeft: [-1, 0],
     ArrowRight: [1, 0],
@@ -117,6 +132,7 @@ function key(e: KeyboardEvent, p: Placement) {
   const delta = directions[e.key];
   if (delta) {
     e.preventDefault();
+    emit("select", p.id);
     const b = clone(props.board);
     Object.assign(
       b.items.find((i) => i.id === p.id)!,

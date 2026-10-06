@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="utf-8" /><title>拾页开发验收工具（不进入生产构建）</title
   ><style>
     body {
@@ -41,6 +42,9 @@
     ><button id="exportRestore">恢复 PNG 导出</button
     ><button id="motion">减少动态效果测试</button
     ><button id="network">检查资源请求</button
+    ><button id="clearCapture">清空导出捕获</button
+    ><button id="touch">模拟触屏点选与滑动</button
+    ><button id="fonts">检查导出字体</button
     ><span id="mode">正常模式，导出会被此工具捕获</span>
   </header>
   <iframe src="/" title="验收中的拾页应用"></iframe>
@@ -53,6 +57,54 @@
       status = document.querySelector("#mode"),
       result = document.querySelector("#result");
     let restoreOpen, restoreBlob;
+    document.querySelector("#clearCapture").onclick = () => {
+      document.querySelector("#artifact").value = "";
+      result.textContent = "等待操作";
+    };
+    document.querySelector("#touch").onclick = () => {
+      const win = frame.contentWindow,
+        item = frame.contentDocument.querySelector(".board-item");
+      if (!item) {
+        result.textContent = "先打开一份有内容的方案";
+        return;
+      }
+      const before = item.style.cssText,
+        rect = item.getBoundingClientRect();
+      for (const [type, delta] of [
+        ["pointerdown", 0],
+        ["pointermove", 80],
+        ["pointerup", 80],
+      ]) {
+        item.dispatchEvent(
+          new win.PointerEvent(type, {
+            bubbles: true,
+            pointerId: 91,
+            pointerType: "touch",
+            button: 0,
+            clientX: rect.x + 20,
+            clientY: rect.y + 20 + delta,
+          }),
+        );
+      }
+      item.click();
+      requestAnimationFrame(() => {
+        result.textContent = JSON.stringify({
+          simulatedPointerType: "touch",
+          selectionVisible: item.classList.contains("selected"),
+          geometryUnchanged: before === item.style.cssText,
+          touchAction: win.getComputedStyle(item).touchAction,
+        });
+      });
+    };
+    document.querySelector("#fonts").onclick = async () => {
+      const doc = frame.contentDocument;
+      await doc.fonts.ready;
+      result.textContent = JSON.stringify({
+        ready: doc.fonts.status,
+        canvasFontAvailable: doc.fonts.check('18px "Microsoft YaHei"'),
+        scope: "current Windows Chromium only",
+      });
+    };
     frame.addEventListener("load", () => {
       const win = frame.contentWindow;
       restoreOpen = win.indexedDB.open.bind(win.indexedDB);

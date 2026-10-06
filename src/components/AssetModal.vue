@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Modal from "./Modal.vue";
+import Icon from "./Icon.vue";
 import { type Asset, clone, safeUrl } from "../types";
 import { readImage } from "../lib/data";
 const props = defineProps<{ asset: Asset; fresh?: boolean }>();
@@ -9,6 +10,7 @@ const draft = ref(clone(props.asset));
 const error = ref("");
 const busy = ref(false);
 const expanded = ref(false);
+const composing = ref(false);
 async function screenshot(e: Event) {
   const f = (e.target as HTMLInputElement).files?.[0];
   if (!f) return;
@@ -23,6 +25,7 @@ async function screenshot(e: Event) {
   }
 }
 function submit() {
+  if (busy.value || composing.value) return;
   if (!draft.value.title.trim()) {
     error.value = "请填写素材名称";
     return;
@@ -40,8 +43,15 @@ function submit() {
 }
 </script>
 <template>
-  <Modal :title="fresh ? '添加参考链接' : '素材与借鉴点'" @close="emit('close')"
-    ><form @submit.prevent="submit">
+  <Modal
+    :title="fresh ? '添加参考链接' : '素材与借鉴点'"
+    kind="asset"
+    @close="emit('close')"
+    ><form
+      @submit.prevent="submit"
+      @compositionstart="composing = true"
+      @compositionend="composing = false"
+    >
       <button
         type="button"
         class="asset-detail-image"
@@ -51,6 +61,10 @@ function submit() {
         :aria-label="expanded ? '收起大图' : '展开大图'"
       >
         <img :src="draft.data" :alt="draft.title" />
+        <span class="detail-image-label"
+          ><Icon name="expand" :size="15" />
+          {{ expanded ? "收起大图" : "展开大图" }}</span
+        >
       </button>
       <p v-if="!fresh" class="subtle">
         修改说明会同步到画板中的这份素材，可撤销。

@@ -20,6 +20,7 @@ import { loadBoard, saveBoard } from "./lib/storage";
 import { example } from "./lib/examples";
 import { History } from "./lib/history";
 import { renderPng } from "./lib/export";
+import { DraftSaver } from "./lib/persistence";
 const board = ref<Board>(blank()),
   hasDraft = ref(false),
   page = ref<"home" | "editor">("home"),
@@ -31,40 +32,31 @@ const board = ref<Board>(blank()),
   fresh = ref(false),
   pending = ref<Board | null>(null),
   importInput = ref<HTMLInputElement>();
+const busyLabel = ref("正在读取本机草稿…");
+const exportResult = ref("");
 const history = reactive(new History<Board>());
 let timer: ReturnType<typeof setTimeout>;
 let noticeTimer: ReturnType<typeof setTimeout>;
-let revision = 0;
-let queue = Promise.resolve();
 let recoveryIssue = false;
+const saver = new DraftSaver(
+  saveBoard,
+  (state) => (saveState.value = state),
+  () => notify("本机保存失败，当前编辑仍在。可点击重试，或导出完整备份。"),
+  () => (hasDraft.value = true),
+);
 function notify(message: string) {
   notice.value = message;
   clearTimeout(noticeTimer);
   noticeTimer = setTimeout(() => (notice.value = ""), 6500);
 }
 function schedule() {
-  saveState.value = "保存中…";
-  revision++;
+  saver.changed();
   clearTimeout(timer);
   timer = setTimeout(save, 350);
 }
 async function save() {
-  const snapshot = clone(board.value),
-    r = revision;
-  saveState.value = "保存中…";
-  queue = queue.then(async () => {
-    try {
-      await saveBoard(snapshot);
-      if (r === revision) {
-        saveState.value = "已保存到本机";
-        hasDraft.value = true;
-      }
-    } catch {
-      if (r === revision) saveState.value = "保存失败";
-      notify("本机保存失败，当前编辑仍在。可重试或导出完整备份。");
-    }
-  });
-  await queue;
+  clearTimeout(timer);
+  await saver.save(board.value);
 }
 function change(next: Board) {
   if (next.assets.reduce((n, a) => n + a.data.length, 0) > MAX_TOTAL_DATA) {
@@ -82,6 +74,7 @@ function undo() {
   if (b) {
     board.value = b;
     schedule();
+    notify("已撤销上一步。");
   }
 }
 function redo() {
@@ -89,6 +82,7 @@ function redo() {
   if (b) {
     board.value = b;
     schedule();
+    notify("已重做。");
   }
 }
 function useBoard(b: Board) {
@@ -108,6 +102,7 @@ function propose(b: Board) {
 async function start(kind: "blank" | "product" | "life") {
   if (busy.value) return;
   busy.value = true;
+  busyLabel.value = "正在准备示例素材…";
   try {
     propose(kind === "blank" ? blank() : await example(kind));
   } catch (e) {
@@ -127,6 +122,7 @@ async function upload(files: File[]) {
     return;
   }
   busy.value = true;
+  busyLabel.value = "正在读取图片…";
   const added: Asset[] = [];
   const failures: string[] = [];
   for (const f of files) {
@@ -152,11 +148,15 @@ async function upload(files: File[]) {
   busy.value = false;
 }
 async function replace(id: string, file: File) {
+  if (busy.value) return;
   busy.value = true;
+  busyLabel.value = "正在替换图片…";
   try {
     const data = await readImage(file);
     const b = clone(board.value);
-    b.assets.find((a) => a.id === id)!.data = data;
+    const asset = b.assets.find((a) => a.id === id);
+    if (!asset) throw Error("素材已不在当前方案，请重新选择。");
+    asset.data = data;
     if (change(b))
       notify(
         "图片已原位替换；位置、外框和层叠不变。请检查原来的来源与借鉴点。",
@@ -196,27 +196,45 @@ function saveAsset(asset: Asset) {
   notify("说明已更新。");
 }
 function backup() {
-  download(
-    backupBlob(board.value),
-    fileName(board.value.title) + ".shiye.json",
-  );
-  notify("完整备份已生成，包含图片、说明和布局。");
+  try {
+    download(
+      backupBlob(board.value),
+      fileName(board.value.title) + ".shiye.json",
+    );
+    exportResult.value = "完整备份已生成，已向浏览器发起 JSON 下载。";
+    notify(exportResult.value);
+  } catch (e) {
+    exportResult.value = "备份生成失败，当前草稿仍在。";
+    error.value = exportResult.value + (e as Error).message;
+  }
 }
 function exportText() {
-  download(
-    new Blob([textList(board.value)], { type: "text/plain;charset=utf-8" }),
-    fileName(board.value.title) + "-参考清单.txt",
-  );
-  notify("参考清单已生成。");
+  try {
+    download(
+      new Blob([textList(board.value)], { type: "text/plain;charset=utf-8" }),
+      fileName(board.value.title) + "-参考清单.txt",
+    );
+    exportResult.value = "来源与笔记清单已生成，已向浏览器发起 TXT 下载。";
+    notify(exportResult.value);
+  } catch (e) {
+    exportResult.value = "清单生成失败，当前草稿仍在。";
+    error.value = exportResult.value + (e as Error).message;
+  }
 }
 async function png() {
+  if (busy.value) return;
   busy.value = true;
+  busyLabel.value = "正在生成作品图…";
+  exportResult.value = "";
   try {
     const blob = await renderPng(clone(board.value));
     download(blob, fileName(board.value.title) + ".png");
-    notify("PNG 已生成 · 1600 × 1000");
+    exportResult.value =
+      "作品图已生成 · 1600 × 1000，已向浏览器发起 PNG 下载。";
+    notify(exportResult.value);
   } catch (e) {
     error.value = "导出失败，当前草稿未受影响。" + (e as Error).message;
+    exportResult.value = error.value;
   } finally {
     busy.value = false;
   }
@@ -226,7 +244,9 @@ async function imported(e: Event) {
   const file = el.files?.[0];
   el.value = "";
   if (!file) return;
+  if (busy.value) return;
   busy.value = true;
+  busyLabel.value = "正在校验完整备份…";
   try {
     propose(await parseBackup(file));
   } catch (e) {
@@ -257,15 +277,21 @@ onMounted(async () => {
     busy.value = false;
   }
 });
-onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
+onBeforeUnmount(() => {
+  window.removeEventListener("beforeunload", beforeUnload);
+  clearTimeout(timer);
+  clearTimeout(noticeTimer);
+});
 </script>
 <template>
   <Home
     v-if="page === 'home'"
     :has-draft="hasDraft"
     :busy="busy"
+    :board="board"
     @start="start"
     @resume="page = 'editor'"
+    @import="importInput?.click()"
   /><Editor
     v-else
     :board="board"
@@ -273,6 +299,8 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
     :can-undo="history.past.length > 0"
     :can-redo="history.future.length > 0"
     :busy="busy"
+    :busy-label="busyLabel"
+    :export-result="exportResult"
     @change="change"
     @home="page = 'home'"
     @undo="undo"
@@ -286,6 +314,8 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
     @backup="backup"
     @import="importInput?.click()"
     @retry="save"
+    @prepare-export="exportResult = ''"
+    @notify="notify"
     @start="start"
   />
   <div v-if="notice" class="toast" role="status">
