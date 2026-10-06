@@ -2,6 +2,7 @@
 import { type Asset, safeUrl } from "../types";
 import type { NotesDraft } from "../lib/notes";
 import Icon from "./Icon.vue";
+import ObjectActions from "./ObjectActions.vue";
 defineProps<{
   asset?: Asset;
   draft?: NotesDraft;
@@ -13,6 +14,8 @@ defineProps<{
   canForward: boolean;
   busy: boolean;
   composing: boolean;
+  mobile: boolean;
+  cropped: boolean;
 }>();
 defineEmits<{
   view: [];
@@ -24,6 +27,9 @@ defineEmits<{
   add: [id: string];
   close: [];
   composition: [value: boolean];
+  crop: [];
+  restore: [];
+  duplicate: [];
 }>();
 </script>
 <template>
@@ -86,7 +92,9 @@ defineEmits<{
           ></textarea>
         </label>
         <p class="note-shared" v-if="references > 1">
-          {{ references }}份共用这张图片与笔记。
+          {{
+            references
+          }}份共用这张图片与笔记。替换会更新全部实例并恢复完整图，可撤销。
         </p>
         <p class="error" v-if="error" role="alert">{{ error }}</p>
         <div class="note-submit">
@@ -104,6 +112,19 @@ defineEmits<{
         </div>
       </form>
       <footer class="note-object-actions">
+        <button
+          v-if="asset.data && onBoard && !mobile"
+          :disabled="busy"
+          @click="$emit('crop')"
+        >
+          裁切图片{{ cropped ? " · 已裁切" : "" }}
+        </button>
+        <button v-if="cropped" :disabled="busy" @click="$emit('restore')">
+          恢复完整图
+        </button>
+        <p v-if="mobile && cropped" class="note-shared">
+          当前图片已裁切。精细取景在电脑进行，原图可看大图。
+        </p>
         <template v-if="!onBoard"
           ><p>这份参考暂在素材区。</p>
           <button :disabled="busy" @click="$emit('add', asset.id)">
@@ -115,24 +136,15 @@ defineEmits<{
             asset.data ? "替换图片" : "附上图片"
           }}
         </button>
-        <details v-if="onBoard" class="object-menu">
-          <summary aria-label="图片与图层操作">
-            <Icon name="more" :size="18" />更多
-          </summary>
-          <div>
-            <button :disabled="busy || !canBack" @click="$emit('layer', -1)">
-              后移一层</button
-            ><button :disabled="busy || !canForward" @click="$emit('layer', 1)">
-              前移一层</button
-            ><button
-              class="danger-text"
-              :disabled="busy"
-              @click="$emit('remove')"
-            >
-              从画板移除 · 保留素材
-            </button>
-          </div>
-        </details>
+        <ObjectActions
+          v-if="onBoard"
+          :busy="busy"
+          :can-back="canBack"
+          :can-forward="canForward"
+          @duplicate="$emit('duplicate')"
+          @layer="$emit('layer', $event)"
+          @remove="$emit('remove')"
+        />
       </footer>
     </template>
     <div v-else class="note-panel-idle">

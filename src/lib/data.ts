@@ -1,9 +1,11 @@
 import { type Board, type Asset, safeUrl, WIDTH, HEIGHT } from "../types";
+import { textLayout, validateText } from "./text";
+import { validateCrop } from "./crop";
 export const MAX_IMAGE = 12 * 1024 * 1024;
 export const MAX_BACKUP = 100 * 1024 * 1024;
 export const MAX_TOTAL_DATA = 90 * 1024 * 1024;
 export const blank = (): Board => ({
-  version: 1,
+  version: 2,
   title: "未命名视觉方案",
   assets: [],
   items: [],
@@ -12,7 +14,8 @@ export function validateBoard(value: unknown): Board {
   if (!value || typeof value !== "object")
     throw Error("备份不是有效的方案文件");
   const b = value as Board;
-  if (b.version !== 1) throw Error("不支持此备份版本");
+  if (b.version !== 1 && b.version !== 2)
+    throw Error("不支持此备份版本，原稿保持不变");
   if (
     typeof b.title !== "string" ||
     b.title.length > 100 ||
@@ -57,14 +60,32 @@ export function validateBoard(value: unknown): Board {
       !p ||
       typeof p.id !== "string" ||
       placements.has(p.id) ||
-      !ids.has(p.assetId)
+      (p.kind !== "text" && !ids.has(p.assetId || ""))
     )
       throw Error("画板引用了缺失的素材");
     placements.add(p.id);
+    if (p.kind !== undefined && !["reference", "text"].includes(p.kind))
+      throw Error("无法解释此画板对象类型");
+    if (b.version === 1 && (p.kind === "text" || p.text || p.crop))
+      throw Error("含新文字或裁切的备份必须使用版本2");
+    if (p.kind === "text") {
+      if (p.assetId !== undefined || p.crop || !p.text)
+        throw Error("文字结构无效");
+      validateText(p.text);
+      if (textLayout(p.text, p.w).height > p.h + 1)
+        throw Error("文字框不能完整容纳内容");
+    } else {
+      if (p.text) throw Error("参考对象不能含独立文字");
+      if (p.crop) {
+        validateCrop(p.crop);
+        if (!b.assets.find((a) => a.id === p.assetId)?.data)
+          throw Error("无图片的链接不能裁切");
+      }
+    }
     if (
       ![p.x, p.y, p.w, p.h].every(Number.isFinite) ||
       p.w < 100 ||
-      p.h < 100 ||
+      p.h < (p.kind === "text" ? 48 : 100) ||
       p.x < 0 ||
       p.y < 100 ||
       p.x + p.w > WIDTH + 1 ||
@@ -115,6 +136,17 @@ export async function parseBackup(file: File) {
 export function textList(board: Board) {
   return (
     `${board.title}\n视觉参考清单\n\n` +
+    (board.items.some((p) => p.kind === "text")
+      ? "画板独立文字（按叠放顺序）\n" +
+        board.items
+          .filter((p) => p.kind === "text")
+          .map(
+            (p, i) =>
+              `${i + 1}. ${p.text!.style === "heading" ? "标题" : p.text!.style === "subheading" ? "小标题" : "便签正文"}\n${p.text!.content}\n`,
+          )
+          .join("\n") +
+        "\n参考来源与笔记\n"
+      : "") +
     board.assets
       .map(
         (a, i) =>

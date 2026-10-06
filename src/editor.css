@@ -1,6 +1,127 @@
 .studio .workspace {
   overflow: hidden;
 }
+.studio .text-item {
+  background: transparent;
+}
+.text-artwork {
+  display: block;
+  pointer-events: none;
+}
+.cropped-artwork {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  overflow: hidden;
+}
+.text-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+.notes-form select,
+.crop-controls select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px;
+  border: 1px solid #d3d2c5;
+  background: #fffdf8;
+  color: #32362f;
+  font: inherit;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+.text-bold {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.text-bold input {
+  width: auto;
+  min-width: 18px;
+  height: 18px;
+}
+.context-help {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #626956;
+}
+.alignment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.alignment-grid button {
+  font-size: 13px;
+  min-height: 44px;
+  padding: 10px 5px;
+}
+.dialog-crop-editor {
+  width: min(940px, calc(100% - 32px));
+}
+.crop-previews {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+  background: #e9e6dc;
+  padding: 18px;
+  min-height: 240px;
+}
+.crop-source {
+  position: relative;
+  overflow: hidden;
+  justify-self: center;
+}
+.crop-source img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.crop-window {
+  position: absolute;
+  outline: 2px solid #b34830;
+  box-shadow: 0 0 0 1000px #25272380;
+  pointer-events: none;
+}
+.crop-result {
+  height: 300px;
+  overflow: hidden;
+  background: #fffdfa;
+}
+.crop-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+.crop-controls label {
+  font-size: 14px;
+  color: #555b50;
+}
+.crop-controls input {
+  display: block;
+  width: 100%;
+  accent-color: #b34830;
+  margin: 12px 0;
+}
+.text-strip-icon {
+  font-size: 22px;
+  color: #b34830;
+  padding: 0 4px;
+}
+@media (max-width: 760px) {
+  .studio-tools button:nth-child(3) {
+    grid-column: 1/-1;
+    background: #eee5d8;
+  }
+  .notes-form select {
+    font-size: 16px;
+  }
+}
 .studio .editor-top {
   min-height: 82px;
   padding: 14px 24px;
@@ -108,6 +229,12 @@
   font-family: inherit;
   font-size: 15px;
   line-height: 1.75;
+}
+.text-form .text-bold input {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin: 0;
 }
 .notes-form label input,
 .notes-form label textarea {

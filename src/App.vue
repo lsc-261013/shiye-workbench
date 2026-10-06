@@ -16,13 +16,14 @@ import {
   textList,
   MAX_TOTAL_DATA,
 } from "./lib/data";
-import { loadBoard, saveBoard } from "./lib/storage";
+import { loadBoard, saveBoard, loadOriginal } from "./lib/storage";
 import { example } from "./lib/examples";
 import { History } from "./lib/history";
 import { renderPng } from "./lib/export";
 import { DraftSaver } from "./lib/persistence";
 import { findFreeSpace } from "./lib/layout";
 import { readAspectRatios } from "./lib/imageMetrics";
+import { replaceImage } from "./lib/crop";
 const board = ref<Board>(blank()),
   hasDraft = ref(false),
   page = ref<"home" | "editor">("home"),
@@ -100,7 +101,7 @@ function propose(b: Board) {
   if (hasDraft.value || recoveryIssue) pending.value = b;
   else useBoard(b);
 }
-async function start(kind: "blank" | "product" | "life") {
+async function start(kind: "blank" | "product" | "life" | "creative") {
   if (busy.value) return;
   busy.value = true;
   busyLabel.value = "正在准备示例素材…";
@@ -176,13 +177,10 @@ async function replace(id: string, file: File) {
   busyLabel.value = "正在替换图片…";
   try {
     const data = await readImage(file);
-    const b = clone(board.value);
-    const asset = b.assets.find((a) => a.id === id);
-    if (!asset) throw Error("素材已不在当前方案，请重新选择。");
-    asset.data = data;
+    const b = replaceImage(board.value, id, data);
     if (change(b))
       notify(
-        "图片已原位替换；位置、外框和层叠不变。请检查原来的来源与借鉴点。",
+        "图片已原位替换，共享实例的裁切已恢复完整图；位置、外框和层叠不变，可撤销。请检查来源与笔记。",
       );
   } catch (e) {
     error.value = (e as Error).message;
@@ -228,6 +226,21 @@ function backup() {
   } catch (e) {
     exportResult.value = "备份生成失败，当前草稿仍在。";
     error.value = exportResult.value + (e as Error).message;
+  }
+}
+async function backupOriginal() {
+  try {
+    const b = await loadOriginal();
+    if (!b) {
+      notify(
+        "尚无升级前快照。现有旧稿保持原格式，首次保存新结构时会保留一份。",
+      );
+      return;
+    }
+    download(backupBlob(b), fileName(b.title) + "-升级前-v1.shiye.json");
+    notify("已生成升级前原始备份，请连同当前版本2备份保存。");
+  } catch (e) {
+    error.value = "读取升级前备份失败。" + (e as Error).message;
   }
 }
 function exportText() {
@@ -333,6 +346,7 @@ onBeforeUnmount(() => {
     @png="png"
     @text="exportText"
     @backup="backup"
+    @original="backupOriginal"
     @import="importInput?.click()"
     @retry="save"
     @prepare-export="exportResult = ''"

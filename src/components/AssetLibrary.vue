@@ -7,7 +7,13 @@ defineProps<{
   busy: boolean;
   busyLabel: string;
 }>();
-defineEmits<{ choose: [a: Asset]; add: [id: string]; upload: []; link: [] }>();
+defineEmits<{
+  choose: [a: Asset];
+  add: [id: string];
+  duplicate: [id: string];
+  upload: [];
+  link: [];
+}>();
 </script>
 <template>
   <section class="reference-library" :aria-busy="busy">
@@ -73,13 +79,13 @@ defineEmits<{ choose: [a: Asset]; add: [id: string]; upload: []; link: [] }>();
               <button
                 :disabled="busy"
                 @click="
-                  $emit('add', a.id);
+                  $emit('duplicate', a.id);
                   ($event.currentTarget as HTMLElement)
                     .closest('details')
                     ?.removeAttribute('open');
                 "
               >
-                再添加一份
+                复制画板对象
               </button>
             </details>
           </div>

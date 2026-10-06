@@ -15,11 +15,18 @@ import ExportPanel from "./ExportPanel.vue";
 import ImageViewer from "./ImageViewer.vue";
 import Modal from "./Modal.vue";
 import Icon from "./Icon.vue";
+import TextInspector from "./TextInspector.vue";
+import MultiInspector from "./MultiInspector.vue";
+import CropEditor from "./CropEditor.vue";
+import { useTextDraft } from "../composables/useTextDraft";
+import { textDefaults, textLayout } from "../lib/text";
+import { applyCrop } from "../lib/crop";
+import { alignItems, type Alignment } from "../lib/alignment";
 import { useNotesDraft } from "../composables/useNotesDraft";
 import { useLayoutActions } from "../composables/useLayoutActions";
-import { MAX_AUTO_ITEMS } from "../lib/layout";
+import { MAX_AUTO_ITEMS, findRectSpace } from "../lib/layout";
 import { isTextInteraction } from "../lib/keyboard";
-import { clone, type Board, type Asset } from "../types";
+import { clone, uid, type Board, type Asset } from "../types";
 
 const props = defineProps<{
   board: Board;
@@ -41,18 +48,21 @@ const emit = defineEmits<{
   png: [];
   text: [];
   backup: [];
+  original: [];
   import: [];
   retry: [];
   prepareExport: [];
   notify: [message: string];
-  start: [kind: "blank" | "product" | "life"];
+  start: [kind: "blank" | "product" | "life" | "creative"];
 }>();
 const selected = ref(""),
+  selectedIds = ref<string[]>([]),
   focusedAsset = ref(""),
   preview = ref(false),
   library = ref(false),
   mobile = ref(false),
   exporting = ref(false);
+const cropping = ref(false);
 const viewer = ref<Asset>(),
   pendingAction = ref<(() => void) | null>(null);
 const uploadInput = ref<HTMLInputElement>(),
@@ -80,9 +90,28 @@ const notes = useNotesDraft(
   () => props.board,
   (b) => emit("change", b),
 );
-const { draft, dirty, error: noteError, composing } = notes;
+const { draft, error: noteError, composing } = notes;
+const textNotes = useTextDraft(
+  () => selectedItem.value,
+  () => props.board,
+  (b) => emit("change", b),
+);
+const {
+  draft: textDraft,
+  error: textError,
+  composing: textComposing,
+} = textNotes;
+const dirty = computed(() => notes.dirty.value || textNotes.dirty.value);
+function saveCurrent() {
+  return selectedItem.value?.kind === "text" ? textNotes.save() : notes.save();
+}
+function resetCurrent() {
+  notes.reset();
+  textNotes.reset();
+}
 function chooseRaw(id: string, assetId: string) {
   selected.value = id;
+  selectedIds.value = id ? [id] : [];
   focusedAsset.value = assetId;
 }
 const layout = useLayoutActions(
@@ -102,24 +131,113 @@ function run(action: () => void) {
   if (dirty.value) pendingAction.value = action;
   else action();
 }
-function continueAction(save: boolean) {
+async function continueAction(save: boolean) {
   const action = pendingAction.value;
-  if (save && !notes.save()) {
+  if (save && !saveCurrent()) {
     pendingAction.value = null;
     return;
   }
-  if (!save) notes.reset();
+  if (!save) resetCurrent();
+  // Let the committed board reach props before a queued action clones it.
+  await nextTick();
   pendingAction.value = null;
   action?.();
 }
 function saveNotes() {
   if (notes.save()) emit("notify", "笔记已更新，可撤销。");
 }
-function select(id: string) {
-  if (id === selected.value && (id || !focusedAsset.value)) return;
+function select(id: string, multiple = false) {
+  if (multiple && !mobile.value) {
+    run(() => {
+      selectedIds.value = selectedIds.value.includes(id)
+        ? selectedIds.value.filter((i) => i !== id)
+        : [...selectedIds.value, id];
+      selected.value =
+        selectedIds.value.length === 1 ? selectedIds.value[0]! : "";
+      focusedAsset.value = selectedItem.value?.assetId || "";
+    });
+    return;
+  }
+  if (
+    selectedIds.value.length <= 1 &&
+    id === selected.value &&
+    (id || !focusedAsset.value)
+  )
+    return;
   run(() =>
     chooseRaw(id, props.board.items.find((p) => p.id === id)?.assetId || ""),
   );
+}
+function addText() {
+  run(() => {
+    const b = clone(props.board),
+      text = textDefaults(),
+      size = { w: 480, h: textLayout(text, 480).height },
+      rect = findRectSpace(b.items, size);
+    if (!rect) {
+      emit(
+        "notify",
+        "没有足够空位新增文字，原布局保持不变。请先整理或移开部分对象，再添加文字。",
+      );
+      return;
+    }
+    const p = { id: uid(), kind: "text" as const, text, ...rect };
+    b.items.push(p);
+    b.version = 2;
+    emit("change", b);
+    chooseRaw(p.id, "");
+  });
+}
+function saveText() {
+  if (textNotes.save()) emit("notify", "文字已更新，可撤销。");
+}
+function duplicate() {
+  run(() => {
+    const p = selectedItem.value;
+    if (!p) return;
+    const rect = findRectSpace(props.board.items, p);
+    if (!rect) {
+      emit("notify", "没有放置副本的空位，原稿保持不变。请先整理或移开对象。");
+      return;
+    }
+    const b = clone(props.board),
+      copy = { ...clone(p), ...rect, id: uid() };
+    b.items.push(copy);
+    emit("change", b);
+    chooseRaw(copy.id, copy.assetId || "");
+    emit("notify", "已复制对象，图片资源共享，裁切与位置独立，可撤销。");
+  });
+}
+function copyReference(assetId: string) {
+  run(() => {
+    const p = props.board.items.find((p) => p.assetId === assetId);
+    if (!p) return;
+    chooseRaw(p.id, assetId);
+    duplicate();
+    library.value = false;
+  });
+}
+function align(action: Alignment) {
+  run(() => {
+    try {
+      emit("change", alignItems(props.board, selectedIds.value, action));
+      emit("notify", "已调整选中对象，可完整撤销。");
+    } catch (e) {
+      emit("notify", (e as Error).message);
+    }
+  });
+}
+function crop() {
+  run(() => {
+    if (selectedItem.value && selectedAsset.value?.data && !mobile.value)
+      cropping.value = true;
+  });
+}
+function restoreCrop() {
+  run(() => {
+    if (selectedItem.value)
+      emit("change", applyCrop(props.board, selectedItem.value.id));
+  });
 }
 function choose(a: Asset) {
   run(() => {
@@ -162,10 +280,18 @@ function arrange() {
 function remove() {
   run(() => {
     const b = clone(props.board);
+    const wasText = selectedItem.value?.kind === "text";
     b.items = b.items.filter((p) => p.id !== selected.value);
     emit("change", b);
     selected.value = "";
-    emit("notify", "已从画板移除，参考仍保留在素材区，可撤销。");
+    selectedIds.value = [];
+    focusedAsset.value = "";
+    emit(
+      "notify",
+      wasText
+        ? "文字已删除，可撤销。"
+        : "已从画板移除，参考仍保留在素材区，可撤销。",
+    );
   });
 }
 function layer(direction: number) {
@@ -252,8 +378,19 @@ function beforeUnload(e: BeforeUnloadEvent) {
 }
 function mediaChange() {
   mobile.value = media.matches;
-  if (mobile.value && !selectedAsset.value && props.board.items[0])
-    chooseRaw(props.board.items[0].id, props.board.items[0].assetId);
+  if (mobile.value && selectedIds.value.length > 1)
+    chooseRaw(
+      selectedIds.value[0]!,
+      props.board.items.find((p) => p.id === selectedIds.value[0])?.assetId ||
+        "",
+    );
+  if (
+    mobile.value &&
+    !selectedItem.value &&
+    !selectedAsset.value &&
+    props.board.items[0]
+  )
+    chooseRaw(props.board.items[0].id, props.board.items[0].assetId || "");
 }
 watch(
   () => props.board,
@@ -270,13 +407,21 @@ watch(
     }
     if (selected.value && !b.items.some((p) => p.id === selected.value))
       selected.value = "";
+    selectedIds.value = selectedIds.value.filter((id) =>
+      b.items.some((p) => p.id === id),
+    );
     if (
       focusedAsset.value &&
       !b.assets.some((a) => a.id === focusedAsset.value)
     )
       focusedAsset.value = "";
-    if (mobile.value && !selectedAsset.value && b.items[0])
-      chooseRaw(b.items[0].id, b.items[0].assetId);
+    if (
+      mobile.value &&
+      !selectedItem.value &&
+      !selectedAsset.value &&
+      b.items[0]
+    )
+      chooseRaw(b.items[0].id, b.items[0].assetId || "");
   },
 );
 onMounted(() => {
@@ -314,6 +459,7 @@ onBeforeUnmount(() => {
       @export="openExport"
       @import="run(() => emit('import'))"
       @backup="run(() => emit('backup'))"
+      @original="run(() => emit('original'))"
       @retry="emit('retry')"
       @start="(kind) => run(() => emit('start', kind))"
     />
@@ -325,6 +471,7 @@ onBeforeUnmount(() => {
           ><button :disabled="busy" @click="link">
             <Icon name="link" :size="16" />添加链接
           </button>
+          <button :disabled="busy" @click="addText">添加文字</button>
           <button :disabled="busy" @click="run(() => (library = true))">
             <Icon name="grid" :size="16" />素材区
             <span>{{ board.assets.length }}</span>
@@ -345,11 +492,13 @@ onBeforeUnmount(() => {
         <BoardCanvas
           :board="board"
           :selected="selected"
+          :selected-ids="selectedIds"
           :preview="preview"
           :mobile="mobile"
           :locked="busy"
           :editing="dirty"
           @select="select"
+          @message="emit('notify', $event)"
           @change="emit('change', $event)"
           @details="showImage"
           @add="add"
@@ -367,7 +516,10 @@ onBeforeUnmount(() => {
             v-for="p in board.items"
             :key="p.id"
             :aria-label="
-              '选择参考：' + board.assets.find((a) => a.id === p.assetId)?.title
+              p.kind === 'text'
+                ? '选择文字：' + p.text?.content.slice(0, 40)
+                : '选择参考：' +
+                  board.assets.find((a) => a.id === p.assetId)?.title
             "
             :aria-pressed="selected === p.id"
             :class="{ active: selected === p.id }"
@@ -377,13 +529,36 @@ onBeforeUnmount(() => {
               v-if="board.assets.find((a) => a.id === p.assetId)?.data"
               :src="board.assets.find((a) => a.id === p.assetId)?.data"
               alt=""
-            /><Icon v-else name="link" /><span>{{
-              board.assets.find((a) => a.id === p.assetId)?.title
+            /><span v-else-if="p.kind === 'text'" class="text-strip-icon"
+              >文</span
+            ><Icon v-else name="link" /><span>{{
+              p.kind === "text"
+                ? p.text?.content
+                : board.assets.find((a) => a.id === p.assetId)?.title
             }}</span>
           </button>
         </div>
+        <TextInspector
+          v-if="mobile && !preview && selectedItem?.kind === 'text'"
+          :draft="textDraft"
+          :dirty="textNotes.dirty.value"
+          :error="textError"
+          :composing="textComposing"
+          :busy="busy"
+          :can-back="selectedIndex > 0"
+          :can-forward="
+            selectedIndex >= 0 && selectedIndex < board.items.length - 1
+          "
+          @save="saveText"
+          @cancel="textNotes.reset"
+          @close="select('')"
+          @duplicate="duplicate"
+          @remove="remove"
+          @layer="layer"
+          @composition="textComposing = $event"
+        />
         <SelectionInspector
-          v-if="mobile && !preview"
+          v-else-if="mobile && !preview"
           :asset="selectedAsset"
           :draft="draft"
           :dirty="dirty"
@@ -396,6 +571,11 @@ onBeforeUnmount(() => {
           "
           :busy="busy"
           :composing="composing"
+          :mobile="mobile"
+          :cropped="!!selectedItem?.crop"
+          @crop="crop"
+          @restore="restoreCrop"
+          @duplicate="duplicate"
           @view="showImage(selectedAsset!.id)"
           @save="saveNotes"
           @cancel="notes.reset"
@@ -407,8 +587,34 @@ onBeforeUnmount(() => {
           @composition="composing = $event"
         />
       </main>
+      <MultiInspector
+        v-if="!mobile && !preview && selectedIds.length > 1"
+        :count="selectedIds.length"
+        :busy="busy"
+        @align="align"
+        @close="select('')"
+      />
+      <TextInspector
+        v-else-if="!mobile && !preview && selectedItem?.kind === 'text'"
+        :draft="textDraft"
+        :dirty="textNotes.dirty.value"
+        :error="textError"
+        :composing="textComposing"
+        :busy="busy"
+        :can-back="selectedIndex > 0"
+        :can-forward="
+          selectedIndex >= 0 && selectedIndex < board.items.length - 1
+        "
+        @save="saveText"
+        @cancel="textNotes.reset"
+        @close="select('')"
+        @duplicate="duplicate"
+        @remove="remove"
+        @layer="layer"
+        @composition="textComposing = $event"
+      />
       <SelectionInspector
-        v-if="!mobile && !preview"
+        v-else-if="!mobile && !preview"
         :asset="selectedAsset"
         :draft="draft"
         :dirty="dirty"
@@ -421,6 +627,11 @@ onBeforeUnmount(() => {
         "
         :busy="busy"
         :composing="composing"
+        :mobile="mobile"
+        :cropped="!!selectedItem?.crop"
+        @crop="crop"
+        @restore="restoreCrop"
+        @duplicate="duplicate"
         @view="showImage(selectedAsset!.id)"
         @save="saveNotes"
         @cancel="notes.reset"
@@ -444,17 +655,18 @@ onBeforeUnmount(() => {
         :busy-label="busyLabel"
         @choose="choose"
         @add="add"
+        @duplicate="copyReference"
         @upload="upload"
         @link="link"
     /></Modal>
     <Modal
       v-if="pendingAction"
-      title="这条笔记还没保存"
+      title="修改还没保存"
       kind="unsaved"
       @close="pendingAction = null"
       ><p>
         先处理「{{
-          selectedAsset?.title
+          selectedItem?.kind === "text" ? "当前文字" : selectedAsset?.title
         }}」的修改，再继续。文字不会写到下一份参考。
       </p>
       <div class="modal-actions">
@@ -462,7 +674,7 @@ onBeforeUnmount(() => {
         ><button @click="continueAction(false)">放弃修改并继续</button
         ><button
           class="primary"
-          :disabled="composing"
+          :disabled="composing || textComposing"
           @click="continueAction(true)"
         >
           保存并继续
@@ -494,12 +706,26 @@ onBeforeUnmount(() => {
       </div></Modal
     >
     <ImageViewer v-if="viewer" :asset="viewer" @close="viewer = undefined" />
+    <CropEditor
+      v-if="cropping && selectedAsset && selectedItem"
+      :asset="selectedAsset"
+      :crop="selectedItem.crop"
+      @close="cropping = false"
+      @save="
+        (value) => {
+          emit('change', applyCrop(board, selectedItem!.id, value));
+          cropping = false;
+          emit('notify', '当前对象已裁切，原图保持，可撤销。');
+        }
+      "
+    />
     <ExportPanel
       v-if="exporting"
       :busy="busy"
       :busy-label="busyLabel"
       :result="exportResult"
       :title="board.title"
+      :version="board.version"
       @close="exporting = false"
       @png="emit('png')"
       @text="emit('text')"

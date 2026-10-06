@@ -1,4 +1,5 @@
 import { WIDTH, HEIGHT, type Asset, type Placement } from "../types";
+import { textLayout } from "./text";
 
 export const MAX_AUTO_ITEMS = 12;
 export const LAYOUT_GAP = 24;
@@ -28,6 +29,32 @@ export function separated(a: Rect, b: Rect, gap = LAYOUT_GAP) {
     a.y + a.h + gap <= b.y ||
     b.y + b.h + gap <= a.y
   );
+}
+export function findRectSpace(items: Placement[], size: Size): Rect | null {
+  if (items.length >= 150) return null;
+  const xs = new Set([40]),
+    ys = new Set([130]);
+  for (const p of items) {
+    xs.add(p.x + p.w + 24);
+    xs.add(p.x - size.w - 24);
+    ys.add(p.y + p.h + 24);
+    ys.add(p.y - size.h - 24);
+  }
+  for (let x = 40; x + size.w <= 1560; x += 32) xs.add(x);
+  for (let y = 130; y + size.h <= 975; y += 32) ys.add(y);
+  for (const y of [...ys].sort((a, b) => a - b))
+    for (const x of [...xs].sort((a, b) => a - b)) {
+      const rect = { x, y, w: size.w, h: size.h };
+      if (
+        x >= 40 &&
+        y >= 130 &&
+        x + size.w <= 1560 &&
+        y + size.h <= 975 &&
+        items.every((p) => separated(rect, p))
+      )
+        return rect;
+    }
+  return null;
 }
 
 // Add only the new card; never move existing placements to create a gap.
@@ -86,16 +113,53 @@ export function arrangePlacements(
   if (!items.length) return [];
   const byId = new Map(assets.map((a) => [a.id, a]));
   const getAsset = (p: Placement) => {
-    const a = byId.get(p.assetId);
+    const a = byId.get(p.assetId || "");
     if (!a) throw Error("画板参考缺失，原布局保持不变。");
     return a;
   };
+  const displayedRatio = (p: Placement) =>
+    (ratios[p.assetId || ""] || 1.3) * (p.crop ? p.crop.w / p.crop.h : 1);
+  if (items.some((p) => p.kind === "text")) {
+    for (const factor of [1, 0.85, 0.7]) {
+      let x = 40,
+        y = 130,
+        rowHeight = 0,
+        fits = true;
+      const result = items.map((p) => {
+        const preferred =
+          p.kind === "text"
+            ? { w: p.w, h: textLayout(p.text!, p.w).height }
+            : preferredSize(getAsset(p), displayedRatio(p));
+        const size =
+          p.kind === "text"
+            ? preferred
+            : {
+                w: Math.max(240, Math.round(preferred.w * factor)),
+                h: Math.max(200, Math.round(preferred.h * factor)),
+              };
+        if (x + size.w > 1560) {
+          x = 40;
+          y += rowHeight + 24;
+          rowHeight = 0;
+        }
+        if (size.w > 1520 || y + size.h > 975) fits = false;
+        const next = { ...p, ...size, x, y };
+        x += size.w + 24;
+        rowHeight = Math.max(rowHeight, size.h);
+        return next;
+      });
+      if (fits) return result;
+    }
+    throw Error(
+      "这组内容按当前文字字号无法完整整理进一页。原布局保持不变；可缩短文字、减少元素或手动编排。",
+    );
+  }
   if (items.length === 1) {
     const p = items[0]!;
     return [
       {
         ...p,
-        ...preferredSize(getAsset(p), ratios[p.assetId]),
+        ...preferredSize(getAsset(p), displayedRatio(p)),
         x: LAYOUT_BOUNDS.left,
         y: LAYOUT_BOUNDS.top,
       },
@@ -125,7 +189,7 @@ export function arrangePlacements(
     const weights = Array.from({ length: columns }, (_, column) => {
       const p = slice[column];
       return p
-        ? Math.max(0.8, Math.min(1.7, aspect(getAsset(p), ratios[p.assetId])))
+        ? Math.max(0.8, Math.min(1.7, aspect(getAsset(p), displayedRatio(p))))
         : 1.2;
     });
     const totalWeight = weights.reduce((sum, r) => sum + r, 0);

@@ -8,17 +8,34 @@ export interface Asset {
 }
 export interface Placement {
   id: string;
-  assetId: string;
+  assetId?: string;
+  kind?: "reference" | "text";
+  text?: TextBlock;
+  crop?: Crop;
   x: number;
   y: number;
   w: number;
   h: number;
 }
 export interface Board {
-  version: 1;
+  version: 1 | 2;
   title: string;
   assets: Asset[];
   items: Placement[];
+}
+export interface Crop {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+export interface TextBlock {
+  content: string;
+  style: "heading" | "subheading" | "note";
+  size: number;
+  bold: boolean;
+  align: "left" | "center" | "right";
+  color: "#252723" | "#b34830" | "#555b50";
 }
 export const WIDTH = 1600,
   HEIGHT = 1000;

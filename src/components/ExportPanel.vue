@@ -6,6 +6,7 @@ defineProps<{
   busyLabel: string;
   result: string;
   title: string;
+  version: 1 | 2;
 }>();
 defineEmits<{ close: []; png: []; text: []; backup: [] }>();
 </script>
@@ -24,14 +25,18 @@ defineEmits<{ close: []; png: []; text: []; backup: [] }>();
         <span class="export-format">TXT</span
         ><span
           ><b>来源与笔记清单</b
-          ><small>全部素材 · 保留完整来源和笔记</small></span
+          ><small>独立文字与全部素材 · 保留完整来源和笔记</small></span
         ><Icon name="download" />
       </button>
       <button class="export-option" :disabled="busy" @click="$emit('backup')">
         <span class="export-format">JSON</span
         ><span
           ><b>完整可恢复备份</b
-          ><small>图片 + 说明 + 布局 · 换设备继续</small></span
+          ><small>{{
+            version === 2
+              ? "版本2 · 图片、文字、裁切与布局 · 新版恢复"
+              : "版本1 · 图片、说明与布局"
+          }}</small></span
         ><Icon name="download" />
       </button>
     </div>
@@ -45,6 +50,9 @@ defineEmits<{ close: []; png: []; text: []; backup: [] }>();
     </p>
     <p class="export-foot">
       本地处理。备份文件含你的图片与笔记，请自行妥善保存。
+      <template v-if="version === 2"
+        >版本2备份需使用新版拾页，回退前请同时保存升级前备份。</template
+      >
     </p>
   </Modal>
 </template>

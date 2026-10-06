@@ -12,7 +12,25 @@ export async function saveBoard(board: Board) {
   const db = await openDB();
   return new Promise<void>((resolve, reject) => {
     const tx = db.transaction("draft", "readwrite");
-    tx.objectStore("draft").put(JSON.parse(JSON.stringify(board)), "current");
+    const store = tx.objectStore("draft");
+    const old = store.get("current");
+    old.onsuccess = () => {
+      try {
+        if (board.version === 2 && old.result?.version === 1) {
+          const snapshot = store.get("pre-version-two");
+          snapshot.onsuccess = () => {
+            try {
+              if (!snapshot.result) store.put(old.result, "pre-version-two");
+            } catch {
+              tx.abort();
+            }
+          };
+        }
+        store.put(JSON.parse(JSON.stringify(board)), "current");
+      } catch {
+        tx.abort();
+      }
+    };
     tx.oncomplete = () => {
       db.close();
       resolve();
@@ -21,6 +39,16 @@ export async function saveBoard(board: Board) {
       db.close();
       reject(tx.error || Error("本机空间不足"));
     };
+  });
+}
+export async function loadOriginal(): Promise<Board | null> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("draft", "readonly"),
+      r = tx.objectStore("draft").get("pre-version-two");
+    r.onsuccess = () => resolve(r.result || null);
+    r.onerror = () => reject(r.error);
+    tx.oncomplete = () => db.close();
   });
 }
 export async function loadBoard(): Promise<Board | null> {

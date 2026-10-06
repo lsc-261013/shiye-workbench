@@ -1,5 +1,7 @@
 import { HEIGHT, WIDTH, type Board } from "../types";
 import { imageLoaded } from "./data";
+import { cropSource } from "./crop";
+import { textLayout, fontFor, TEXT_PADDING } from "./text";
 function ellipsis(ctx: CanvasRenderingContext2D, text: string, width: number) {
   const normalized = text.replace(/\s+/g, " ");
   if (ctx.measureText(normalized).width <= width) return normalized;
@@ -34,6 +36,36 @@ export async function renderPng(board: Board): Promise<Blob> {
   c.fillStyle = "#77776e";
   c.fillText("VISUAL NOTES / 视觉参考方案", 40, 91);
   for (const p of board.items) {
+    if (p.kind === "text" && p.text) {
+      const t = p.text,
+        layout = textLayout(t, p.w);
+      if (layout.height > p.h + 1)
+        throw Error("文字框不足以容纳全部文字，请重新保存文字后导出。");
+      c.save();
+      if (t.style === "note") {
+        c.fillStyle = "#ece8dc";
+        c.fillRect(p.x, p.y, p.w, p.h);
+      }
+      c.fillStyle = t.color;
+      c.font = fontFor(t);
+      c.textAlign = t.align;
+      const x =
+        p.x +
+        (t.align === "left"
+          ? TEXT_PADDING
+          : t.align === "center"
+            ? p.w / 2
+            : p.w - TEXT_PADDING);
+      layout.lines.forEach((line, i) =>
+        c.fillText(
+          line,
+          x,
+          p.y + TEXT_PADDING + t.size + i * layout.lineHeight,
+        ),
+      );
+      c.restore();
+      continue;
+    }
     const a = board.assets.find((a) => a.id === p.assetId)!;
     c.save();
     c.beginPath();
@@ -45,13 +77,18 @@ export async function renderPng(board: Board): Promise<Blob> {
     const iw = p.w - 16,
       ih = p.h - 78;
     if (im) {
-      const scale = Math.min(iw / im.width, ih / im.height);
+      const source = cropSource(p.crop, im.naturalWidth, im.naturalHeight);
+      const scale = Math.min(iw / source.w, ih / source.h);
       c.drawImage(
         im,
-        p.x + 8 + (iw - im.width * scale) / 2,
-        p.y + 8 + (ih - im.height * scale) / 2,
-        im.width * scale,
-        im.height * scale,
+        source.x,
+        source.y,
+        source.w,
+        source.h,
+        p.x + 8 + (iw - source.w * scale) / 2,
+        p.y + 8 + (ih - source.h * scale) / 2,
+        source.w * scale,
+        source.h * scale,
       );
     } else {
       c.fillStyle = "#e9e6dc";

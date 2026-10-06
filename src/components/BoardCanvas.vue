@@ -3,16 +3,22 @@ import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import { isTextInteraction } from "../lib/keyboard";
 import { type Board, type Placement, clone, WIDTH, HEIGHT } from "../types";
 import { move, resize } from "../lib/geometry";
+import { fitText } from "../lib/text";
+import { moveSelection } from "../lib/alignment";
+import TextArtwork from "./TextArtwork.vue";
+import CroppedImage from "./CroppedImage.vue";
 const props = defineProps<{
   board: Board;
   selected: string;
+  selectedIds: string[];
   preview: boolean;
   mobile: boolean;
   locked?: boolean;
   editing?: boolean;
 }>();
 const emit = defineEmits<{
-  select: [id: string];
+  select: [id: string, multiple?: boolean];
+  message: [message: string];
   change: [board: Board];
   details: [id: string];
   add: [id: string, x: number, y: number];
@@ -34,7 +40,9 @@ let drag: {
   y: number;
   mode: "move" | "resize";
   scale: number;
+  group: Placement[];
 } | null = null;
+let resizeError = "";
 function fit() {
   if (!host.value) return;
   const availableHeight = host.value.clientHeight - 50;
@@ -59,7 +67,12 @@ onMounted(() => {
 onBeforeUnmount(() => observer?.disconnect());
 function start(e: PointerEvent, p: Placement, mode: "move" | "resize") {
   if (props.preview || props.locked) return;
-  emit("select", p.id);
+  if (e.shiftKey && !props.mobile) {
+    e.preventDefault();
+    emit("select", p.id, true);
+    return;
+  }
+  if (!props.selectedIds.includes(p.id)) emit("select", p.id);
   if (props.mobile || e.button !== 0) return;
   e.preventDefault();
   if (props.editing) return;
@@ -71,7 +84,11 @@ function start(e: PointerEvent, p: Placement, mode: "move" | "resize") {
     y: e.clientY,
     mode,
     scale: scale.value,
+    group: props.selectedIds.includes(p.id)
+      ? clone(props.board.items.filter((i) => props.selectedIds.includes(i.id)))
+      : [clone(p)],
   };
+  resizeError = "";
   temp.value = clone(props.board);
 }
 function pointerMove(e: PointerEvent) {
@@ -79,8 +96,28 @@ function pointerMove(e: PointerEvent) {
   const p = temp.value.items.find((p) => p.id === drag!.id)!;
   const dx = (e.clientX - drag.x) / drag.scale,
     dy = (e.clientY - drag.y) / drag.scale;
-  if (drag.mode === "resize") Object.assign(p, resize(drag.start, dx, dy));
-  else {
+  if (drag.mode === "resize") {
+    try {
+      Object.assign(
+        p,
+        p.kind === "text"
+          ? fitText(
+              drag.start,
+              p.text,
+              Math.max(100, Math.min(1600 - p.x, drag.start.w + dx)),
+            )
+          : resize(drag.start, dx, dy),
+      );
+      resizeError = "";
+    } catch (e) {
+      resizeError = (e as Error).message;
+    }
+  } else {
+    if (drag.group.length > 1) {
+      for (const next of moveSelection(drag.group, dx, dy))
+        Object.assign(temp.value.items.find((p) => p.id === next.id)!, next);
+      return;
+    }
     const moved = move(drag.start, dx, dy);
     p.x = moved.x;
     p.y = moved.y;
@@ -88,6 +125,7 @@ function pointerMove(e: PointerEvent) {
   }
 }
 function end(cancel = false) {
+  if (resizeError && !cancel) emit("message", resizeError);
   if (
     drag &&
     temp.value &&
@@ -135,8 +173,18 @@ function key(e: KeyboardEvent, p: Placement) {
   const delta = directions[e.key];
   if (delta) {
     e.preventDefault();
-    emit("select", p.id);
+    if (!props.selectedIds.includes(p.id)) emit("select", p.id);
     const b = clone(props.board);
+    if (props.selectedIds.length > 1) {
+      for (const next of moveSelection(
+        b.items.filter((p) => props.selectedIds.includes(p.id)),
+        delta[0] * (e.shiftKey ? 20 : 10),
+        delta[1] * (e.shiftKey ? 20 : 10),
+      ))
+        Object.assign(b.items.find((p) => p.id === next.id)!, next);
+      emit("change", b);
+      return;
+    }
     Object.assign(
       b.items.find((i) => i.id === p.id)!,
       move(
@@ -180,7 +228,10 @@ function key(e: KeyboardEvent, p: Placement) {
           v-for="p in shown.items"
           :key="p.id"
           class="board-item"
-          :class="{ selected: p.id === selected && !preview }"
+          :class="{
+            selected: selectedIds.includes(p.id) && !preview,
+            'text-item': p.kind === 'text',
+          }"
           :style="{
             left: p.x + 'px',
             top: p.y + 'px',
@@ -189,26 +240,35 @@ function key(e: KeyboardEvent, p: Placement) {
           }"
           tabindex="0"
           :aria-label="
-            '画板素材：' + shown.assets.find((a) => a.id === p.assetId)?.title
+            p.kind === 'text'
+              ? '画板文字：' + p.text?.content.slice(0, 40)
+              : '画板素材：' +
+                shown.assets.find((a) => a.id === p.assetId)?.title
           "
           @pointerdown="start($event, p, 'move')"
           @pointermove="pointerMove"
           @pointerup="end()"
           @pointercancel="end(true)"
           @keydown="key($event, p)"
-          @click="emit('select', p.id)"
-          @dblclick="emit('details', p.assetId)"
-          @keydown.enter="emit('details', p.assetId)"
+          @click="$event.detail === 0 && emit('select', p.id, $event.shiftKey)"
+          @dblclick="p.assetId && emit('details', p.assetId)"
+          @keydown.enter="p.assetId && emit('details', p.assetId)"
         >
+          <TextArtwork
+            v-if="p.kind === 'text' && p.text"
+            :text="p.text"
+            :width="p.w"
+            :height="p.h"
+          />
           <template
             v-for="a in shown.assets.filter((a) => a.id === p.assetId)"
             :key="a.id"
             ><div class="item-image">
-              <img
+              <CroppedImage
                 v-if="a.data"
-                :src="a.data"
-                :alt="a.title"
-                draggable="false"
+                :data="a.data"
+                :crop="p.crop"
+                :title="a.title"
               />
               <div v-else class="link-art">
                 <span>↗</span>
@@ -222,13 +282,23 @@ function key(e: KeyboardEvent, p: Placement) {
           >
         </article>
         <button
-          v-if="activePlacement && !preview && !mobile && !editing"
+          v-if="
+            activePlacement &&
+            selectedIds.length === 1 &&
+            !preview &&
+            !mobile &&
+            !editing
+          "
           class="resize-handle floating-handle"
           :style="{
             left: activePlacement.x + activePlacement.w - 10 + 'px',
             top: activePlacement.y + activePlacement.h - 10 + 'px',
           }"
-          aria-label="等比缩放，拖动右下角"
+          :aria-label="
+            activePlacement.kind === 'text'
+              ? '调整文字框宽度，字号保持'
+              : '等比缩放，拖动右下角'
+          "
           @pointerdown.stop="start($event, activePlacement, 'resize')"
           @pointermove.stop="pointerMove"
           @pointerup.stop="end()"
@@ -250,7 +320,7 @@ function key(e: KeyboardEvent, p: Placement) {
       <span>{{
         mobile
           ? "查看全貌 · 点选素材后查看说明"
-          : "拖动编排 · 角点等比缩放 · 方向键微调"
+          : "拖动编排 · Shift点选多个 · 方向键微调"
       }}</span
       ><span>1600 × 1000 · {{ Math.round(scale * 100) }}%</span>
     </div>

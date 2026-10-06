@@ -18,8 +18,9 @@ const emit = defineEmits<{
   export: [];
   import: [];
   backup: [];
+  original: [];
   retry: [];
-  start: [kind: "blank" | "product" | "life"];
+  start: [kind: "blank" | "product" | "life" | "creative"];
 }>();
 const more = ref<HTMLDetailsElement>();
 function action(fn: () => void) {
@@ -110,6 +111,9 @@ onBeforeUnmount(() => window.removeEventListener("click", outside));
             保存完整备份 JSON
           </button>
           <hr />
+          <button :disabled="busy" @click="action(() => emit('original'))">
+            导出升级前备份
+          </button>
           <span class="menu-label">开始另一页 · 将确认替换草稿</span>
           <button
             :disabled="busy"
@@ -126,6 +130,12 @@ onBeforeUnmount(() => window.removeEventListener("click", outside));
             @click="action(() => emit('start', 'life'))"
           >
             使用「光与日常」示例
+          </button>
+          <button
+            :disabled="busy"
+            @click="action(() => emit('start', 'creative'))"
+          >
+            使用「创作练习」示例
           </button>
         </div>
       </details>
