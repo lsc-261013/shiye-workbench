@@ -1,0 +1,146 @@
+[
+  {
+    "label": "加入新参考保留原布局",
+    "pass": true
+  },
+  {
+    "label": "中文笔记与原始来源保留",
+    "pass": true
+  },
+  {
+    "label": "整理保留素材内容与引用ID",
+    "pass": true
+  },
+  {
+    "label": "整理一次撤销精确恢复整板",
+    "pass": true
+  },
+  {
+    "label": "撤销后的刷新保留完整状态",
+    "pass": true
+  },
+  {
+    "label": "重做和重复整理结果一致",
+    "pass": true
+  },
+  {
+    "label": "整理后刷新精确保留整板",
+    "pass": true
+  },
+  {
+    "label": "TXT保留完整笔记和来源",
+    "pass": true
+  },
+  {
+    "label": "手机与桌面PNG完全相同且不混入UI",
+    "pass": true
+  },
+  {
+    "label": "手机大图返回与取消预览保留未提交文字",
+    "pass": true
+  },
+  {
+    "label": "手机保存后的刷新恢复",
+    "pass": true
+  },
+  {
+    "label": "明确增加共享引用",
+    "pass": true
+  },
+  {
+    "label": "整理后加入一次撤销精确恢复",
+    "pass": true
+  },
+  {
+    "label": "两引用原位替换保留布局与笔记",
+    "pass": true
+  },
+  {
+    "label": "移除只删除一份实例并保留素材",
+    "pass": true
+  },
+  {
+    "label": "撤销替换恢复原图片",
+    "pass": true
+  },
+  {
+    "label": "非法JSON保留原草稿",
+    "pass": true
+  },
+  {
+    "label": "本机保存失败仍可备份内存稿",
+    "pass": true
+  },
+  {
+    "label": "单竖图保持合理尺寸与边界",
+    "pass": true
+  },
+  {
+    "label": "12个元素边界与24px间距",
+    "pass": true
+  },
+  {
+    "label": "13个元素拒绝整理且完整保留原稿",
+    "pass": true
+  },
+  {
+    "label": "无空位收集保留参考和原布局",
+    "pass": true
+  },
+  {
+    "label": "无空位明确整理后加入的一次撤销",
+    "pass": true
+  },
+  {
+    "label": "另一来源真实JSON逐字段恢复一致",
+    "pass": true
+  },
+  {
+    "label": "未保存笔记时禁止拖动几何",
+    "pass": true
+  },
+  {
+    "label": "桌面真实拖动只改变目标",
+    "pass": true
+  },
+  {
+    "label": "桌面实际等比缩放",
+    "pass": true
+  },
+  {
+    "label": "拖动与缩放逐次撤销恢复",
+    "pass": true
+  },
+  {
+    "label": "输入框撤销不会触发画板撤销",
+    "pass": true
+  },
+  {
+    "label": "4186更新保留原草稿布局图片与笔记",
+    "pass": true
+  },
+  {
+    "label": "390手机上传链接替换与明确整理",
+    "pass": true
+  },
+  {
+    "label": "手机移除后撤销精确恢复",
+    "pass": true
+  },
+  {
+    "label": "手机替换结果是实际选入图片",
+    "pass": true
+  },
+  {
+    "label": "最终超限立即提示而不解码整理",
+    "pass": true
+  },
+  {
+    "label": "最终超限拒绝后整板精确不变",
+    "pass": true
+  },
+  {
+    "label": "最终构建4186仍保留原草稿",
+    "pass": true
+  }
+]

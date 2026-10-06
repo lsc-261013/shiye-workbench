@@ -1,0 +1,12 @@
+{
+  "scope": "read-only interaction on original 4186 draft",
+  "draftContentPreserved": true,
+  "earlierSmoke": "image viewer, preview return, export panel, empty application error log",
+  "innerHeight": 994,
+  "innerWidth": 390,
+  "items": 5,
+  "script": [
+    "http://127.0.0.1:4186/assets/index-C-HWNaGN.js"
+  ],
+  "url": "http://127.0.0.1:4186/"
+}

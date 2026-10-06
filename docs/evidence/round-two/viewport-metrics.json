@@ -1,0 +1,111 @@
+{
+  "desktop1440": {
+    "canvas": {
+      "bottom": 847.625,
+      "height": 681.25,
+      "left": 20,
+      "right": 1110,
+      "top": 166.375,
+      "width": 1090,
+      "x": 20,
+      "y": 166.375
+    },
+    "fields": [
+      {
+        "font": "15px"
+      },
+      {
+        "font": "15px"
+      },
+      {
+        "font": "15px"
+      }
+    ],
+    "innerHeight": 900,
+    "innerWidth": 1440,
+    "overflow": false
+  },
+  "desktop1280": {
+    "canvas": {
+      "bottom": 676,
+      "height": 532,
+      "left": 59.39583587646485,
+      "right": 910.5937728881836,
+      "top": 144,
+      "width": 851.1979370117188,
+      "x": 59.39583587646485,
+      "y": 144
+    },
+    "footer": {
+      "bottom": 708.5000457763672,
+      "height": 82.66667175292969,
+      "left": 988.6666870117188,
+      "right": 1246.6666870117188,
+      "top": 625.8333740234375,
+      "width": 258,
+      "x": 988.6666870117188,
+      "y": 625.8333740234375
+    },
+    "innerHeight": 720,
+    "innerWidth": 1280,
+    "notePanel": {
+      "bottom": 720,
+      "height": 644,
+      "left": 970,
+      "right": 1280,
+      "top": 76,
+      "width": 310,
+      "x": 970,
+      "y": 76
+    },
+    "overflow": false
+  },
+  "mobile375": {
+    "canvas": {
+      "bottom": 454.6666717529297,
+      "height": 210,
+      "left": 12,
+      "right": 348,
+      "top": 244.6666717529297,
+      "width": 336,
+      "x": 12,
+      "y": 244.6666717529297
+    },
+    "handles": 0,
+    "innerHeight": 812,
+    "innerWidth": 375,
+    "overflow": false
+  },
+  "mobile390": {
+    "canvas": {
+      "bottom": 464.0416717529297,
+      "height": 219.375,
+      "left": 11.833333969116213,
+      "right": 362.8333339691162,
+      "top": 244.6666717529297,
+      "width": 351,
+      "x": 11.833333969116213,
+      "y": 244.6666717529297
+    },
+    "handles": 0,
+    "innerHeight": 844,
+    "innerWidth": 390,
+    "overflow": false
+  },
+  "landscape844": {
+    "canvas": {
+      "bottom": 357,
+      "height": 235,
+      "left": 226.33334350585935,
+      "right": 602.3333435058594,
+      "top": 122,
+      "width": 376,
+      "x": 226.33334350585935,
+      "y": 122
+    },
+    "handles": 0,
+    "innerHeight": 390,
+    "innerWidth": 844,
+    "overflow": false
+  }
+}

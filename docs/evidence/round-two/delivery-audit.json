@@ -1,0 +1,18 @@
+{
+  "missingLinks": [],
+  "productionFiles": [
+    "favicon.svg",
+    "index.html",
+    "assets/architecture.jpg",
+    "assets/chair.jpg",
+    "assets/coast.jpg",
+    "assets/forest.jpg",
+    "assets/index-C-HWNaGN.js",
+    "assets/index-FCi7WdxC.css",
+    "assets/interior.jpg",
+    "assets/palette.svg",
+    "assets/type.svg",
+    "assets/web.svg"
+  ],
+  "includesTests": false
+}

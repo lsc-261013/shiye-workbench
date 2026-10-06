@@ -1,0 +1,64 @@
+{
+  "screenshotPairs": [
+    {
+      "cssViewport": "1440",
+      "before": [
+        1440,
+        900
+      ],
+      "after": [
+        1440,
+        900
+      ],
+      "sameSize": true
+    },
+    {
+      "cssViewport": "1280",
+      "before": [
+        1280,
+        720
+      ],
+      "after": [
+        1280,
+        720
+      ],
+      "sameSize": true
+    },
+    {
+      "cssViewport": "375",
+      "before": [
+        375,
+        811
+      ],
+      "after": [
+        375,
+        811
+      ],
+      "sameSize": true
+    },
+    {
+      "cssViewport": "390",
+      "before": [
+        390,
+        844
+      ],
+      "after": [
+        390,
+        844
+      ],
+      "sameSize": true
+    }
+  ],
+  "png": {
+    "size": [
+      1600,
+      1000
+    ],
+    "bytes": 91550,
+    "sha256": "98e7c589d00c48be12798a8c8d1a50c950df01a14c487127000e547261dc1c8a",
+    "mobileSha256": "98e7c589d00c48be12798a8c8d1a50c950df01a14c487127000e547261dc1c8a",
+    "sameBytes": true
+  },
+  "uiAssertions": 36,
+  "allUiAssertionsPassed": true
+}

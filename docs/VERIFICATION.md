@@ -1,6 +1,47 @@
 # 验证与限制记录
 
-## 2026-10-06 第一轮体验升级
+## 2026-10-06 第二轮：当前验收
+
+只按第二轮附件执行，起点 `5ee33ef`；分支 `experience/round-two-2026-10-06`。当前状态见 `STATUS.md`，完整交接见 `HANDOFF-ROUND-TWO-2026-10-06.md`。下方第一轮和首版均为历史快照。
+
+### 工程检查
+
+`npm run check`通过；`npm test -- --configLoader native`三文件23/23通过；`npm run build -- --configLoader native`通过、57模块。最终产物HTML 0.67kB、CSS45.64kB、JS128.00kB，gzip为0.47/10.35/49.03kB，见 `evidence/round-two/engineering-results.txt`。没有新增依赖。生产不包含开发验收页和测试素材，未重新做依赖漏洞审计。
+
+新增7项测试覆盖混合12元素的边界、间距、稳定性、ID/内容/输入不变；空与单元素；超限或缺引用拒绝；寻找空位不动原作品；一次撤销重做恢复整板；笔记保存仅更新正确对象的文字、保留替换图；非法或过期目标不改原稿。测试关注数据风险，没有为CSS做实现镜像断言。
+
+### 实际操作与证据
+
+证据统一在 `evidence/round-two/`，断言结果为 `workflow-results.json`，文件复核为 `evidence-audit.json`。完整任务由内置Chromium操作，破坏测试在5186/5188隔离源进行。
+
+| 范围               | 实际结论                                                                                                                   | 主要证据                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 看图与焦点         | 点选→看大图，直接进入无表单查看层；关闭恢复原选择与打开按钮                                                                | after-image-action-1440.jpg                                                      |
+| 就地笔记           | 中文多段全文、原始来源保留；组合事件期间禁用保存；继续编辑/保存并继续/放弃/取消归属正确；非法来源不写入                    | workflow-before-add.shiye.json、workflow-after-add.shiye.json                    |
+| 新参考             | 上传即尝试空位，新增链接不动原来的位置和尺寸                                                                               | workflow-before-add.shiye.json、workflow-after-add.shiye.json                    |
+| 整理、历史、存储   | 整理保留ID/引用/素材；一次撤销与整板原稿精确一致；重做稳定；整理和撤销各自刷新后JSON相等                                   | workflow-arranged*、workflow-undo*、workflow-redo.shiye.json                     |
+| 容量               | 单竖图合理尺寸；12张横竖图/链接混排24px间距且不越界；13元素提示拒绝、整板原样保留；空板按钮禁用                            | single-arranged、twelve-arranged、thirteen-preserved.shiye.json                  |
+| 没有空位           | 上传保留素材和原布局；留在素材区、明确整理后加入都操作，一次撤销精确恢复                                                   | no-space-collected.shiye.json、no-space-undo.shiye.json                          |
+| 多实例、替换、移除 | 次级“再添加一份”增加共享引用；两份图片原位替换，布局/笔记不变；撤销恢复；移除只一份且素材仍在                              | workflow-shared\*、workflow-replaced、workflow-removed.shiye.json                |
+| 桌面操作           | 真实指针拖动、等比缩放和方向键微调；逐次撤销恢复；未提交笔记时禁止拖动；输入框Ctrl+Z不撤销画板                             | workflow-results.json                                                            |
+| PNG/TXT/JSON       | 实际生成1600×1000作品图并亲看；TXT包含352字完整中文、原始来源与链接笔记；JSON真实备份恢复                                  | workflow-desktop.png、workflow-mobile.png、workflow-notes.txt                    |
+| 独立恢复           | 5186真实JSON导入5188，4份素材/5实例逐字段相同                                                                              | independent-restored.shiye.json                                                  |
+| 失败保护           | 坏JSON保留整板；保存失败仍能备份内存稿、解除后重试；PNG失败保留稿和明确反馈                                                | workflow-invalid-import.shiye.json、save-failure-memory.shiye.json、两张故障截图 |
+| 手机               | 375/390就地编辑、看图返回、未保存预览拦截、长笔记保存和刷新；390补查上传、链接、替换、明确整理加入、移除/撤销和备份        | workflow-phone\*、phone-light-edit.shiye.json                                    |
+| 视口、动效与网络   | 1440×900、1280×720、375×812、390×844、390×500、844×390；无页面横向溢出、手机无手柄；等效少动效覆盖下整理可操作，资源仅本地 | viewport-metrics.json、network-resources.json                                    |
+| 4186生产           | 最终bundle为index-C-HWNaGN.js；更新前后原5对象的图片/布局/标题/完整笔记相同；直看图、预览返回、导出面板通过，应用错误为空  | production-smoke.json                                                            |
+
+同方案桌面和375手机模拟PNG各91550字节，SHA-256均为 `98e7c589d00c48be12798a8c8d1a50c950df01a14c487127000e547261dc1c8a`。不混入UI是实际图片审查与字节对照的结论。
+
+### 验证边界
+
+手机为视口及合成touch/组合事件测试，不是实体手机、真实IME或软键盘。文件通过开发页把真实本地Blob设到文件输入并派发change，验证应用文件处理路径；没有证明本机OS文件选择窗口、真机相册或跨窗口拖入。导出捕获真实Blob并发起浏览器下载，不声称证明用户磁盘落盘。
+
+保存/PNG失败为故障注入；少动效为与CSS规则相同的覆盖，不是OS偏好切换。Safari、跨平台字体、真机、内存/配额压力、性能指标和多标签冲突合并未验证。本轮未声称新增带截图链接的独立回归，既有截图输入/解码路径保留，第一轮实测归于下方历史。
+
+四组同内容截图文件宽高一一相同；375截图为375×811，CSS视口为375×812，记录了1px取整。视口变更需等页面稳定后取坐标；测试中一次使用旧手柄坐标拖到别的对象，撤销后用新坐标重验通过，不将采集错误写成产品bug。最新生产草稿未用于破坏性测试。
+
+## 2026-10-06 第一轮体验升级（历史）
 
 范围：首页、桌面编辑器、手机轻编辑。只做本地实现与提交，无本轮推送、部署或其他项目修改。起点为 `4bc4b3c`；当前工程进度以 `STATUS.md` 为准，完整结果快照见 `HANDOFF-2026-10-06.md`。下方 2026-09-17 内容作为首版历史保留，不能当成本轮新测试结果。
 
