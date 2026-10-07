@@ -1,6 +1,8 @@
-# 第四轮与连续撤销修复当前验证 · 2026-10-07
+# 第四轮、连续撤销与正式发布验证 · 2026-10-07
 
-第四轮实现`77d2547`，后续连续撤销修复`1da0bdc`。修复后类型检查、75模块生产构建、6文件45/45测试通过；当前JS为`index-B8j0E01h.js`，CSS为`index-Bs0hNSWi.css`。[完整交接](HANDOFF-ROUND-FOUR-2026-10-07.md)已整合修复。下表、[截图对照](round-four-review.html)及[workflow-results](evidence/round-four/workflow-results.json)保留第四轮`77d2547`原验收：59次UI/产物断言中54有效通过、5项有退役原因和对应复验，不包含下述新增连续撤销实操。
+第四轮实现`77d2547`，连续撤销修复`1da0bdc`，首次正式发布`0cf8bd3`已合并推送到`main`并部署至[GitHub Pages](https://lsc-261013.github.io/shiye-workbench/)。发布前类型检查、75模块构建、6文件45/45测试通过；本地JS为`index-B8j0E01h.js`，线上Pages JS为`index-DGKqxqDi.js`，CSS均为`index-Bs0hNSWi.css`。线上build/deploy、HTML/资源、素材拖入、两种裁切、文字、连续撤销、实际下载和原稿刷新恢复见[正式发布记录](RELEASE-2026-10-07.md)及[结果](evidence/release-2026-10-07/results.json)。实际Ctrl+C/V的两种工具入口仍被虚拟剪贴板拦截，真实按键验收未完成。私稿已在当前内置浏览器迁移，刷新后JSON与原备份逐字节一致；未迁移到外部Edge。
+
+[完整交接](HANDOFF-ROUND-FOUR-2026-10-07.md)已整合发布与修复。下表、[截图对照](round-four-review.html)及[workflow-results](evidence/round-four/workflow-results.json)保留第四轮`77d2547`原验收：59次UI/产物断言中54有效通过、5项有退役原因和对应复验，不包含后续连续撤销和发布实操。
 
 | 范围        | 本轮实际依据                                                                                                                                                   |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -12,7 +14,7 @@
 | 导出        | 实际182888字节PNG、1106字节TXT、37792字节JSON，JSON与存稿一致；手机PNG逐字节相同；透明极长图与EXIF四点轮廓实际导出亲看                                         |
 | 视觉/原稿   | 四种实际CSS视口同稿前后，侧栏和1280裁切确认区亲看；最终原v1五对象稿含ID完整字符串恢复并核对起点相等                                                            |
 
-截图尺寸、PNG采样和SHA-256见[evidence-audit](evidence/round-four/evidence-audit.json)。原稿保护过程中发现两份示例仅ID不同，先外部保留暂停后版本，再正常导入起点完整备份；原因不推断。未推送、部署或合并。
+截图尺寸、PNG采样和SHA-256见[evidence-audit](evidence/round-four/evidence-audit.json)。原稿保护过程中发现两份示例仅ID不同，先外部保留暂停后版本，再正常导入起点完整备份；原因不推断。该阶段未推送、部署或合并，后续按明确授权的正式发布另见上文。
 
 浏览器工具原生Ctrl+C/V未派发标准keydown，不能声称OS或跨软件剪贴板通过。模拟手机/组合、故障注入、真实File与Blob的边界详见交接；前轮动效采样不是本轮录屏。
 

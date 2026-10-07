@@ -6,6 +6,8 @@
 
 ## 打开与启动
 
+[正式网站](https://lsc-261013.github.io/shiye-workbench/)已发布到免费的GitHub Pages，直接在浏览器打开即可使用，无需安装或启动本地服务。草稿仍只保存在当前浏览器，本站不上传图片、笔记或备份到GitHub。换浏览器时先导出JSON，再在新浏览器导入。
+
 [本地预览](http://127.0.0.1:4186/)供当前电脑访问。有草稿点「继续上次编辑」。关闭服务或重启电脑后：
 
 ```powershell
@@ -24,7 +26,9 @@ npm test -- --configLoader native
 
 不同浏览器、端口及`localhost`/`127.0.0.1`分别保存草稿。继续原稿使用原浏览器与原地址，换来源先导出JSON。5173属于GroundDesk，不要强停其他服务。
 
-当前分支`experience/round-four-2026-10-07`，第四轮实现`77d2547`，连续撤销修复`1da0bdc`。本轮仅本地提交，未推送、未部署、未合并；[GitHub](https://github.com/lsc-261013/shiye-workbench)仍是此前首版。[STATUS](docs/STATUS.md)是唯一当前状态入口，详见已整合修复的[第四轮完整交接](docs/HANDOFF-ROUND-FOUR-2026-10-07.md)与[截图对照](docs/round-four-review.html)。前三轮交接和证据保留历史身份。
+实际发布分支为`main`，本轮功能已正常合并并推送；第四轮实现`77d2547`、连续撤销修复`1da0bdc`，首次Pages发布提交[`0cf8bd3`](https://github.com/lsc-261013/shiye-workbench/commit/0cf8bd3e55ff1da062d121d180de7f9694638290)。[部署运行](https://github.com/lsc-261013/shiye-workbench/actions/runs/37615835326)的构建和部署均成功，正式站点HTML及资源字节已核对。后续推送`main`由同一工作流检查并发布，当前线上提交见[版本清单](https://lsc-261013.github.io/shiye-workbench/release.json)。[STATUS](docs/STATUS.md)是唯一当前状态入口，详见[正式发布与迁移记录](docs/RELEASE-2026-10-07.md)、[第四轮完整交接](docs/HANDOFF-ROUND-FOUR-2026-10-07.md)与[截图对照](docs/round-four-review.html)。前三轮交接和证据保留历史身份。
+
+Pages构建使用`npm run build:pages`，资源前缀为`/shiye-workbench/`。发布目录仅含应用、公开示例和版本清单，排除文档、测试、私人草稿与密钥。应用没有路径路由，刷新正式根地址即可恢复首页，再点「继续上次编辑」。
 
 ## 使用
 
@@ -45,6 +49,7 @@ npm test -- --configLoader native
 - v1、旧v2原样可读；只有新增四点需v3，旧v1/v2不能伪装四点。未知版本、交叉/重合/越界/过小点集、损坏文件拒绝导入，不覆盖当前稿。
 - 首次v1→v2同事务保留`draft/pre-version-two`；首次旧稿→v3同事务保留`draft/pre-version-three`。右上可导出升级前备份，优先pre3再pre2。每种只保留第一份快照，不是多稿历史，换稿仍应自己备份。保存失败不误报成功，原存储事务完整回滚。
 - 回退先保存当前v3和升级前v1/v2，在另目录/4187运行第三轮`8a87825`，只导入v1/v2；旧程序不能读v3。具体命令见[第四轮交接](docs/HANDOFF-ROUND-FOUR-2026-10-07.md)。不要让旧代码在4186覆盖新稿。
+- 后续线上版本出问题，先导出草稿，再将发布代码恢复到本次稳定提交`0cf8bd3`，正常提交并推送`main`，等待Pages成功并核对线上版本。具体命令见[发布记录](docs/RELEASE-2026-10-07.md)，不强推或reset发布分支。
 - 无云同步、账号、后端、AI产品功能、网页抓取、跨软件图像剪贴板导入、PDF、多标签合并或完整专业图像编辑器。清理浏览器数据前保存JSON。
 
 ## 结构与验证
@@ -52,3 +57,5 @@ npm test -- --configLoader native
 `src/components/`放页面和上下文工具，`src/composables/`处理输入草稿和动作，`src/lib/`处理数据、裁切几何、对象快照、排版、绘制、历史和存储，`tests/`为风险测试与隔离工具，`docs/`为交接和证据。
 
 修复后类型检查、6文件45/45测试、75模块构建通过。第四轮原59次UI/产物断言中54项有效通过、5次尝试保留复验说明；截图与审计保留`77d2547`当时版本。后续不重新聚焦的连续三次撤销/重做、按钮一致性及输入隔离实操另见[修复记录](docs/FIX-CONTINUOUS-UNDO-2026-10-07.md)和[结果](docs/evidence/continuous-undo/results.json)，不计入原统计。实际鼠标拖动、Backspace/Delete、Ctrl+Z/Shift+Z已操作；浏览器工具拦截Ctrl+C/V，使用标准合成键盘事件验证对象快照和作用域，不声称OS剪贴板或跨软件复制通过。手机为真实CSS视口模拟，IME为组合事件模拟；实体手机、真实软键盘、Safari与Mac未实测。详见[验证](docs/VERIFICATION.md)、[视觉复核](docs/VISUAL-REVIEW.md)、[演示](docs/DEMO.md)、[素材许可](docs/SOURCES.md)。
+
+发布前再次通过45项测试与Pages类型构建。线上已实际检查素材拖入、16:9固定裁切、四点切换及角点修改、添加文字、连续三次撤销、JSON/PNG/TXT实际落盘和刷新恢复。当前本地稿已迁移到本对话内置浏览器，刷新后导出JSON与原始备份逐字节一致。外部Edge连接不可用，未迁移到其他浏览器；实际Ctrl+C/V的两种工具按键入口仍被虚拟剪贴板拦截，未能完成真实按键验收，详见发布记录。

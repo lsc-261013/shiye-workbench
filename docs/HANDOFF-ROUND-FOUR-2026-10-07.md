@@ -1,10 +1,10 @@
 # 拾页第四轮完整交接 · 2026-10-07
 
-第四轮直接裁切、素材拖入与快捷键已完成，后续Ctrl+Z连续撤销修复已整合进本交接。当前[4186生产预览](http://127.0.0.1:4186/)可继续原稿，快捷键与右上角撤销/重做按钮共用逻辑。范围来自用户最新反馈，常规实现、验收、修正、文档和本地提交已授权自主执行。本轮未推送、部署或合并。
+第四轮直接裁切、素材拖入与快捷键已完成，后续Ctrl+Z连续撤销修复已整合进本交接。用户后续明确授权正式发布，现已正常合并到`main`、推送并部署到[正式网站](https://lsc-261013.github.io/shiye-workbench/)。[4186本地预览](http://127.0.0.1:4186/)原稿保留，完整备份已迁移到本对话内置浏览器的正式站点，刷新后重新导出逐字节一致。详见[正式发布与迁移记录](RELEASE-2026-10-07.md)。
 
 ## 版本与启动
 
-工程、分支和唯一当前状态见[STATUS](STATUS.md)。基线`8a87825`，第四轮实现`77d2547ed6d73382e558c749406a3ab43160c246`，原交接/证据提交`8bc66f9`，连续撤销修复提交`1da0bdc`；本次交接更新在其后，最终HEAD用`git log -1 --oneline`核对。当前生产构建`index-B8j0E01h.js`、`index-Bs0hNSWi.css`，修复后类型检查、75模块构建和6文件45项测试全部通过。没有新增依赖。
+工程、分支和唯一当前状态见[STATUS](STATUS.md)。基线`8a87825`，第四轮实现`77d2547ed6d73382e558c749406a3ab43160c246`，原交接/证据提交`8bc66f9`，连续撤销修复提交`1da0bdc`，交接更新`4c9c263`；首次正式发布提交`0cf8bd3`。优化分支已快进合并到实际发布分支`main`，本次发布交接更新在其后，最新仓库HEAD与线上`release.json`核对。当前本地构建`index-B8j0E01h.js`，Pages构建`index-DGKqxqDi.js`，CSS均为`index-Bs0hNSWi.css`；发布前类型检查、75模块构建和6文件45项测试全部通过。没有新增依赖。
 
 ```powershell
 Set-Location 'C:/Users/27835/Documents/Codex/2026-09-17/inspiration-workbench/outputs/inspiration-workbench'
@@ -12,7 +12,19 @@ npm run build -- --configLoader native
 npm run preview -- --port 4186 --strictPort --configLoader native
 ```
 
-开发：`npm run dev -- --port 5186 --strictPort --configLoader native`。检查：`npm run check`和`npm test -- --configLoader native`。首次检出先安装Node.js 22.12+并`npm ci`。不要双击index.html，不强停5173或其他项目服务。原稿依赖原浏览器和`http://127.0.0.1:4186/`来源；换地址/端口先导出JSON。
+开发：`npm run dev -- --port 5186 --strictPort --configLoader native`。检查：`npm run check`和`npm test -- --configLoader native`。首次检出先安装Node.js 22.12+并`npm ci`。不要双击index.html，不强停5173或其他项目服务。本地原稿依赖原浏览器和`http://127.0.0.1:4186/`来源；正式站点保存独立草稿，换地址/端口先导出JSON。Pages使用`npm run build:pages`；`main`推送后经45项测试、类型构建、资源路径和公开目录检查，上传`dist`再部署。文档、测试、私稿备份不进入站点资源。
+
+## 正式发布与草稿迁移
+
+核实远端默认分支为`main`，原仓库无托管配置、homepage、Pages或部署记录，因此采用用户指定的免费GitHub Pages。修正示例加载的动态根路径为`import.meta.env.BASE_URL`；静态图片、favicon、JS/CSS均使用`/shiye-workbench/`。首个[部署运行](https://github.com/lsc-261013/shiye-workbench/actions/runs/37615835326)的build和deploy均成功，站点HTML为HTTP 200，JS/CSS与本地Pages构建SHA-256一致；不是只核对推送成功。后续文档提交仍由同流程发布，以[版本清单](https://lsc-261013.github.io/shiye-workbench/release.json)确认最新提交。
+
+线上实际检查：素材从左侧缩略图用真实指针拖入，5→6对象，旧5对象位置和尺寸保持；固定16:9确认后矩形视口正确；切换四点并用真实方向键独立修改角点，确认后多边形轮廓正确；添加文字与已保存状态；当前焦点连续Ctrl+Z三次8→7→6→5。发布前隔离Pages构建另验证连续撤销11→10→9→8及重做8→9→10→11，逐步DOM与原快照一致。实际Ctrl+C/V通过tab与locator两种工具入口尝试，仍被虚拟剪贴板拦截，真实按键验收未完成；此前合成事件结果保留原身份。
+
+线上测试稿7对象、6素材、1独立文字、1四点裁切，实际导出JSON424920字节、PNG497484字节（1600×1000）、TXT1355字节。截图与PNG已亲看，TXT包含全文；下载临时文件实际读取并复制，补足之前只核对Blob的边界。见[结果](evidence/release-2026-10-07/results.json)、[线上截图](evidence/release-2026-10-07/live-verified.png)、[PNG](evidence/release-2026-10-07/live-export.png)。公开证据只含此次自建示例测试稿，私人完整JSON没有入Git或站点资源。
+
+发布前从当前4186页面通过应用导出JSON，实际下载后存于工程外`work/private-release-2026-10-07/shiye-current-before-release.shiye.json`。424337字节、版本1、6素材、5对象；当前稿无独立文字对象或裁切，图片、完整笔记、引用与布局保留，DOM图片指纹/笔记/ID/几何核对一致。首次线上访问没有已有草稿；测试后覆盖前另存`live-before-migration.shiye.json`。通过正式应用文件选择器读入原备份，确认替换，刷新并继续，再导出`shiye-current-after-online-refresh.shiye.json`，与原始备份逐字节一致。原稿、三份仓库外JSON及核对记录均保留。迁移只确认本对话内置浏览器；外部Edge连接不可用，换到其他浏览器需自行先备份该浏览器已有稿，再导入同一原备份并刷新继续。
+
+后续线上代码回退到本次稳定提交`0cf8bd3`的命令见[发布记录](RELEASE-2026-10-07.md)。这是首个正式站点，没有更早的线上部署可供切换；不强推、不reset发布分支。下方第三轮回退仍仅供独立本地旧结构查看。
 
 ## 本轮行为与实现
 
@@ -37,7 +49,7 @@ npm run preview -- --port 4186 --strictPort --configLoader native
 
 修复验收在5186隔离稿进行，按键之间没有点击或用locator重新聚焦：实际连续三次Ctrl+Z为11→10→9→8，逐步对象ID与历史快照一致、焦点持续在画板；连续三次Ctrl+Shift+Z为8→9→10→11。右上角按钮三次撤销结果逐步相同；笔记框Ctrl+Z保持TEXTAREA焦点，已保存稿不变。见[修复记录](FIX-CONTINUOUS-UNDO-2026-10-07.md)、[实操结果](evidence/continuous-undo/results.json)和[修复截图](evidence/continuous-undo/after.png)。
 
-此前单步快捷键验收每次重新聚焦画板，未覆盖焦点丢失；本次使用`pressKey(null)`保留当前焦点连续发送真实按键。新增证据单独记录，不计入下方第四轮原59次尝试统计。4186刷新后已加载新构建，当前稿对象ID与几何保持；没有再次导入旧备份。临时5186验收服务已停止。
+此前单步快捷键验收每次重新聚焦画板，未覆盖焦点丢失；修复验收使用`pressKey(null)`保留当前焦点连续发送真实按键。新增证据单独记录，不计入下方第四轮原59次尝试统计。该次4186刷新后已加载新构建，当前稿对象ID与几何保持，没有再次导入旧备份。临时5186验收服务已停止；后续正式发布验收使用独立Pages构建预览与线上自建测试稿，结果见上节。
 
 ## 验收与截图
 
@@ -83,4 +95,4 @@ npm run preview -- --port 4187 --strictPort --configLoader native
 
 ## 实测限制
 
-手机为实际CSS视口，IME为合成composition，未验证实体手机、软键盘、Mac、Safari、跨平台字体或OS减少动态偏好。文件输入采用真实File及change，未证明OS文件窗口或跨窗口拖放；下载验证真实Blob与发起，不证明用户磁盘保存。没有新增性能、用户规模、商业效果或独立掌握结论，无云端、多标签冲突合并或新增后端功能。
+手机为实际CSS视口，IME为合成composition，未验证实体手机、软键盘、Mac、Safari、跨平台字体或OS减少动态偏好。第四轮原文件输入采用真实File及change，未证明OS文件窗口或跨窗口拖放；原下载证据只核对Blob与发起。正式发布补充了应用文件选择器导入及JSON/PNG/TXT真实下载文件，但不扩大为实体手机文件选择或跨窗口拖放实测。实际Ctrl+C/V仍受工具限制；浏览器原生操作接口多次超时，改用可响应的DOM接口逐项核对，没有将超时尝试自动计为通过。没有新增性能、用户规模、商业效果或独立掌握结论，无云端、多标签冲突合并或新增后端功能。

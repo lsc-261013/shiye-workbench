@@ -1,6 +1,6 @@
 # Ctrl+Z连续撤销修复 · 2026-10-07
 
-用户反馈Ctrl+Z只能撤销一步，要求与右上角撤销按钮一致。已在第四轮基础上修复，仅本地提交和更新4186预览，未推送或部署。
+用户反馈Ctrl+Z只能撤销一步，要求与右上角撤销按钮一致。已在第四轮基础上修复；修复阶段仅本地提交和更新4186预览。用户后续明确授权发布，现已随`main`部署到[正式网站](https://lsc-261013.github.io/shiye-workbench/)，上线连续三次撤销再次通过，见[发布记录](RELEASE-2026-10-07.md)。下文专项证据保留修复时身份。
 
 原因是焦点丢失：选中新添加对象后撤销，对象从DOM移除，浏览器焦点落到body。历史栈仍有前面的记录，但后续Ctrl+Z被编辑器作用域保护忽略。隔离稿实际复现为11→10→10，首步后焦点为BODY。
 
@@ -10,4 +10,4 @@ Editor.vue新增统一historyAction入口供Ctrl+Z、Ctrl+Shift+Z、Ctrl+Y和右
 
 类型检查、75模块构建、6文件45/45测试通过；本次UI回归记录见[results.json](evidence/continuous-undo/results.json)，[截图](evidence/continuous-undo/after.png)。此前单步快捷键验收每次重新聚焦画板，未覆盖这个焦点丢失场景；本次专门使用pressKey(null)连续发送真实按键。
 
-4186已更新`index-B8j0E01h.js`，刷新前后当前稿对象ID和几何核对一致。当前分支`experience/round-four-2026-10-07`，修复提交`1da0bdc`，最新提交用`git log -1 --oneline`核对。启动方式沿用README，本修复已整合进[第四轮完整交接](HANDOFF-ROUND-FOUR-2026-10-07.md)；第四轮原截图与审计保留`77d2547`当时版本身份。
+修复时4186更新`index-B8j0E01h.js`，刷新前后当前稿对象ID和几何核对一致。修复分支`experience/round-four-2026-10-07`、提交`1da0bdc`，现已正常合并推送到`main`；Pages发布构建为`index-DGKqxqDi.js`。最新提交用`git log -1 --oneline`及正式`release.json`核对。启动方式沿用README，本修复已整合进[第四轮完整交接](HANDOFF-ROUND-FOUR-2026-10-07.md)；第四轮原截图与审计保留`77d2547`当时版本身份。

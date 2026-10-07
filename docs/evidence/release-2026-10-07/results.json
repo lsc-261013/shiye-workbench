@@ -1,0 +1,107 @@
+{
+  "site": "https://lsc-261013.github.io/shiye-workbench/",
+  "releaseBranch": "main",
+  "firstDeploymentCommit": "0cf8bd3e55ff1da062d121d180de7f9694638290",
+  "firstWorkflowRun": "https://github.com/lsc-261013/shiye-workbench/actions/runs/37615835326",
+  "hostingInspection": {
+    "previousPages": false,
+    "previousDeployments": 0,
+    "previousWorkflowRuns": 0,
+    "existingHostingConfiguration": false,
+    "provider": "GitHub Pages",
+    "paidServicesAdded": false,
+    "forcePushUsed": false
+  },
+  "engineering": {
+    "tests": "6 files, 45/45 passed locally and in Actions",
+    "typeCheckAndBuild": "passed, 75 modules",
+    "artifactFiles": 13,
+    "base": "/shiye-workbench/",
+    "privateDraftsAndCredentialsPublished": false,
+    "htmlHttpStatus": 200,
+    "javascript": {
+      "file": "index-DGKqxqDi.js",
+      "bytes": 168423,
+      "sha256": "a8103b5f9f2534ccb43c79dfe58464d2ac6b7c0d54fdb4ff20d6a7aef01a128d",
+      "matchesLocalPagesBuild": true
+    },
+    "css": {
+      "file": "index-Bs0hNSWi.css",
+      "bytes": 52199,
+      "sha256": "003be8a48dd9e2a6eaa9edd2df4ea209826ba1f3dc0d11feada5bda77aed4246",
+      "matchesLocalPagesBuild": true
+    },
+    "faviconAndExampleImageRequests": "passed"
+  },
+  "preReleasePagesPreview": {
+    "undoCounts": [11, 10, 9, 8],
+    "redoCounts": [8, 9, 10, 11],
+    "restoredDomMatchesOriginal": true,
+    "noClicksBetweenConsecutivePresses": true,
+    "nativeControlCV": {
+      "status": "unverified",
+      "attempts": ["tab.pressKey", "locator.press"],
+      "reason": "Browser automation intercepts Control+c / Control+v with its virtual clipboard; Control+v was blocked because that clipboard had no data. This is not an application keyboard verification or an OS clipboard test."
+    }
+  },
+  "liveWorkflow": {
+    "firstVisitHadDraft": false,
+    "exampleLoaded": true,
+    "textAdditionsSaved": true,
+    "consecutiveUndoCounts": [8, 7, 6, 5],
+    "focusAfterUndo": "board",
+    "undoInput": "First Control+z through pressKey(null), subsequent presses through the existing :focus locator; no intervening click or synthetic KeyboardEvent",
+    "fixedCropViewBox": "0 43.74999999999995 1000 562.5000000000001",
+    "polygonCropPoints": "5,43.74999999999995 1000,43.74999999999995 1000,606.25 0,606.25",
+    "cropInput": "Actual UI mode and ratio selection, actual ArrowRight on independent corner 1, followed by confirmation",
+    "assetDrag": {
+      "input": "Actual pointer drag from left thumbnail to board",
+      "counts": [5, 6],
+      "oldFiveObjectGeometriesUnchanged": true,
+      "newGeometry": { "x": 706.239, "y": 249.728, "w": 420, "h": 341 }
+    },
+    "exports": {
+      "actualDownloadFilesReadAndCopied": true,
+      "json": {
+        "bytes": 424920,
+        "version": 3,
+        "assets": 6,
+        "objects": 7,
+        "textObjects": 1,
+        "polygonObjects": 1
+      },
+      "png": {
+        "bytes": 497484,
+        "width": 1600,
+        "height": 1000,
+        "visuallyInspected": true
+      },
+      "txt": { "bytes": 1355, "includesIndependentTextAndAllAssetNotes": true }
+    },
+    "screenshot": "live-verified.png",
+    "screenshotIdentity": "Agent-created public example test draft, before private draft migration",
+    "timedOutAttemptsCountedAsPassed": false
+  },
+  "migration": {
+    "source": "http://127.0.0.1:4186/",
+    "browser": "Codex in-app browser",
+    "exportedViaApplication": true,
+    "backupStoredOutsideRepository": true,
+    "onlineTestDraftBackedUpBeforeReplacement": true,
+    "importedThroughApplicationFileChooserAndConfirmation": true,
+    "refreshAndResumePassed": true,
+    "afterRefreshJsonExactlyMatchesOriginalBytes": true,
+    "localDraftPreserved": true,
+    "privateJsonContentIncludedInPublicEvidence": false,
+    "externalEdgeMigrated": false,
+    "externalEdgeReason": "Connected browser inventory reported a communication failure; no external-browser migration claim"
+  },
+  "boundaries": [
+    "Actual Control+c / Control+v remains unverified due to browser tool interception",
+    "No OS or cross-application clipboard claim",
+    "No new physical mobile, real IME, Mac or Safari validation",
+    "Browser root-address refresh verified; application does not provide path routing",
+    "Private backup fingerprints, IDs and content are kept outside the repository",
+    "Original round-four attempt statistics were not increased with release checks"
+  ]
+}
