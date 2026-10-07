@@ -1,4 +1,11 @@
 node_modules/
 dist/
+dist-pages/
 .sites-runtime/
 *.log
+# Private working drafts and credentials must stay outside the repository.
+.env
+.env.*
+!.env.example
+private-backups/
+work/

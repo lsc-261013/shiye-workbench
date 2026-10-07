@@ -10,7 +10,9 @@ const sources: Record<string, string> = {
 };
 async function embedded(name: string) {
   const isSvg = ["type", "palette", "web"].includes(name);
-  const r = await fetch(`/assets/${name}.${isSvg ? "svg" : "jpg"}`);
+  const r = await fetch(
+    `${import.meta.env.BASE_URL}assets/${name}.${isSvg ? "svg" : "jpg"}`,
+  );
   if (!r.ok) throw Error("示例素材加载失败，请重试");
   const blob = await r.blob();
   const data = await new Promise<string>((resolve, reject) => {
