@@ -18,7 +18,7 @@ export interface Placement {
   h: number;
 }
 export interface Board {
-  version: 1 | 2;
+  version: 1 | 2 | 3;
   title: string;
   assets: Asset[];
   items: Placement[];
@@ -28,6 +28,11 @@ export interface Crop {
   y: number;
   w: number;
   h: number;
+  points?: [CropPoint, CropPoint, CropPoint, CropPoint];
+}
+export interface CropPoint {
+  x: number;
+  y: number;
 }
 export interface TextBlock {
   content: string;

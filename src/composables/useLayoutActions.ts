@@ -1,13 +1,12 @@
 import { ref } from "vue";
-import { clone, uid, WIDTH, HEIGHT, type Board } from "../types";
+import { clone, uid, type Board } from "../types";
 import {
   arrangePlacements,
-  findFreeSpace,
   preferredSize,
   MAX_AUTO_ITEMS,
 } from "../lib/layout";
+import { placeAt } from "../lib/objects";
 import { readAspectRatios } from "../lib/imageMetrics";
-
 export function useLayoutActions(
   board: () => Board,
   change: (b: Board) => void,
@@ -16,69 +15,50 @@ export function useLayoutActions(
   closeLibrary: () => void,
 ) {
   const working = ref(false),
-    noSpace = ref("");
+    label = ref("");
   async function add(assetId: string, x?: number, y?: number) {
     if (working.value) return;
     if (board().items.length >= 150) {
-      notify("画板已有150个元素，先移除一个再加入。");
+      notify("画板已有150个对象，本次未添加。");
       return;
     }
-    const a = board().assets.find((a) => a.id === assetId);
-    if (!a) return;
+    const asset = board().assets.find((a) => a.id === assetId);
+    if (!asset) return;
+    label.value = "正在加入画板…";
     working.value = true;
     try {
-      const ratios = await readAspectRatios([a]),
-        size = preferredSize(a, ratios[a.id]);
-      const rect =
-        x !== undefined && y !== undefined
-          ? {
-              ...size,
-              x: Math.max(0, Math.min(WIDTH - size.w, x)),
-              y: Math.max(130, Math.min(HEIGHT - 25 - size.h, y)),
-            }
-          : findFreeSpace(board().items, a, ratios[a.id]);
-      closeLibrary();
-      if (!rect) {
-        noSpace.value = assetId;
-        choose("", assetId);
-        return;
-      }
-      const b = clone(board()),
-        p = { id: uid(), assetId, ...rect };
+      const ratios = await readAspectRatios([asset]);
+      const b = clone(board());
+      if (b.items.length >= 150) throw Error("画板已有150个对象，本次未添加。");
+      const p = {
+        id: uid(),
+        assetId,
+        ...placeAt(preferredSize(asset, ratios[assetId]), x, y),
+      };
       b.items.push(p);
       change(b);
       choose(p.id, assetId);
-      notify(
-        x === undefined
-          ? "已放入空位，原来的排版保持不变。"
-          : "已放入指定位置，可撤销。",
-      );
+      closeLibrary();
+      notify("已添加到画板，允许重叠，已有排版保持。可撤销。");
     } catch (e) {
       notify((e as Error).message);
     } finally {
       working.value = false;
     }
   }
-  async function arrange(extraAssetId?: string) {
+  async function arrange() {
     if (working.value) return;
     const b = clone(board());
-    const count = b.items.length + (extraAssetId ? 1 : 0);
-    if (count > MAX_AUTO_ITEMS) {
+    if (b.items.length > MAX_AUTO_ITEMS) {
       notify(
-        `整理排版适合一页最多 ${MAX_AUTO_ITEMS} 个元素。当前 ${count} 个，原布局保持不变；请先移除部分画板元素。`,
+        `整理排版适合一页最多12个元素。当前${b.items.length}个，原布局保持。`,
       );
       return;
     }
-    if (!b.items.length && !extraAssetId) {
-      notify("先放入参考，再整理排版。");
-      return;
-    }
+    if (!b.items.length) return;
+    label.value = "正在整理排版…";
     working.value = true;
     try {
-      const extra = extraAssetId
-        ? { id: uid(), assetId: extraAssetId, x: 40, y: 130, w: 360, h: 300 }
-        : undefined;
-      if (extra) b.items.push(extra);
       const needed = new Set(b.items.map((p) => p.assetId));
       b.items = arrangePlacements(
         b.items,
@@ -90,9 +70,6 @@ export function useLayoutActions(
         return;
       }
       change(b);
-      if (extra) choose(extra.id, extra.assetId);
-      noSpace.value = "";
-      closeLibrary();
       notify("已整理排版，点撤销可完整恢复。");
     } catch (e) {
       notify((e as Error).message);
@@ -100,5 +77,5 @@ export function useLayoutActions(
       working.value = false;
     }
   }
-  return { working, noSpace, add, arrange };
+  return { working, label, add, arrange };
 }

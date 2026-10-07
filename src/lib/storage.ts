@@ -16,11 +16,16 @@ export async function saveBoard(board: Board) {
     const old = store.get("current");
     old.onsuccess = () => {
       try {
-        if (board.version === 2 && old.result?.version === 1) {
-          const snapshot = store.get("pre-version-two");
+        const keys: string[] = [];
+        if (board.version >= 2 && old.result?.version === 1)
+          keys.push("pre-version-two");
+        if (board.version === 3 && old.result && old.result.version < 3)
+          keys.push("pre-version-three");
+        for (const key of keys) {
+          const snapshot = store.get(key);
           snapshot.onsuccess = () => {
             try {
-              if (!snapshot.result) store.put(old.result, "pre-version-two");
+              if (!snapshot.result) store.put(old.result, key);
             } catch {
               tx.abort();
             }
@@ -45,8 +50,15 @@ export async function loadOriginal(): Promise<Board | null> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction("draft", "readonly"),
-      r = tx.objectStore("draft").get("pre-version-two");
-    r.onsuccess = () => resolve(r.result || null);
+      r = tx.objectStore("draft").get("pre-version-three");
+    r.onsuccess = () => {
+      if (r.result) resolve(r.result);
+      else {
+        const old = tx.objectStore("draft").get("pre-version-two");
+        old.onsuccess = () => resolve(old.result || null);
+        old.onerror = () => reject(old.error);
+      }
+    };
     r.onerror = () => reject(r.error);
     tx.oncomplete = () => db.close();
   });

@@ -72,13 +72,28 @@ export async function renderPng(board: Board): Promise<Blob> {
     c.rect(p.x, p.y, p.w, p.h);
     c.clip();
     c.fillStyle = "#fffdfa";
-    c.fillRect(p.x, p.y, p.w, p.h);
+    if (!p.crop?.points) c.fillRect(p.x, p.y, p.w, p.h);
+    else c.fillRect(p.x, p.y + p.h - 70, p.w, 70);
     const im = images.get(a.id);
     const iw = p.w - 16,
       ih = p.h - 78;
     if (im) {
       const source = cropSource(p.crop, im.naturalWidth, im.naturalHeight);
       const scale = Math.min(iw / source.w, ih / source.h);
+      if (p.crop?.points) {
+        c.save();
+        const dx = p.x + 8 + (iw - source.w * scale) / 2,
+          dy = p.y + 8 + (ih - source.h * scale) / 2;
+        c.beginPath();
+        p.crop.points.forEach((point, i) => {
+          const x = dx + (point.x * im.naturalWidth - source.x) * scale,
+            y = dy + (point.y * im.naturalHeight - source.y) * scale;
+          if (i === 0) c.moveTo(x, y);
+          else c.lineTo(x, y);
+        });
+        c.closePath();
+        c.clip();
+      }
       c.drawImage(
         im,
         source.x,
@@ -90,6 +105,7 @@ export async function renderPng(board: Board): Promise<Blob> {
         source.w * scale,
         source.h * scale,
       );
+      if (p.crop?.points) c.restore();
     } else {
       c.fillStyle = "#e9e6dc";
       c.fillRect(p.x + 8, p.y + 8, iw, ih);

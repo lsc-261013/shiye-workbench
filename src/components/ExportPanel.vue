@@ -6,7 +6,7 @@ defineProps<{
   busyLabel: string;
   result: string;
   title: string;
-  version: 1 | 2;
+  version: 1 | 2 | 3;
 }>();
 defineEmits<{ close: []; png: []; text: []; backup: [] }>();
 </script>
@@ -33,9 +33,11 @@ defineEmits<{ close: []; png: []; text: []; backup: [] }>();
         ><span
           ><b>完整可恢复备份</b
           ><small>{{
-            version === 2
-              ? "版本2 · 图片、文字、裁切与布局 · 新版恢复"
-              : "版本1 · 图片、说明与布局"
+            version === 3
+              ? "版本3 · 四点裁切、文字与全部素材 · 本轮新版恢复"
+              : version === 2
+                ? "版本2 · 图片、文字、裁切与布局 · 新版恢复"
+                : "版本1 · 图片、说明与布局"
           }}</small></span
         ><Icon name="download" />
       </button>
@@ -50,8 +52,8 @@ defineEmits<{ close: []; png: []; text: []; backup: [] }>();
     </p>
     <p class="export-foot">
       本地处理。备份文件含你的图片与笔记，请自行妥善保存。
-      <template v-if="version === 2"
-        >版本2备份需使用新版拾页，回退前请同时保存升级前备份。</template
+      <template v-if="version >= 2"
+        >含新增结构的备份需使用对应新版拾页，回退前请同时保存升级前备份。</template
       >
     </p>
   </Modal>

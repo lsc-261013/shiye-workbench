@@ -24,7 +24,13 @@ import { applyCrop } from "../lib/crop";
 import { alignItems, type Alignment } from "../lib/alignment";
 import { useNotesDraft } from "../composables/useNotesDraft";
 import { useLayoutActions } from "../composables/useLayoutActions";
-import { MAX_AUTO_ITEMS, findRectSpace } from "../lib/layout";
+import {
+  placeAt,
+  copyObjects,
+  pasteObjects,
+  removeObjects,
+  type ObjectClipboard,
+} from "../lib/objects";
 import { isTextInteraction } from "../lib/keyboard";
 import { clone, uid, type Board, type Asset } from "../types";
 
@@ -62,7 +68,14 @@ const selected = ref(""),
   library = ref(false),
   mobile = ref(false),
   exporting = ref(false);
-const cropping = ref(false);
+const cropping = ref(false),
+  shortcuts = ref(false),
+  draggingAsset = ref(false);
+const editorRoot = ref<HTMLElement>(),
+  boardCanvas = ref<InstanceType<typeof BoardCanvas>>(),
+  assetPanel = ref<InstanceType<typeof AssetLibrary>>();
+let clipboard: ObjectClipboard | null = null,
+  pasteIteration = 0;
 const viewer = ref<Asset>(),
   pendingAction = ref<(() => void) | null>(null);
 const uploadInput = ref<HTMLInputElement>(),
@@ -119,12 +132,14 @@ const layout = useLayoutActions(
   (b) => emit("change", b),
   chooseRaw,
   (message) => emit("notify", message),
-  () => (library.value = false),
+  () => {
+    if (mobile.value) library.value = false;
+  },
 );
-const { working, noSpace } = layout;
+const { working } = layout;
 const busy = computed(() => props.busy || working.value);
 const busyLabel = computed(() =>
-  working.value ? "正在计算排版…" : props.busyLabel,
+  working.value ? layout.label.value : props.busyLabel,
 );
 function run(action: () => void) {
   if (busy.value || pendingAction.value) return;
@@ -168,22 +183,28 @@ function select(id: string, multiple = false) {
     chooseRaw(id, props.board.items.find((p) => p.id === id)?.assetId || ""),
   );
 }
+
 function addText() {
   run(() => {
-    const b = clone(props.board),
-      text = textDefaults(),
-      size = { w: 480, h: textLayout(text, 480).height },
-      rect = findRectSpace(b.items, size);
-    if (!rect) {
-      emit(
-        "notify",
-        "没有足够空位新增文字，原布局保持不变。请先整理或移开部分对象，再添加文字。",
-      );
+    if (props.board.items.length >= 150) {
+      emit("notify", "画板已有150个对象，本次未添加。");
       return;
     }
-    const p = { id: uid(), kind: "text" as const, text, ...rect };
+    const b = clone(props.board),
+      text = textDefaults(),
+      size = { w: 480, h: textLayout(text, 480).height };
+    const p = {
+      id: uid(),
+      kind: "text" as const,
+      text,
+      ...placeAt(
+        size,
+        800 + (b.items.length % 5) * 24,
+        450 + (b.items.length % 5) * 24,
+      ),
+    };
     b.items.push(p);
-    b.version = 2;
+    if (b.version === 1) b.version = 2;
     emit("change", b);
     chooseRaw(p.id, "");
   });
@@ -191,31 +212,56 @@ function addText() {
 function saveText() {
   if (textNotes.save()) emit("notify", "文字已更新，可撤销。");
 }
-function duplicate() {
-  run(() => {
-    const p = selectedItem.value;
-    if (!p) return;
-    const rect = findRectSpace(props.board.items, p);
-    if (!rect) {
-      emit("notify", "没有放置副本的空位，原稿保持不变。请先整理或移开对象。");
-      return;
-    }
-    const b = clone(props.board),
-      copy = { ...clone(p), ...rect, id: uid() };
-    b.items.push(copy);
-    emit("change", b);
-    chooseRaw(copy.id, copy.assetId || "");
-    emit("notify", "已复制对象，图片资源共享，裁切与位置独立，可撤销。");
+function focusObjects(ids: string[]) {
+  if (mobile.value) return;
+  nextTick(() => {
+    document
+      .querySelector<HTMLElement>(
+        ids.length ? `[data-object-id="${ids[0]}"]` : ".board",
+      )
+      ?.focus({ preventScroll: true });
   });
 }
-function copyReference(assetId: string) {
+function paste(snapshot: ObjectClipboard, iteration = 0) {
+  try {
+    const result = pasteObjects(props.board, snapshot, iteration);
+    emit("change", result.board);
+    selectedIds.value = result.ids;
+    selected.value = result.ids.length === 1 ? result.ids[0]! : "";
+    focusedAsset.value =
+      result.ids.length === 1
+        ? result.board.items.find((p) => p.id === selected.value)?.assetId || ""
+        : "";
+    focusObjects(result.ids);
+    emit("notify", `已粘贴${result.ids.length}个对象，已有排版保持，可撤销。`);
+    return true;
+  } catch (e) {
+    emit("notify", (e as Error).message);
+    return false;
+  }
+}
+function duplicate() {
   run(() => {
-    const p = props.board.items.find((p) => p.assetId === assetId);
-    if (!p) return;
-    chooseRaw(p.id, assetId);
-    duplicate();
-    library.value = false;
+    if (selectedIds.value.length)
+      paste(copyObjects(props.board, selectedIds.value));
   });
+}
+function copy() {
+  run(() => {
+    if (!selectedIds.value.length) return;
+    clipboard = copyObjects(props.board, selectedIds.value);
+    pasteIteration = 0;
+    emit(
+      "notify",
+      `已复制${clipboard.items.length}个对象，本次编辑会话可用Ctrl+V粘贴。`,
+    );
+  });
+}
+function pasteClipboard() {
+  if (clipboard)
+    run(() => {
+      if (paste(clipboard!, pasteIteration)) pasteIteration++;
+    });
 }
 function align(action: Alignment) {
   run(() => {
@@ -245,7 +291,7 @@ function choose(a: Asset) {
       props.board.items.find((p) => p.assetId === a.id)?.id || "",
       a.id,
     );
-    library.value = false;
+    if (mobile.value) library.value = false;
     nextTick(() => {
       if (mobile.value)
         document
@@ -277,21 +323,15 @@ function arrange() {
     void layout.arrange();
   });
 }
+
 function remove() {
   run(() => {
-    const b = clone(props.board);
-    const wasText = selectedItem.value?.kind === "text";
-    b.items = b.items.filter((p) => p.id !== selected.value);
-    emit("change", b);
-    selected.value = "";
-    selectedIds.value = [];
-    focusedAsset.value = "";
-    emit(
-      "notify",
-      wasText
-        ? "文字已删除，可撤销。"
-        : "已从画板移除，参考仍保留在素材区，可撤销。",
-    );
+    if (!selectedIds.value.length) return;
+    const count = selectedIds.value.length;
+    emit("change", removeObjects(props.board, selectedIds.value));
+    chooseRaw("", "");
+    focusObjects([]);
+    emit("notify", `已移除${count}个画板对象，素材保留，可撤销。`);
   });
 }
 function layer(direction: number) {
@@ -312,13 +352,12 @@ function rename(e: Event) {
 }
 function upload() {
   run(() => {
-    library.value = false;
+    library.value = true;
     uploadInput.value?.click();
   });
 }
 function link() {
   run(() => {
-    library.value = false;
     emit("link");
   });
 }
@@ -348,29 +387,62 @@ function openExport() {
     exporting.value = true;
   });
 }
+
 function keyboard(e: KeyboardEvent) {
   if (
+    e.defaultPrevented ||
     document.querySelector("dialog[open]") ||
     isTextInteraction(e.target, e.isComposing) ||
     preview.value ||
-    busy.value
+    busy.value ||
+    !(e.target instanceof Element) ||
+    !editorRoot.value?.contains(e.target)
   )
     return;
-  if (e.key === "Escape") {
+  const key = e.key.toLowerCase(),
+    mod = e.ctrlKey || e.metaKey;
+  if (key === "escape") {
+    boardCanvas.value?.cancelInteraction();
+    assetPanel.value?.cancelInteraction();
+    const opened = editorRoot.value.querySelector("details[open]");
+    if (opened) {
+      opened.removeAttribute("open");
+      return;
+    }
+    if (library.value) {
+      library.value = false;
+      return;
+    }
     select("");
     return;
   }
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+  if (mod && key === "c" && selectedIds.value.length) {
+    e.preventDefault();
+    if (!e.repeat) copy();
+    return;
+  }
+  if (mod && key === "v" && clipboard) {
+    e.preventDefault();
+    if (!e.repeat) pasteClipboard();
+    return;
+  }
+  if (mod && key === "z") {
     e.preventDefault();
     run(() => (e.shiftKey ? emit("redo") : emit("undo")));
+    return;
   }
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
+  if (mod && key === "y") {
     e.preventDefault();
     run(() => emit("redo"));
+    return;
   }
-  if (e.key === "Delete" && selectedItem.value) {
+  if (
+    !mod &&
+    (key === "delete" || key === "backspace") &&
+    selectedIds.value.length
+  ) {
     e.preventDefault();
-    remove();
+    if (!e.repeat) remove();
   }
 }
 function beforeUnload(e: BeforeUnloadEvent) {
@@ -403,7 +475,7 @@ watch(
         b.items.find((p) => p.assetId === added.id)?.id || "",
         added.id,
       );
-      library.value = false;
+      library.value = true;
     }
     if (selected.value && !b.items.some((p) => p.id === selected.value))
       selected.value = "";
@@ -441,8 +513,14 @@ onBeforeUnmount(() => {
 </script>
 <template>
   <div
+    ref="editorRoot"
     class="editor studio"
-    :class="{ 'is-preview': preview, 'is-mobile': mobile }"
+    :class="{
+      'is-preview': preview,
+      'is-mobile': mobile,
+      'has-library': library,
+      'dragging-asset': draggingAsset,
+    }"
   >
     <EditorToolbar
       :title="board.title"
@@ -462,8 +540,24 @@ onBeforeUnmount(() => {
       @original="run(() => emit('original'))"
       @retry="emit('retry')"
       @start="(kind) => run(() => emit('start', kind))"
+      @shortcuts="shortcuts = true"
     />
     <div class="workspace">
+      <AssetLibrary
+        v-if="library && !mobile && !preview"
+        ref="assetPanel"
+        :board="board"
+        :selected-asset-id="selectedAsset?.id || ''"
+        :busy="busy"
+        :busy-label="busyLabel"
+        :mobile="mobile"
+        @choose="choose"
+        @add="add"
+        @upload="upload"
+        @link="link"
+        @close="library = false"
+        @dragging="draggingAsset = $event"
+      />
       <main class="canvas-area">
         <div v-if="!preview" class="studio-tools">
           <button class="reference-upload" :disabled="busy" @click="upload">
@@ -472,7 +566,11 @@ onBeforeUnmount(() => {
             <Icon name="link" :size="16" />添加链接
           </button>
           <button :disabled="busy" @click="addText">添加文字</button>
-          <button :disabled="busy" @click="run(() => (library = true))">
+          <button
+            :disabled="busy || draggingAsset"
+            :aria-expanded="library"
+            @click="run(() => (library = !library))"
+          >
             <Icon name="grid" :size="16" />素材区
             <span>{{ board.assets.length }}</span>
           </button>
@@ -490,6 +588,7 @@ onBeforeUnmount(() => {
           <span class="red-rule"></span>作品预览
         </div>
         <BoardCanvas
+          ref="boardCanvas"
           :board="board"
           :selected="selected"
           :selected-ids="selectedIds"
@@ -505,7 +604,7 @@ onBeforeUnmount(() => {
           @files="(files) => run(() => emit('upload', files))"
         />
         <p v-if="!preview && !board.items.length" class="studio-empty">
-          上传或添加链接，参考会放入空位。准备好后，点「整理排版」。
+          上传先收集到素材区，再拖到画板或点「添加到画板」。允许重叠，整理只在主动点击时进行。
         </p>
         <div
           v-if="mobile && !preview && board.items.length"
@@ -644,21 +743,48 @@ onBeforeUnmount(() => {
       />
     </div>
     <Modal
-      v-if="library"
+      v-if="library && mobile"
       title="素材区"
       kind="references"
       @close="library = false"
       ><AssetLibrary
+        ref="assetPanel"
         :board="board"
         :selected-asset-id="selectedAsset?.id || ''"
         :busy="busy"
         :busy-label="busyLabel"
+        :mobile="mobile"
         @choose="choose"
         @add="add"
-        @duplicate="copyReference"
         @upload="upload"
         @link="link"
+        @close="library = false"
+        @dragging="draggingAsset = $event"
     /></Modal>
+    <Modal
+      v-if="shortcuts"
+      title="常用快捷键"
+      kind="shortcuts"
+      @close="shortcuts = false"
+      ><p>在画板选择对象后使用；输入框内保留正常文字操作。</p>
+      <dl class="shortcut-list">
+        <dt>Backspace / Delete</dt>
+        <dd>移除选中对象 · 素材保留</dd>
+        <dt>Ctrl+C / Ctrl+V</dt>
+        <dd>复制快照 / 在附近粘贴 · 本次编辑会话</dd>
+        <dt>Ctrl+Z</dt>
+        <dd>撤销</dd>
+        <dt>Ctrl+Shift+Z / Ctrl+Y</dt>
+        <dd>重做</dd>
+        <dt>Esc</dt>
+        <dd>取消当前操作 / 关闭浮层 / 取消选择</dd>
+        <dt>方向键 / Shift+方向键</dt>
+        <dd>微调10 / 20画板像素 · 桌面</dd>
+      </dl>
+      <p class="context-help">
+        对象复制仅在本次编辑会话可用。输入中保持正常文字操作；裁切中方向键调整角点。Mac使用Cmd对应键。
+      </p></Modal
+    >
     <Modal
       v-if="pendingAction"
       title="修改还没保存"
@@ -678,30 +804,6 @@ onBeforeUnmount(() => {
           @click="continueAction(true)"
         >
           保存并继续
-        </button>
-      </div></Modal
-    >
-    <Modal
-      v-if="noSpace"
-      title="暂时没有合适空位"
-      kind="no-space"
-      @close="noSpace = ''"
-      ><p>参考已经留在素材区，原来的排版没有改动。</p>
-      <p>
-        {{
-          board.items.length >= MAX_AUTO_ITEMS
-            ? "整理适合一页最多12个元素。先移除部分元素，再加入这份参考。"
-            : "也可以明确整理整张画板，并把这份参考一起放入；一次撤销就能恢复。"
-        }}
-      </p>
-      <div class="modal-actions">
-        <button @click="noSpace = ''">留在素材区</button
-        ><button
-          class="primary"
-          :disabled="busy || board.items.length >= MAX_AUTO_ITEMS"
-          @click="layout.arrange(noSpace)"
-        >
-          整理后加入
         </button>
       </div></Modal
     >

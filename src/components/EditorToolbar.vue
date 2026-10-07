@@ -20,6 +20,7 @@ const emit = defineEmits<{
   backup: [];
   original: [];
   retry: [];
+  shortcuts: [];
   start: [kind: "blank" | "product" | "life" | "creative"];
 }>();
 const more = ref<HTMLDetailsElement>();
@@ -109,6 +110,9 @@ onBeforeUnmount(() => window.removeEventListener("click", outside));
             导入完整备份</button
           ><button :disabled="busy" @click="action(() => emit('backup'))">
             保存完整备份 JSON
+          </button>
+          <button :disabled="busy" @click="action(() => emit('shortcuts'))">
+            常用快捷键
           </button>
           <hr />
           <button :disabled="busy" @click="action(() => emit('original'))">

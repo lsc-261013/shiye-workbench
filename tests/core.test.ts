@@ -38,7 +38,7 @@ describe("backup boundary", () => {
   it("rejects unsupported version, missing image/reference, dangerous protocols and off-board geometry", () => {
     for (const mutate of [
       (b: Board) => {
-        b.version = 3 as 1;
+        b.version = 4 as 1;
       },
       (b: Board) => (b.assets[0]!.data = ""),
       (b: Board) => (b.items[0]!.assetId = "missing"),

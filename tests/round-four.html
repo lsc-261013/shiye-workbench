@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>拾页第四轮隔离验收</title>
+  <style>
+    body {
+      margin: 0;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: 0;
+      display: block;
+    }
+    details.qa {
+      position: fixed;
+      bottom: 4px;
+      left: 4px;
+      z-index: 9999;
+      background: #e8e8e8;
+      padding: 4px;
+      border: 1px solid #888;
+      max-width: 90vw;
+      max-height: 45vh;
+      overflow: auto;
+      font: 12px sans-serif;
+    }
+    details.qa summary {
+      cursor: pointer;
+    }
+    details.qa textarea {
+      width: 100%;
+      height: 60px;
+    }
+    #image {
+      max-width: 240px;
+      max-height: 150px;
+    }
+    button {
+      padding: 7px;
+    }
+  </style>
+  <iframe src="/" title="验收中的拾页应用"></iframe>
+  <details class="qa">
+    <summary>开发验收工具（仅隔离源）</summary>
+    <button id="read">读取当前草稿</button
+    ><button id="original">读取升级前快照</button
+    ><select id="fixture" aria-label="测试文件组合">
+      <option value="marked">彩色标记图</option>
+      <option value="tall">极长透明图</option>
+      <option value="exif">EXIF方向图</option>
+      <option value="replacement">替换图片</option>
+      <option value="custom">文本区的备份</option>
+      <option value="old">version1旧备份</option>
+      <option value="invalid">坏文件</option></select
+    ><button id="inject">选入测试文件</button>
+    <label
+      >视口宽<input
+        id="width"
+        aria-label="测试视口宽"
+        type="number"
+        value="1440" /></label
+    ><label
+      >视口高<input
+        id="height"
+        aria-label="测试视口高"
+        type="number"
+        value="900" /></label
+    ><button id="viewport">应用测试视口</button
+    ><button id="overview">回到概览顶部</button>
+    <button id="scrollOffset">外层页面滚动160px</button
+    ><button id="scrollReset">复位外层滚动</button>
+    <button id="imeStart">组合开始</button><button id="imeEnd">组合结束</button
+    ><button id="touch">模拟touch滑动</button
+    ><button id="saveFail">模拟保存失败</button
+    ><button id="saveRestore">恢复保存</button
+    ><button id="reloadApp">刷新应用</button
+    ><button id="clear">清空捕获</button>
+    <select id="qaKey" aria-label="合成快捷键">
+      <option>Control+c</option>
+      <option>Control+v</option>
+      <option>Backspace</option>
+      <option>Delete</option>
+      <option>Control+z</option>
+      <option>Control+Shift+z</option>
+      <option>Control+y</option>
+      <option>Escape</option></select
+    ><button id="dispatchKey">向最后焦点派发合成键盘事件</button
+    ><button id="keyLog">读取键盘诊断</button>
+    <textarea id="input" aria-label="要导入的隔离备份"></textarea>
+    <pre id="result">等待操作</pre>
+    <textarea id="artifact" aria-label="捕获产物" readonly></textarea
+    ><img id="image" alt="实际导出图" hidden />
+  </details>
+  <script type="module">
+    if (!import.meta.env.DEV) throw Error("Development only");
+    import { loadBoard, loadOriginal } from "/src/lib/storage.ts";
+    const frame = document.querySelector("iframe"),
+      result = document.querySelector("#result"),
+      output = document.querySelector("#artifact");
+    document.querySelector("#viewport").onclick = () => {
+      const w = Number(document.querySelector("#width").value),
+        h = Number(document.querySelector("#height").value);
+      frame.style.width = w + "px";
+      frame.style.height = h + "px";
+      result.textContent = JSON.stringify({
+        width: w,
+        height: h,
+        scope: "application iframe CSS viewport, desktop Chromium",
+      });
+    };
+    document.querySelector("#overview").onclick = () => {
+      frame.contentDocument.querySelector(".editor")?.scrollTo({ top: 0 });
+    };
+    document.querySelector("#scrollOffset").onclick = () => {
+      frame.style.marginTop = "240px";
+      window.scrollTo({ top: 160, left: 0 });
+    };
+    document.querySelector("#scrollReset").onclick = () => {
+      frame.style.marginTop = "0";
+      window.scrollTo({ top: 0, left: 0 });
+    };
+    document.querySelector("#read").onclick = async () => {
+      output.value = JSON.stringify(await loadBoard());
+      result.textContent = "只读当前草稿";
+    };
+    document.querySelector("#original").onclick = async () => {
+      output.value = JSON.stringify(await loadOriginal());
+      result.textContent = "只读升级前快照";
+    };
+    document.querySelector("#inject").onclick = async () => {
+      const mode = document.querySelector("#fixture").value,
+        win = frame.contentWindow,
+        doc = frame.contentDocument;
+      const image = ["marked", "tall", "exif"].includes(mode),
+        input = doc.querySelectorAll(".studio input[type=file]")[
+          mode === "replacement" ? 1 : 0
+        ];
+      const target =
+        image || mode === "replacement"
+          ? input
+          : doc.querySelector("input[accept*=json]");
+      if (!target) {
+        result.textContent = "先进入编辑器";
+        return;
+      }
+      const names = {
+        marked: ["r3-marked.png"],
+        tall: ["r3-tall.png"],
+        exif: ["r3-exif.jpg"],
+        replacement: ["qa-replacement.png"],
+        old: ["capacity-1.json"],
+        invalid: ["invalid.json"],
+      }[mode];
+      const transfer = new win.DataTransfer();
+      if (mode === "custom")
+        transfer.items.add(
+          new win.File(
+            [document.querySelector("#input").value],
+            "test.shiye.json",
+            { type: "application/json" },
+          ),
+        );
+      else
+        for (const name of names) {
+          const blob = await (await fetch("./fixtures/" + name)).blob();
+          transfer.items.add(
+            new win.File([blob], name, {
+              type: name.endsWith(".json")
+                ? "application/json"
+                : name.endsWith(".jpg")
+                  ? "image/jpeg"
+                  : "image/png",
+            }),
+          );
+        }
+      target.files = transfer.files;
+      target.dispatchEvent(new win.Event("change", { bubbles: true }));
+      result.textContent = "已模拟选入 " + mode;
+    };
+    for (const [id, type] of [
+      ["imeStart", "compositionstart"],
+      ["imeEnd", "compositionend"],
+    ])
+      document.querySelector("#" + id).onclick = () => {
+        const win = frame.contentWindow,
+          field = frame.contentDocument.querySelector(".notes-form textarea");
+        field?.dispatchEvent(
+          new win.CompositionEvent(type, { bubbles: true, data: "中文" }),
+        );
+        result.textContent = type;
+      };
+    document.querySelector("#clear").onclick = () => {
+      output.value = "";
+      result.textContent = "等待捕获";
+    };
+    document.querySelector("#reloadApp").onclick = () =>
+      frame.contentWindow.location.reload();
+    let restoreOpen;
+    let lastTarget,
+      keyEvents = [];
+    const boundDocuments = new WeakSet();
+    document.querySelector("#dispatchKey").onclick = () => {
+      const win = frame.contentWindow,
+        parts = document.querySelector("#qaKey").value.split("+");
+      const target = lastTarget || win.document.querySelector(".board");
+      target?.dispatchEvent(
+        new win.KeyboardEvent("keydown", {
+          key: parts.at(-1),
+          ctrlKey: parts.includes("Control"),
+          shiftKey: parts.includes("Shift"),
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+      result.textContent = "合成键盘事件；目标：" + target?.tagName;
+    };
+    document.querySelector("#keyLog").onclick = () => {
+      output.value = JSON.stringify(keyEvents);
+      result.textContent = "键盘诊断（不是系统剪贴板）";
+    };
+    function bindFrame() {
+      const win = frame.contentWindow;
+      if (boundDocuments.has(win.document)) return;
+      boundDocuments.add(win.document);
+      keyEvents = [];
+      win.document.addEventListener("focusin", (e) => {
+        lastTarget = e.target;
+      });
+      win.addEventListener("keydown", (e) => {
+        queueMicrotask(() => {
+          keyEvents.push({
+            key: e.key,
+            ctrl: e.ctrlKey,
+            meta: e.metaKey,
+            shift: e.shiftKey,
+            target: e.target.tagName,
+            prevented: e.defaultPrevented,
+            composing: e.isComposing,
+          });
+          if (keyEvents.length > 60) keyEvents.shift();
+        });
+      });
+      restoreOpen = win.indexedDB.open.bind(win.indexedDB);
+      win.document.addEventListener(
+        "click",
+        async (e) => {
+          const a = e.target.closest("a[download]");
+          if (!a) return;
+          e.preventDefault();
+          const blob = await (await fetch(a.href)).blob();
+          const r = new FileReader();
+          r.onload = () => {
+            output.value = r.result;
+            result.textContent = JSON.stringify({
+              name: a.download,
+              size: blob.size,
+              type: blob.type,
+            });
+            if (blob.type === "image/png") {
+              document.querySelector("#image").src = r.result;
+              document.querySelector("#image").hidden = false;
+            }
+          };
+          r.readAsDataURL(blob);
+        },
+        true,
+      );
+    }
+    frame.addEventListener("load", bindFrame);
+    if (frame.contentDocument?.readyState === "complete") bindFrame();
+    document.querySelector("#saveFail").onclick = () => {
+      frame.contentWindow.indexedDB.open = () => {
+        throw new DOMException("QA quota", "QuotaExceededError");
+      };
+      result.textContent = "失败注入";
+    };
+    document.querySelector("#saveRestore").onclick = () => {
+      frame.contentWindow.indexedDB.open = restoreOpen;
+      result.textContent = "已恢复";
+    };
+    document.querySelector("#touch").onclick = () => {
+      const win = frame.contentWindow,
+        el = frame.contentDocument.querySelector(".board-item"),
+        before = el.style.cssText,
+        r = el.getBoundingClientRect();
+      for (const [type, delta] of [
+        ["pointerdown", 0],
+        ["pointermove", 80],
+        ["pointerup", 80],
+      ])
+        el.dispatchEvent(
+          new win.PointerEvent(type, {
+            bubbles: true,
+            pointerId: 91,
+            pointerType: "touch",
+            button: 0,
+            clientX: r.x + 20,
+            clientY: r.y + 20 + delta,
+          }),
+        );
+      requestAnimationFrame(
+        () =>
+          (result.textContent = JSON.stringify({
+            geometryUnchanged: before === el.style.cssText,
+            touchAction: win.getComputedStyle(el).touchAction,
+          })),
+      );
+    };
+  </script>
+</html>

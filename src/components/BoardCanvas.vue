@@ -76,6 +76,7 @@ function start(e: PointerEvent, p: Placement, mode: "move" | "resize") {
   if (props.mobile || e.button !== 0) return;
   e.preventDefault();
   if (props.editing) return;
+  (e.currentTarget as HTMLElement).focus({ preventScroll: true });
   (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   drag = {
     id: p.id,
@@ -137,6 +138,7 @@ function end(cancel = false) {
   temp.value = null;
   guides.value = {};
 }
+defineExpose({ cancelInteraction: () => end(true) });
 function drop(e: DragEvent) {
   if (props.preview || props.locked) return;
   const files = Array.from(e.dataTransfer?.files || []);
@@ -205,6 +207,8 @@ function key(e: KeyboardEvent, p: Placement) {
     >
       <div
         class="board"
+        tabindex="0"
+        aria-label="视觉画板"
         :class="{ preview }"
         :style="{
           width: WIDTH + 'px',
@@ -222,15 +226,17 @@ function key(e: KeyboardEvent, p: Placement) {
         <div v-if="!shown.items.length" class="board-empty">
           <span>＋</span>
           <h3>一页新的可能</h3>
-          <p>上传图片或添加链接，参考会尝试放入空位。</p>
+          <p>从素材区拖入，或点「添加到画板」。允许重叠。</p>
         </div>
         <article
           v-for="p in shown.items"
           :key="p.id"
+          :data-object-id="p.id"
           class="board-item"
           :class="{
             selected: selectedIds.includes(p.id) && !preview,
             'text-item': p.kind === 'text',
+            'polygon-item': !!p.crop?.points,
           }"
           :style="{
             left: p.x + 'px',

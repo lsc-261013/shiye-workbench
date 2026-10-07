@@ -111,6 +111,6 @@ export function applyText(
     p = b.items.find((p) => p.id === id && p.kind === "text");
   if (!p) throw Error("文字对象已不在当前画板。");
   Object.assign(p, fitText(p, text, width));
-  b.version = 2;
+  if (b.version === 1) b.version = 2;
   return b;
 }

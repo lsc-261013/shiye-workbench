@@ -40,7 +40,13 @@ const rect = computed(() => cropSource(props.crop, size.value.w, size.value.h));
   >
     <defs>
       <clipPath :id="clipId">
-        <rect :x="rect.x" :y="rect.y" :width="rect.w" :height="rect.h" />
+        <polygon
+          v-if="crop?.points"
+          :points="
+            crop.points.map((p) => `${p.x * size.w},${p.y * size.h}`).join(' ')
+          "
+        />
+        <rect v-else :x="rect.x" :y="rect.y" :width="rect.w" :height="rect.h" />
       </clipPath>
     </defs>
     <image

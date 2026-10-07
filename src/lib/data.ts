@@ -14,7 +14,7 @@ export function validateBoard(value: unknown): Board {
   if (!value || typeof value !== "object")
     throw Error("备份不是有效的方案文件");
   const b = value as Board;
-  if (b.version !== 1 && b.version !== 2)
+  if (b.version !== 1 && b.version !== 2 && b.version !== 3)
     throw Error("不支持此备份版本，原稿保持不变");
   if (
     typeof b.title !== "string" ||
@@ -77,6 +77,8 @@ export function validateBoard(value: unknown): Board {
     } else {
       if (p.text) throw Error("参考对象不能含独立文字");
       if (p.crop) {
+        if (p.crop.points !== undefined && b.version !== 3)
+          throw Error("四点裁切备份必须使用版本3，原稿保持不变。");
         validateCrop(p.crop);
         if (!b.assets.find((a) => a.id === p.assetId)?.data)
           throw Error("无图片的链接不能裁切");

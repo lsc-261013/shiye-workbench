@@ -1,4 +1,5 @@
 import { clone, type Board, type Crop } from "../types";
+import { polygonCrop } from "./polygon";
 export const fullCrop = (): Crop => ({ x: 0, y: 0, w: 1, h: 1 });
 export function validateCrop(c: Crop) {
   if (
@@ -12,6 +13,20 @@ export function validateCrop(c: Crop) {
     c.y + c.h > 1.000001
   )
     throw Error("裁切区域无效，原稿保持不变。");
+  if (c.points !== undefined) {
+    if (!Array.isArray(c.points)) throw Error("四点裁切结构无效。");
+    const bounds = polygonCrop(c.points);
+    if (
+      ["x", "y", "w", "h"].some(
+        (k) =>
+          Math.abs(
+            c[k as keyof Pick<Crop, "x" | "y" | "w" | "h">] -
+              bounds[k as keyof Pick<Crop, "x" | "y" | "w" | "h">],
+          ) > 0.000001,
+      )
+    )
+      throw Error("四点裁切边界不一致。");
+  }
 }
 export function cropSource(c: Crop | undefined, width: number, height: number) {
   const r = c || fullCrop();
@@ -42,7 +57,7 @@ export function applyCrop(board: Board, id: string, crop?: Crop) {
     validateCrop(crop);
     p.crop = { ...crop };
   } else delete p.crop;
-  b.version = 2;
+  b.version = crop?.points ? 3 : board.version === 1 ? 2 : board.version;
   return b;
 }
 export function replaceImage(board: Board, id: string, data: string) {

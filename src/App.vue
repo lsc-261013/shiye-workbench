@@ -21,8 +21,6 @@ import { example } from "./lib/examples";
 import { History } from "./lib/history";
 import { renderPng } from "./lib/export";
 import { DraftSaver } from "./lib/persistence";
-import { findFreeSpace } from "./lib/layout";
-import { readAspectRatios } from "./lib/imageMetrics";
 import { replaceImage } from "./lib/crop";
 const board = ref<Board>(blank()),
   hasDraft = ref(false),
@@ -151,23 +149,11 @@ async function upload(files: File[]) {
   }
 }
 async function collect(assets: Asset[]) {
-  const ratios = await readAspectRatios(assets);
   const b = clone(board.value);
   b.assets.push(...assets);
-  let placed = 0;
-  for (const asset of assets) {
-    const rect = findFreeSpace(b.items, asset, ratios[asset.id]);
-    if (rect) {
-      b.items.push({ id: uid(), assetId: asset.id, ...rect });
-      placed++;
-    }
-  }
   if (!change(b)) return false;
-  const stored = assets.length - placed;
   notify(
-    stored
-      ? `已放入画板${placed}份；${stored}份暂留素材区，那里可选择加入或整理后加入。原排版保持不变。`
-      : `已放入画板${placed}份，原来的排版保持不变。点选参考即可写笔记。`,
+    `已收集${assets.length}份到素材区。拖入画板或点「添加到画板」，已有排版保持。`,
   );
   return true;
 }
@@ -237,8 +223,11 @@ async function backupOriginal() {
       );
       return;
     }
-    download(backupBlob(b), fileName(b.title) + "-升级前-v1.shiye.json");
-    notify("已生成升级前原始备份，请连同当前版本2备份保存。");
+    download(
+      backupBlob(b),
+      fileName(b.title) + `-升级前-v${b.version}.shiye.json`,
+    );
+    notify("已生成升级前原始备份，请连同当前完整备份保存。");
   } catch (e) {
     error.value = "读取升级前备份失败。" + (e as Error).message;
   }
