@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>拾页第四轮真实截图对照</title
+  ><style>
+    body {
+      margin: 30px auto;
+      max-width: 1600px;
+      padding: 0 20px;
+      background: #f7f4ed;
+      color: #252723;
+      font: 16px/1.7 sans-serif;
+    }
+    h1,
+    h2 {
+      font-weight: 500;
+    }
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    figure {
+      margin: 0;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ded9cd;
+    }
+    figcaption {
+      margin: 8px 0;
+    }
+    .mobile {
+      max-width: 390px;
+    }
+    a {
+      color: #b34830;
+    }
+    @media (max-width: 800px) {
+      .pair {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <h1>拾页第四轮 · 真实运行截图</h1>
+  <p>
+    改前为第三轮8a87825运行，改后为第四轮77d2547的4186生产构建。四种实际CSS视口，同一原稿与选择。截图不是概念稿；操作结论来自隔离实操与产物核对。
+  </p>
+  <p>
+    <a href="HANDOFF-ROUND-FOUR-2026-10-07.md">完整交接</a> ·
+    <a href="evidence/round-four/workflow-results.json">实操证据</a> ·
+    <a href="evidence/round-four/evidence-audit.json">尺寸与哈希</a>
+  </p>
+  <h2>1440×900 · 同一原稿</h2>
+  <div class="pair">
+    <figure>
+      <img src="evidence/round-four/before-editor-1440.png" />
+      <figcaption>第三轮改前</figcaption>
+    </figure>
+    <figure>
+      <img src="evidence/round-four/after-editor-1440.png" />
+      <figcaption>第四轮改后</figcaption>
+    </figure>
+  </div>
+  <h2>1280×720 · 同一原稿</h2>
+  <div class="pair">
+    <figure>
+      <img src="evidence/round-four/before-editor-1280.png" />
+      <figcaption>第三轮改前</figcaption>
+    </figure>
+    <figure>
+      <img src="evidence/round-four/after-editor-1280.png" />
+      <figcaption>第四轮改后</figcaption>
+    </figure>
+  </div>
+  <h2>375×812 · 同一原稿</h2>
+  <div class="pair">
+    <figure>
+      <img src="evidence/round-four/before-editor-375.png" />
+      <figcaption>第三轮改前</figcaption>
+    </figure>
+    <figure>
+      <img src="evidence/round-four/after-editor-375.png" />
+      <figcaption>第四轮改后</figcaption>
+    </figure>
+  </div>
+  <h2>390×844 · 同一原稿</h2>
+  <div class="pair">
+    <figure>
+      <img src="evidence/round-four/before-editor-390.png" />
+      <figcaption>第三轮改前</figcaption>
+    </figure>
+    <figure>
+      <img src="evidence/round-four/after-editor-390.png" />
+      <figcaption>第四轮改后</figcaption>
+    </figure>
+  </div>
+  <h2>素材区从弹窗改为左侧面板</h2>
+  <div class="pair">
+    <figure>
+      <img src="evidence/round-four/before-library-1440.png" />
+      <figcaption>第三轮改前</figcaption>
+    </figure>
+    <figure>
+      <img src="evidence/round-four/after-library-1440.png" />
+      <figcaption>第四轮改后</figcaption>
+    </figure>
+  </div>
+  <h2>裁切从滑块改为图上直接操作</h2>
+  <div class="pair">
+    <figure>
+      <img src="evidence/round-four/before-crop-1440.png" />
+      <figcaption>第三轮改前</figcaption>
+    </figure>
+    <figure>
+      <img src="evidence/round-four/after-crop-1440.png" />
+      <figcaption>第四轮改后</figcaption>
+    </figure>
+  </div>
+  <h2>实际四点裁切与导出</h2>
+  <p>
+    自制标记测试稿，凸四点最终稿；不透视拉伸，轮廓以外透出画板，底部笔记独立保留。
+  </p>
+  <div class="pair">
+    <img src="evidence/round-four/polygon-direct-editor.png" /><img
+      src="evidence/round-four/polygon-export.png"
+    />
+  </div>
+  <h2>透明极长与EXIF方向</h2>
+  <img src="evidence/round-four/polygon-extremes.png" />
+  <h2>1280直接裁切与375素材抽屉</h2>
+  <div class="pair">
+    <img src="evidence/round-four/crop-1280.png" /><img
+      class="mobile"
+      src="evidence/round-four/mobile-library-375.png"
+    />
+  </div>
+  <h2>真实拖入后的叠放</h2>
+  <img src="evidence/round-four/asset-drag-result-1280.png" />
+  <p>
+    手机/IME为模拟；Ctrl+C/V采用标准合成键盘事件，未验证OS剪贴板。Backspace/Delete、Ctrl+Z/Shift+Z和鼠标为实际输入。本轮未推送、未部署。
+  </p>
+</html>

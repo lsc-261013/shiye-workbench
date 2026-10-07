@@ -1,0 +1,369 @@
+{
+  "scope": "Round four local Chromium isolation; native pointer drag, native Backspace/Delete/Ctrl+Z/Shift+Z/Ctrl+Y; Ctrl+C/V standard synthetic keyboard events because browser automation intercepts native copy/paste; no OS clipboard read",
+  "results": [
+    {
+      "name": "直接拖动后取消裁切保持进入前完整稿",
+      "pass": true
+    },
+    {
+      "name": "固定比例直接角点缩放保持16比9",
+      "pass": false,
+      "superseded": "首次定位点击未关闭裁切层，读取了进入前存储；改Enter确认并等待dialog隐藏后复验通过。"
+    },
+    {
+      "name": "确认关闭后固定比例直接角点缩放保持16比9",
+      "pass": true
+    },
+    {
+      "name": "确认裁切只修改当前实例",
+      "pass": true
+    },
+    {
+      "name": "直接裁切整项撤销",
+      "pass": true
+    },
+    {
+      "name": "直接裁切重做准确",
+      "pass": true
+    },
+    {
+      "name": "自由四点实际拖到交叉位置会限制并反馈",
+      "pass": true
+    },
+    {
+      "name": "四点实际确认升级version3且原图与其他实例保持",
+      "pass": true
+    },
+    {
+      "name": "四点裁切一次撤销恢复矩形v2稿",
+      "pass": true
+    },
+    {
+      "name": "四点裁切一次重做精确恢复",
+      "pass": true
+    },
+    {
+      "name": "四点框内真实拖动整体平移保持形状",
+      "pass": false,
+      "superseded": "当时区域是合法凹四边形，选定起点在区域外；重新读取截图和边界，从实际取景区内拖动通过。"
+    },
+    {
+      "name": "正确取景区内拖动整组顶点平移",
+      "pass": true
+    },
+    {
+      "name": "Esc取消四点拖动不改已保存稿",
+      "pass": true
+    },
+    {
+      "name": "恢复完整图只影响当前四点实例",
+      "pass": true
+    },
+    {
+      "name": "恢复完整图撤销还原全部点",
+      "pass": true
+    },
+    {
+      "name": "复制对象不修改持久化稿",
+      "pass": true
+    },
+    {
+      "name": "标准Ctrl事件粘贴保留四点快照并新增ID、原层序不变",
+      "pass": true
+    },
+    {
+      "name": "真实Backspace及Ctrl+Z/Shift+Z一次删除历史",
+      "pass": true
+    },
+    {
+      "name": "复制后切换选择仍粘贴原图快照",
+      "pass": true
+    },
+    {
+      "name": "连续粘贴逐次偏移不移动已有对象",
+      "pass": true
+    },
+    {
+      "name": "多选标准Ctrl事件整组粘贴保持相对位置和文字内容",
+      "pass": true
+    },
+    {
+      "name": "真实Delete整批移除多选且资源保留",
+      "pass": true
+    },
+    {
+      "name": "多选删除一次撤销恢复整组",
+      "pass": true
+    },
+    {
+      "name": "名称网址笔记方案名中的删除撤销和标准复制粘贴不改画板",
+      "pass": true,
+      "detail": [
+        "素材名称",
+        "来源网址",
+        "想法与笔记",
+        "方案名称"
+      ]
+    },
+    {
+      "name": "实际File上传仅收集素材，8个旧对象逐项保持",
+      "pass": true
+    },
+    {
+      "name": "真实鼠标拖入已有对象区域只新增顶层实例且落点正确",
+      "pass": false,
+      "detail": {
+        "id": "edd4a048-8aaa-42ec-ae80-a8efa6553718",
+        "assetId": "b0de1771-1145-4576-bd02-2bbb26a8c511",
+        "w": 420,
+        "h": 280,
+        "x": 0,
+        "y": 109.41995359628771
+      },
+      "superseded": "落点中心180位于新对象半宽210之外，按边缘规则约束为x=0；改用边缘约束预期复验。"
+    },
+    {
+      "name": "拖入靠左边缘约束新对象且只新增顶层实例",
+      "pass": true
+    },
+    {
+      "name": "真实拖出有效画板取消且不留对象",
+      "pass": true
+    },
+    {
+      "name": "1280缩放下真实鼠标落点换算正确且旧对象保持",
+      "pass": true
+    },
+    {
+      "name": "左侧面板开关不改任何已存稿",
+      "pass": true
+    },
+    {
+      "name": "149对象粘贴两对象整批拒绝且全稿不变",
+      "pass": true
+    },
+    {
+      "name": "整板覆盖时辅助添加图片和新文字允许重叠且原对象不变",
+      "pass": true
+    },
+    {
+      "name": "实际v3 JSON导出与已存稿完整相等",
+      "pass": true
+    },
+    {
+      "name": "实际共享替换重置相关裁切但保留外框层序",
+      "pass": true
+    },
+    {
+      "name": "共享替换一次撤销还原原图与全部裁切",
+      "pass": true
+    },
+    {
+      "name": "1280×720实际CSS视口裁切确认区在屏内",
+      "pass": true,
+      "detail": {
+        "bottom": 706.1365966796875,
+        "h": 691.7330322265625,
+        "top": 14.403564453125,
+        "viewport": 720
+      }
+    },
+    {
+      "name": "刷新恢复v3全部点与原图完全一致",
+      "pass": true
+    },
+    {
+      "name": "未知版本真实导入拒绝并保留全稿",
+      "pass": true
+    },
+    {
+      "name": "旧版本伪装四点真实导入拒绝并保留全稿",
+      "pass": true
+    },
+    {
+      "name": "交叉点集真实导入拒绝并保留全稿",
+      "pass": true
+    },
+    {
+      "name": "链接弹窗输入中的快捷键不触发画板对象操作",
+      "pass": true
+    },
+    {
+      "name": "文字内容输入中退格撤销与标准粘贴不改画板",
+      "pass": true
+    },
+    {
+      "name": "新端口独立IndexedDB恢复实际v3备份完整一致",
+      "pass": true
+    },
+    {
+      "name": "独立来源刷新后四点与全部内容仍在",
+      "pass": true
+    },
+    {
+      "name": "外层真实滚动160px后拖入落点仍映射画板坐标",
+      "pass": true
+    },
+    {
+      "name": "合成中文组合期间禁止笔记保存",
+      "pass": true
+    },
+    {
+      "name": "应用内有复制快照时组合输入和退格仍不改画板",
+      "pass": true
+    },
+    {
+      "name": "375手机素材抽屉辅助添加允许重叠且原排版不动",
+      "pass": true
+    },
+    {
+      "name": "375手机就地笔记保存保留四点和几何",
+      "pass": true
+    },
+    {
+      "name": "手机与桌面四点PNG逐字节一致",
+      "pass": true
+    },
+    {
+      "name": "右边缘粘贴改在左侧且保留原稿",
+      "pass": true
+    },
+    {
+      "name": "超容量标准粘贴明确提示整批拒绝",
+      "pass": false,
+      "superseded": "exact文本匹配漏掉提示容器中关闭按钮的×；改读取.toast实际文本并在150对象稿复验，提示和整批数据保护通过。"
+    },
+    {
+      "name": "150对象粘贴明确容量拒绝反馈",
+      "pass": true
+    },
+    {
+      "name": "150对象粘贴整批拒绝且全部数据不变",
+      "pass": true
+    },
+    {
+      "name": "快捷键说明可发现且Esc关闭不改稿",
+      "pass": true
+    },
+    {
+      "name": "手机抽屉去除重复标题和关闭入口",
+      "pass": true
+    },
+    {
+      "name": "最终生产构建同源原version1五对象完整JSON字符串不变",
+      "pass": false,
+      "detail": {
+        "length": 423824,
+        "version": 1,
+        "items": 5
+      },
+      "superseded": "恢复暂停期间核对发现同内容示例ID不同；全部内容、位置、层序和引用关系（去ID映射）一致。先外部保存resume备份，再通过正常UI导入起点完整备份，复验字符串一致。不虚构产生不同ID的操作原因。"
+    },
+    {
+      "name": "保护备份恢复后4186原稿完整JSON字符串含ID完全一致",
+      "pass": true,
+      "detail": {
+        "length": 423824
+      }
+    },
+    {
+      "name": "真实Ctrl+Y重做完整恢复删除结果",
+      "pass": true
+    }
+  ],
+  "exports": [
+    {
+      "name": "第四轮 · 标记与重叠验收（示例）.png",
+      "size": 182888,
+      "type": "image/png"
+    },
+    {
+      "name": "第四轮 · 标记与重叠验收（示例）-参考清单.txt",
+      "size": 1106,
+      "type": "text/plain;charset=utf-8"
+    },
+    {
+      "name": "第四轮 · 标记与重叠验收（示例）.shiye.json",
+      "size": 37792,
+      "type": "application/json"
+    },
+    {
+      "name": "第四轮 · 四点透明与EXIF验证.png",
+      "size": 96031,
+      "type": "image/png"
+    },
+    {
+      "name": "第四轮 · 标记与重叠验收（示例）.png",
+      "size": 182888,
+      "type": "image/png"
+    }
+  ],
+  "beforeViewports": [
+    {
+      "w": 1440,
+      "h": 900,
+      "actual": {
+        "contentWidth": 1440,
+        "height": 900,
+        "mobile": false,
+        "width": 1440
+      }
+    },
+    {
+      "w": 1280,
+      "h": 720,
+      "actual": {
+        "contentWidth": 1280,
+        "height": 720,
+        "mobile": false,
+        "width": 1280
+      }
+    },
+    {
+      "w": 375,
+      "h": 812,
+      "actual": {
+        "contentWidth": 360,
+        "height": 812,
+        "mobile": true,
+        "width": 375
+      }
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "actual": {
+        "contentWidth": 375,
+        "height": 844,
+        "mobile": true,
+        "width": 390
+      }
+    }
+  ],
+  "afterViewports": [
+    {
+      "contentWidth": 1440,
+      "height": 900,
+      "mobile": false,
+      "width": 1440
+    },
+    {
+      "contentWidth": 1280,
+      "height": 720,
+      "mobile": false,
+      "width": 1280
+    },
+    {
+      "contentWidth": 360,
+      "height": 812,
+      "mobile": true,
+      "width": 375
+    },
+    {
+      "contentWidth": 375,
+      "height": 844,
+      "mobile": true,
+      "width": 390
+    }
+  ]
+}

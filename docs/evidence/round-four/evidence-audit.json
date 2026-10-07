@@ -1,0 +1,370 @@
+{
+  "implementation": "77d2547ed6d73382e558c749406a3ab43160c246",
+  "baseline": "8a87825",
+  "productionJS": "index-CUGnSyiA.js",
+  "productionCSS": "index-Bs0hNSWi.css",
+  "beforeRuntimeJS": "index-CIv07aLn.js",
+  "viewports": {
+    "before": [
+      {
+        "w": 1440,
+        "h": 900,
+        "actual": {
+          "contentWidth": 1440,
+          "height": 900,
+          "mobile": false,
+          "width": 1440
+        }
+      },
+      {
+        "w": 1280,
+        "h": 720,
+        "actual": {
+          "contentWidth": 1280,
+          "height": 720,
+          "mobile": false,
+          "width": 1280
+        }
+      },
+      {
+        "w": 375,
+        "h": 812,
+        "actual": {
+          "contentWidth": 360,
+          "height": 812,
+          "mobile": true,
+          "width": 375
+        }
+      },
+      {
+        "w": 390,
+        "h": 844,
+        "actual": {
+          "contentWidth": 375,
+          "height": 844,
+          "mobile": true,
+          "width": 390
+        }
+      }
+    ],
+    "after": [
+      {
+        "contentWidth": 1440,
+        "height": 900,
+        "mobile": false,
+        "width": 1440
+      },
+      {
+        "contentWidth": 1280,
+        "height": 720,
+        "mobile": false,
+        "width": 1280
+      },
+      {
+        "contentWidth": 360,
+        "height": 812,
+        "mobile": true,
+        "width": 375
+      },
+      {
+        "contentWidth": 375,
+        "height": 844,
+        "mobile": true,
+        "width": 390
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "file": "after-crop-1440.png",
+      "bytes": 113824,
+      "sha256": "f6554b7ab1225d5373cdc4afd04f85b3163f6c1c92d25348ddcc31169089226d",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "after-editor-1280.png",
+      "bytes": 85404,
+      "sha256": "4023fbd8a85018d51619a495d497da4714dec6e55d8c16b32c6299271996b26b",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "after-editor-1440.png",
+      "bytes": 106418,
+      "sha256": "218ce7c182566101ffbb74139160ff9f272073d66cd78323c20f294f98c23468",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "after-editor-375.png",
+      "bytes": 35914,
+      "sha256": "6fda7148f81a6f2a001f9216e1abd514e3b9abe4f23a6a993bc6369e93343657",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "file": "after-editor-390.png",
+      "bytes": 38652,
+      "sha256": "88a0ffa673295ad05e9e6af9f1999fc38b3d61585001eb6a0c2552bf03cff60d",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "after-library-1440.png",
+      "bytes": 112154,
+      "sha256": "c2b4b25df9265617770287a7142bbded85c6360c57aaf945101aea2d206bc134",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "asset-drag-result-1280.png",
+      "bytes": 94995,
+      "sha256": "e78a3ee2385a4dc6b77132640268a2dd014d003604a009e20529c23c90861768",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "before-crop-1440.png",
+      "bytes": 96419,
+      "sha256": "ccab1c4a82f3b56a89e80dc46c047d24b32c18c92e0c8c61c540e0e65680fdac",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "before-editor-1280.png",
+      "bytes": 85397,
+      "sha256": "abbc3b797ae76baf0c0dd2a7ddd3ce957be7dffd9f4fbe66f41c1d8bd423d6c4",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "before-editor-1440.png",
+      "bytes": 106401,
+      "sha256": "3f23313c55dff0172a2258894181a21ffc9699afbd03669699085b93b471e4ab",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "before-editor-375.png",
+      "bytes": 35849,
+      "sha256": "adeea9a7606f0ae8a9053c9b71cfc2bf0156da32e6c77e6e2b82fe23fd54f92e",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "file": "before-editor-390.png",
+      "bytes": 38586,
+      "sha256": "6a908c53e5da056111e0617a4fd8570cf5401753d0fe1c1f269df1efb51a39cb",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "before-library-1440.png",
+      "bytes": 75612,
+      "sha256": "9781b9e10f4390b8bfb77b80720a2b7be59865b95ddf722dd547bf29bd5fd5be",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "crop-1280.png",
+      "bytes": 52420,
+      "sha256": "ff00a85b69d167fda4309be79af0edb377e8bd3728e55c14bdb42fec533d83e1",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "engineering-results.txt",
+      "bytes": 397,
+      "sha256": "ef422fd1b0ee1deb131f1213d1a308946182d88f9e26ac6ea560eabc9e6af148"
+    },
+    {
+      "file": "final-preview.png",
+      "bytes": 106639,
+      "sha256": "dfdf2420fd153a328692a0b354ffd061119638d4eca9093b13d6bdf81421713d",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "keyboard-diagnostics.json",
+      "bytes": 4335,
+      "sha256": "494aac4caad2e1b82e21fb9dc538a01190886285c958b269af3951131e7bb805"
+    },
+    {
+      "file": "mobile-library-375.png",
+      "bytes": 27033,
+      "sha256": "2ab6f88c74054b6e490742675cec77ec0bbf6903be55674ed79582d6618a19e2",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "file": "polygon-board.png",
+      "bytes": 89866,
+      "sha256": "5ff82f82235b0c52c98d94abc74c7eaa157a49b718128ab5eca37e072279f406",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "polygon-confirmed.shiye.json",
+      "bytes": 37788,
+      "sha256": "26fc7fbcd7560ee4782b617db9cce504830d497b9b392c0f6fb8983c20987992"
+    },
+    {
+      "file": "polygon-crop-dialog.png",
+      "bytes": 64629,
+      "sha256": "961b996690365d7266bd1631190661728993b7ea257526cada7bc84c42182e32",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "polygon-direct-editor.png",
+      "bytes": 67260,
+      "sha256": "cd6245b278f5bf3a31cb816f1720c0deb0c1f153e6e052a560c71f8cf952e15a",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "polygon-export.png",
+      "bytes": 182888,
+      "sha256": "f2966e83439b46eba3d73a1ff2f3730d3d0aa28eeae1888d560f0f7745a73ae4",
+      "width": 1600,
+      "height": 1000
+    },
+    {
+      "file": "polygon-export.txt",
+      "bytes": 1106,
+      "sha256": "476f9661a46caca421326733a41daa580c90d70c6ed246e97f77c1f517199f8e"
+    },
+    {
+      "file": "polygon-extremes-board.png",
+      "bytes": 61723,
+      "sha256": "76a70278c57e9556aa7700982a3d56520feb9545fd46784b4fd77f099eb40180",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "polygon-extremes.png",
+      "bytes": 96031,
+      "sha256": "a6a4574ea9d2186d18d2a95080992fc3f7daa6465b4fbd6d51775a23b65bd6af",
+      "width": 1600,
+      "height": 1000
+    },
+    {
+      "file": "polygon-extremes.shiye.json",
+      "bytes": 37866,
+      "sha256": "14dc979291f4d0615bbcf4e9114c351eced45585bb5a6a6a68af1c59fe1a75c4"
+    },
+    {
+      "file": "polygon-final.shiye.json",
+      "bytes": 37792,
+      "sha256": "759efdc7344f58d6108c3152b0a6928c40a1e16acec4459044fc3a1f7b0bb649"
+    },
+    {
+      "file": "polygon-mobile-export.png",
+      "bytes": 182888,
+      "sha256": "f2966e83439b46eba3d73a1ff2f3730d3d0aa28eeae1888d560f0f7745a73ae4",
+      "width": 1600,
+      "height": 1000
+    },
+    {
+      "file": "shortcuts.png",
+      "bytes": 53072,
+      "sha256": "ff57ffa26dbf542a6ea4b475ec818846102123f9487c41ccea1c8f2543b9c214",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "workflow-results.json",
+      "bytes": 9520,
+      "sha256": "ebcc513a229d24e429e836c51ea927014cd71289f93d12c40d4c46f636d18eb5"
+    }
+  ],
+  "polygonPixelSamples": {
+    "270,185": [
+      247,
+      244,
+      237
+    ],
+    "60,290": [
+      247,
+      244,
+      237
+    ],
+    "90,215": [
+      223,
+      56,
+      47
+    ],
+    "235,265": [
+      247,
+      244,
+      237
+    ],
+    "90,360": [
+      255,
+      253,
+      250
+    ]
+  },
+  "extremePixelSamples": {
+    "530,300": [
+      247,
+      244,
+      237
+    ],
+    "738,250": [
+      223,
+      56,
+      47
+    ],
+    "738,500": [
+      39,
+      103,
+      216
+    ],
+    "1120,250": [
+      25,
+      148,
+      91
+    ],
+    "1300,250": [
+      223,
+      56,
+      47
+    ],
+    "1170,500": [
+      237,
+      181,
+      32
+    ],
+    "1300,500": [
+      39,
+      103,
+      216
+    ]
+  },
+  "mobilePNGEqualsDesktop": true,
+  "assertions": {
+    "attempts": 59,
+    "passed": 54,
+    "superseded": 5
+  },
+  "originalProtection": {
+    "restoredJSONStringLength": 423824,
+    "restoredExactMatch": true,
+    "originalBackup": "../../work/shiye-before-round-four.shiye.json",
+    "resumeBackup": "../../work/shiye-before-round-four-resume.shiye.json",
+    "note": "Resume check found only IDs different in identical example content; retained both versions outside Git, restored start backup through normal UI and verified exact JSON. Cause of regenerated IDs is not claimed."
+  },
+  "pixelChecks": {
+    "polygonOutsideTopRightIsBoard": true,
+    "polygonOutsideBottomLeftIsBoard": true,
+    "polygonRedPixelsRetained": true,
+    "noteWhiteBackgroundRetained": true,
+    "transparentExtremeSourceShowsBoard": true,
+    "exifLeftTopGreen": true,
+    "exifRightTopRed": true,
+    "exifLeftBottomGold": true,
+    "exifRightBottomBlue": true
+  }
+}
