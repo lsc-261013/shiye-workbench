@@ -388,6 +388,21 @@ function openExport() {
   });
 }
 
+function historyAction(action: "undo" | "redo") {
+  run(() => {
+    if (action === "undo") emit("undo");
+    else emit("redo");
+    nextTick(() => {
+      // Undoing an insertion can remove the focused object from the DOM.
+      // Keep the next shortcut inside the editor without taking focus from inputs.
+      if (document.activeElement === document.body)
+        editorRoot.value
+          ?.querySelector<HTMLElement>(".board")
+          ?.focus({ preventScroll: true });
+    });
+  });
+}
+
 function keyboard(e: KeyboardEvent) {
   if (
     e.defaultPrevented ||
@@ -428,12 +443,12 @@ function keyboard(e: KeyboardEvent) {
   }
   if (mod && key === "z") {
     e.preventDefault();
-    run(() => (e.shiftKey ? emit("redo") : emit("undo")));
+    historyAction(e.shiftKey ? "redo" : "undo");
     return;
   }
   if (mod && key === "y") {
     e.preventDefault();
-    run(() => emit("redo"));
+    historyAction("redo");
     return;
   }
   if (
@@ -531,8 +546,8 @@ onBeforeUnmount(() => {
       :preview="preview"
       @home="run(() => emit('home'))"
       @rename="rename"
-      @undo="run(() => emit('undo'))"
-      @redo="run(() => emit('redo'))"
+      @undo="historyAction('undo')"
+      @redo="historyAction('redo')"
       @preview="run(() => (preview = !preview))"
       @export="openExport"
       @import="run(() => emit('import'))"

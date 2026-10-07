@@ -1,0 +1,105 @@
+{
+  "reproduction": {
+    "before": 11,
+    "firstCtrlZ": 10,
+    "secondCtrlZ": 10,
+    "focusAfterFirst": {
+      "cls": "",
+      "tag": "BODY"
+    }
+  },
+  "fixed": {
+    "ctrlZ": [
+      {
+        "ids": [
+          "cce12aca-e620-456c-b625-b68bbce74bea",
+          "e9697102-53ae-4e9a-9082-a1b734e7af48",
+          "1255f5cf-bc48-4592-a5b2-e81738fe6d13",
+          "bd08fa4f-6fd0-477e-a2b3-8e8a92146084",
+          "29be82d8-cea1-4938-89fb-76f326205cf6",
+          "0287eb82-2399-4072-bafe-fc6ecdfa69f8",
+          "be42266d-ac48-4009-a830-6403edf3a336",
+          "34c99a88-5afb-4f26-afb4-9ac792efe6da",
+          "4e2d0a8f-7caf-4c09-8bf5-f7fe4a0cde23",
+          "097d9f4c-97d5-4804-90d2-ca8c36f2ef76"
+        ],
+        "focus": {
+          "cls": "board",
+          "tag": "DIV"
+        },
+        "matches": true
+      },
+      {
+        "ids": [
+          "cce12aca-e620-456c-b625-b68bbce74bea",
+          "e9697102-53ae-4e9a-9082-a1b734e7af48",
+          "1255f5cf-bc48-4592-a5b2-e81738fe6d13",
+          "bd08fa4f-6fd0-477e-a2b3-8e8a92146084",
+          "29be82d8-cea1-4938-89fb-76f326205cf6",
+          "0287eb82-2399-4072-bafe-fc6ecdfa69f8",
+          "be42266d-ac48-4009-a830-6403edf3a336",
+          "34c99a88-5afb-4f26-afb4-9ac792efe6da",
+          "4e2d0a8f-7caf-4c09-8bf5-f7fe4a0cde23"
+        ],
+        "focus": {
+          "cls": "board",
+          "tag": "DIV"
+        },
+        "matches": true
+      },
+      {
+        "ids": [
+          "cce12aca-e620-456c-b625-b68bbce74bea",
+          "e9697102-53ae-4e9a-9082-a1b734e7af48",
+          "1255f5cf-bc48-4592-a5b2-e81738fe6d13",
+          "bd08fa4f-6fd0-477e-a2b3-8e8a92146084",
+          "29be82d8-cea1-4938-89fb-76f326205cf6",
+          "0287eb82-2399-4072-bafe-fc6ecdfa69f8",
+          "be42266d-ac48-4009-a830-6403edf3a336",
+          "34c99a88-5afb-4f26-afb4-9ac792efe6da"
+        ],
+        "focus": {
+          "cls": "board",
+          "tag": "DIV"
+        },
+        "matches": true
+      }
+    ],
+    "ctrlShiftZ": [
+      {
+        "count": 9,
+        "matches": true
+      },
+      {
+        "count": 10,
+        "matches": true
+      },
+      {
+        "count": 11,
+        "matches": true
+      }
+    ],
+    "toolbar": [
+      {
+        "count": 10,
+        "matches": true
+      },
+      {
+        "count": 9,
+        "matches": true
+      },
+      {
+        "count": 8,
+        "matches": true
+      }
+    ],
+    "inputFocus": "TEXTAREA",
+    "inputDraftUnchanged": true
+  },
+  "inputMethod": "Native Control+z and Control+Shift+z through pressKey(null); no focusing locator or intervening click between presses",
+  "checks": {
+    "typeAndBuild": "passed",
+    "tests": "45/45"
+  },
+  "productionBundle": "index-B8j0E01h.js"
+}
