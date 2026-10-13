@@ -48,7 +48,43 @@ defineEmits<{
           <Icon name="close" :size="17" />
         </button>
       </header>
+      <div class="note-object-actions inspector-tools">
+        <button
+          v-if="asset.data && onBoard && !mobile"
+          :disabled="busy"
+          @click="$emit('crop')"
+        >
+          裁切图片{{ cropped ? " · 已裁切" : "" }}
+        </button>
+        <button v-if="cropped" :disabled="busy" @click="$emit('restore')">
+          恢复完整图
+        </button>
+        <p v-if="mobile && cropped" class="note-shared">
+          当前图片已裁切。精细取景在电脑进行，原图可看大图。
+        </p>
+        <template v-if="!onBoard"
+          ><p>这份参考暂在素材区。</p>
+          <button :disabled="busy" @click="$emit('add', asset.id)">
+            <Icon name="plus" />加入画板
+          </button></template
+        >
+        <button :disabled="busy" @click="$emit('replace')">
+          <Icon name="replace" :size="16" />{{
+            asset.data ? "替换图片" : "附上图片"
+          }}
+        </button>
+        <ObjectActions
+          v-if="onBoard"
+          :busy="busy"
+          :can-back="canBack"
+          :can-forward="canForward"
+          @duplicate="$emit('duplicate')"
+          @layer="$emit('layer', $event)"
+          @remove="$emit('remove')"
+        />
+      </div>
       <form
+        id="reference-notes-form"
         class="notes-form"
         @submit.prevent="$emit('save')"
         @compositionstart="$emit('composition', true)"
@@ -97,55 +133,27 @@ defineEmits<{
           }}份共用这张图片与笔记。替换会更新全部实例并恢复完整图，可撤销。
         </p>
         <p class="error" v-if="error" role="alert">{{ error }}</p>
-        <div class="note-submit">
-          <span role="status">{{ dirty ? "修改尚未提交" : "修改后保存" }}</span
-          ><button
-            v-if="dirty"
-            type="button"
-            :disabled="busy"
-            @click="$emit('cancel')"
-          >
-            取消修改</button
-          ><button class="primary" :disabled="busy || !dirty || composing">
-            保存修改
-          </button>
-        </div>
       </form>
-      <footer class="note-object-actions">
-        <button
-          v-if="asset.data && onBoard && !mobile"
+      <div class="note-submit">
+        <span role="status">{{
+          dirty ? "尚未保存 · 确认后更新画板" : "已与画板同步"
+        }}</span
+        ><button
+          v-if="dirty"
+          type="button"
           :disabled="busy"
-          @click="$emit('crop')"
+          @click="$emit('cancel')"
         >
-          裁切图片{{ cropped ? " · 已裁切" : "" }}
-        </button>
-        <button v-if="cropped" :disabled="busy" @click="$emit('restore')">
-          恢复完整图
-        </button>
-        <p v-if="mobile && cropped" class="note-shared">
-          当前图片已裁切。精细取景在电脑进行，原图可看大图。
-        </p>
-        <template v-if="!onBoard"
-          ><p>这份参考暂在素材区。</p>
-          <button :disabled="busy" @click="$emit('add', asset.id)">
-            <Icon name="plus" />加入画板
-          </button></template
+          取消修改</button
+        ><button
+          form="reference-notes-form"
+          type="submit"
+          class="primary"
+          :disabled="busy || !dirty || composing"
         >
-        <button :disabled="busy" @click="$emit('replace')">
-          <Icon name="replace" :size="16" />{{
-            asset.data ? "替换图片" : "附上图片"
-          }}
+          保存修改
         </button>
-        <ObjectActions
-          v-if="onBoard"
-          :busy="busy"
-          :can-back="canBack"
-          :can-forward="canForward"
-          @duplicate="$emit('duplicate')"
-          @layer="$emit('layer', $event)"
-          @remove="$emit('remove')"
-        />
-      </footer>
+      </div>
     </template>
     <div v-else class="note-panel-idle">
       <h2>想法与笔记</h2>

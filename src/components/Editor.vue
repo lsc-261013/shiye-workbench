@@ -464,6 +464,8 @@ function beforeUnload(e: BeforeUnloadEvent) {
   if (dirty.value || working.value) e.preventDefault();
 }
 function mediaChange() {
+  // A desktop sidebar must not become a modal over an active task on resize.
+  if (media.matches !== mobile.value) library.value = false;
   mobile.value = media.matches;
   if (mobile.value && selectedIds.value.length > 1)
     chooseRaw(
@@ -540,6 +542,7 @@ onBeforeUnmount(() => {
     <EditorToolbar
       :title="board.title"
       :save-state="saveState"
+      :pending-edits="dirty"
       :can-undo="canUndo"
       :can-redo="canRedo"
       :busy="busy"
@@ -617,9 +620,12 @@ onBeforeUnmount(() => {
           @details="showImage"
           @add="add"
           @files="(files) => run(() => emit('upload', files))"
+          @upload="upload"
+          @library="run(() => (library = true))"
+          @text="addText"
         />
-        <p v-if="!preview && !board.items.length" class="studio-empty">
-          上传先收集到素材区，再拖到画板或点「添加到画板」。允许重叠，整理只在主动点击时进行。
+        <p v-if="!preview && mobile" class="mobile-editing-scope">
+          手机可收集素材、改文字与笔记、导出作品。自由拖排和裁切请在电脑完成。
         </p>
         <div
           v-if="mobile && !preview && board.items.length"
@@ -842,7 +848,6 @@ onBeforeUnmount(() => {
       :busy-label="busyLabel"
       :result="exportResult"
       :title="board.title"
-      :version="board.version"
       @close="exporting = false"
       @png="emit('png')"
       @text="emit('text')"

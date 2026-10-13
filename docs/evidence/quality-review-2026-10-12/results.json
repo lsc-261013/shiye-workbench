@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-13",
+  "baseline": "5ec8532",
+  "localOnly": true,
+  "preview": "http://127.0.0.1:5196/",
+  "build": {
+    "js": "index-riFXOQcN.js",
+    "css": "index-Vvd3vVvq.css",
+    "modules": 75
+  },
+  "tests": {
+    "files": 6,
+    "passed": 45
+  },
+  "actualUndo": [
+    5,
+    4,
+    3,
+    2
+  ],
+  "actualRedo": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "syntheticBackup": {
+    "version": 3,
+    "assets": 2,
+    "objects": 3,
+    "texts": 1,
+    "polygonCrops": 1
+  },
+  "downloads": [
+    {
+      "name": "export.png",
+      "bytes": 491478,
+      "sha256": "25af6758d1baf88d9915729c1983c7f19024dd57f1d2cf7fc2af14b606aec1bb"
+    },
+    {
+      "name": "export.txt",
+      "bytes": 430,
+      "sha256": "8d4fdde8d4ec5cabc6a571888853393cafaf9c70f147c6cb48e25995b4464740"
+    }
+  ],
+  "responsive": {
+    "widths": [
+      320,
+      390
+    ],
+    "fontPx": 13,
+    "primaryButtonHeightPx": 44,
+    "noHorizontalOverflow": true
+  },
+  "limitations": [
+    "Real Ctrl+C/V intercepted by browser virtual clipboard",
+    "No physical mobile, IME, Mac or Safari validation"
+  ],
+  "advisorEvidence": "goal-review-B64/shiye/results.json and toolbar-fixed.json (independent review)"
+}

@@ -23,6 +23,9 @@ const emit = defineEmits<{
   details: [id: string];
   add: [id: string, x: number, y: number];
   files: [files: File[]];
+  upload: [];
+  library: [];
+  text: [];
 }>();
 const host = ref<HTMLElement>();
 const scale = ref(0.6);
@@ -223,7 +226,7 @@ function key(e: KeyboardEvent, p: Placement) {
           <h2>{{ board.title }}</h2>
           <p>VISUAL NOTES / 视觉参考方案</p>
         </header>
-        <div v-if="!shown.items.length" class="board-empty">
+        <div v-if="!shown.items.length && preview" class="board-empty">
           <span>＋</span>
           <h3>一页新的可能</h3>
           <p>从素材区拖入，或点「添加到画板」。允许重叠。</p>
@@ -320,6 +323,35 @@ function key(e: KeyboardEvent, p: Placement) {
           class="guide horizontal"
           :style="{ top: guides.y + 'px' }"
         ></div>
+      </div>
+      <div v-if="!shown.items.length && !preview" class="board-start">
+        <span class="eyebrow">从一点喜欢开始</span>
+        <h3>
+          {{
+            board.assets.length
+              ? "素材已就位，放上第一张。"
+              : "这一页，从你开始。"
+          }}
+        </h3>
+        <p>
+          {{
+            board.assets.length
+              ? mobile
+                ? "打开素材区，点「添加到画板」。"
+                : "把左侧缩略图拖进来，自由决定位置。"
+              : "收集一张图片，或先写下一点想法。"
+          }}
+        </p>
+        <div>
+          <button
+            class="primary"
+            :disabled="locked"
+            @click="board.assets.length ? emit('library') : emit('upload')"
+          >
+            {{ board.assets.length ? "打开素材区" : "上传第一张图片" }}
+          </button>
+          <button :disabled="locked" @click="emit('text')">先写文字</button>
+        </div>
       </div>
     </div>
     <div class="canvas-caption">

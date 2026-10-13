@@ -27,7 +27,19 @@ defineEmits<{
       <h2>文字与标题</h2>
       <button aria-label="取消选择" @click="$emit('close')">×</button>
     </header>
+    <div class="note-object-actions inspector-tools">
+      <ObjectActions
+        :busy="busy"
+        :can-back="canBack"
+        :can-forward="canForward"
+        is-text
+        @duplicate="$emit('duplicate')"
+        @remove="$emit('remove')"
+        @layer="$emit('layer', $event)"
+      />
+    </div>
     <form
+      id="object-text-form"
       v-if="draft?.text"
       class="notes-form text-form"
       @submit.prevent="$emit('save')"
@@ -116,25 +128,19 @@ defineEmits<{
         字号保持不变；框高随完整文字自动计算。最多1200字，放不下会保留原稿。
       </p>
       <p v-if="error" class="error" role="alert">{{ error }}</p>
-      <div class="note-submit">
-        <span>{{ dirty ? "修改尚未提交" : "修改后保存" }}</span
-        ><button v-if="dirty" type="button" @click="$emit('cancel')">
-          取消修改</button
-        ><button class="primary" :disabled="busy || !dirty || composing">
-          保存文字
-        </button>
-      </div>
     </form>
-    <footer class="note-object-actions">
-      <ObjectActions
-        :busy="busy"
-        :can-back="canBack"
-        :can-forward="canForward"
-        is-text
-        @duplicate="$emit('duplicate')"
-        @remove="$emit('remove')"
-        @layer="$emit('layer', $event)"
-      />
-    </footer>
+    <div class="note-submit">
+      <span>{{ dirty ? "尚未保存 · 确认后更新画板" : "已与画板同步" }}</span
+      ><button v-if="dirty" type="button" @click="$emit('cancel')">
+        取消修改</button
+      ><button
+        form="object-text-form"
+        type="submit"
+        class="primary"
+        :disabled="busy || !dirty || composing"
+      >
+        保存文字
+      </button>
+    </div>
   </section>
 </template>

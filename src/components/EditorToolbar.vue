@@ -8,6 +8,7 @@ defineProps<{
   canRedo: boolean;
   busy: boolean;
   preview: boolean;
+  pendingEdits: boolean;
 }>();
 const emit = defineEmits<{
   home: [];
@@ -61,6 +62,12 @@ onBeforeUnmount(() => window.removeEventListener("click", outside));
       >
         保存失败 · 点击重试
       </button>
+      <span
+        v-else-if="pendingEdits"
+        class="save-state has-pending"
+        role="status"
+        >文字或笔记待确认 · 请在编辑区保存</span
+      >
       <span v-else class="save-state" role="status"
         ><span v-if="saveState.includes('中')" class="spinner"></span
         ><Icon v-else name="check" :size="12" />{{ saveState }}</span

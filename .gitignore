@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-pages/
+dist-review/
 .sites-runtime/
 *.log
 # Private working drafts and credentials must stay outside the repository.
