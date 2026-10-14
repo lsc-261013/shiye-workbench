@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-14",
+  "url": "https://lsc-261013.github.io/shiye-workbench/",
+  "featureCommit": "944725210b66b83014da6bf2f4c7da35f77c40ab",
+  "workflowRun": 38454098095,
+  "jobs": [
+    {
+      "name": "build",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "deploy",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "htmlReferencesVerified": true,
+  "resources": [
+    {
+      "path": "/shiye-workbench/favicon.svg",
+      "bytes": 201,
+      "sha256": "810c9ee0665167695bea78903ec64cb287a2f8cb1ae1ce42d709e67b88835896",
+      "matchesLocalPagesBuild": true
+    },
+    {
+      "path": "/shiye-workbench/assets/index-B4fdM7Bs.js",
+      "bytes": 169446,
+      "sha256": "1195bd518ed7db20d5b7019d291777d8875c9b27efc41eec0f985f78fabcdcba",
+      "matchesLocalPagesBuild": true
+    },
+    {
+      "path": "/shiye-workbench/assets/index-Vvd3vVvq.css",
+      "bytes": 53857,
+      "sha256": "078b4247709a9753b290870dceed9ee4ff1d9ac245fbd9e029e705ab48cb69bb",
+      "matchesLocalPagesBuild": true
+    }
+  ],
+  "userDrafts": "untouched",
+  "interactiveValidation": "Independent advisor, two fresh browser contexts; evidence release-B68/shiye-live/results.json"
+}

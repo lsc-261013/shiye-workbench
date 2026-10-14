@@ -1,6 +1,6 @@
-# 拾页当前状态 · 本地质量优化完成，待发布 · 2026-10-13
+# 拾页当前状态 · 质量优化已正式发布 · 2026-10-14
 
-本轮在 `experience/quality-review-2026-10-12` 保留未提交改动，未推送、未部署。[5196生产预览](http://127.0.0.1:5196/)使用隔离合成稿，用户原草稿保持。[本轮简短交接](HANDOFF-QUALITY-2026-10-13.md)记录实际改动、最终构建、实操与顾问复验归属、未测项及重启方法。320/390主要操作已定向复查通过；正式站点仍为此前发布版本。
+本轮 `experience/quality-review-2026-10-12` 已正常快进合并到 `main` 并推送，功能提交 `944725210b66b83014da6bf2f4c7da35f77c40ab`。[正式站点](https://lsc-261013.github.io/shiye-workbench/)已加载新版；[Actions 38454098095](https://github.com/lsc-261013/shiye-workbench/actions/runs/38454098095)的build/deploy均成功。HTML引用、JS/CSS及图标与Pages构建逐字节一致；顾问在两个全新浏览器上下文完成线上空白起步、待确认/保存、JSON下载、刷新续编、导入恢复及320/390检查。用户私稿未动。[本轮交接](HANDOFF-QUALITY-2026-10-13.md)含验证归属、未测项、5196重启与回退方法；当前完整线上提交见[版本清单](https://lsc-261013.github.io/shiye-workbench/release.json)。
 
 以下为此前正式发布基线记录。
 

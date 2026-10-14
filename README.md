@@ -1,6 +1,6 @@
 # 拾页 · 视觉灵感工作台
 
-2026-10-13本地质量优化已完成，尚未发布：[本轮预览5196](http://127.0.0.1:5196/)，[简短交接与恢复方法](docs/HANDOFF-QUALITY-2026-10-13.md)。新增清晰的空画板入口、可见的保存操作和待确认状态，修复素材抽屉遮挡导出及320px主要按钮换行。正式站点仍是下文记录的已发布版本。
+2026-10-14本轮质量优化已正式上线：[打开拾页](https://lsc-261013.github.io/shiye-workbench/)。[功能提交9447252](https://github.com/lsc-261013/shiye-workbench/commit/944725210b66b83014da6bf2f4c7da35f77c40ab)已正常快进合并到main并推送，[Actions构建与部署](https://github.com/lsc-261013/shiye-workbench/actions/runs/38454098095)均成功。空白起步、保存状态、素材抽屉及窄屏按钮改进已发布；线上资源字节核对及顾问隔离上下文实操通过。[发布验证与回退](docs/HANDOFF-QUALITY-2026-10-13.md#2026-10-14正式发布)。当前线上完整提交见[release.json](https://lsc-261013.github.io/shiye-workbench/release.json)，文档更新也沿同一流程发布。
 
 收集参考图片与来源，添加自己的文字，把想法编排成一页。Vue 3、TypeScript、Vite，纯前端，IndexedDB 保存一份本机草稿。第四轮于2026-10-07完成：两种直接裁切、左侧素材拖入、允许重叠和对象快捷键；后续Ctrl+Z连续撤销修复已完成。
 
